@@ -44,6 +44,7 @@ for fl, regs in REG.items():
     pl = list(getattr(patches, 'geoms', [patches]))
     for key, reg in regs.items():
         Wr = W if reg is None else W.intersection(reg)
+        Wr = Wr.difference(unary_union([box(2.10, 3.70, 2.97, 7.56), box(8 - 2.97, TOT - 7.56, 8 - 2.10, TOT - 3.70)]))
         doors, lintels = [], []
         for a in D[fl]:
             C = Point(a['c'])

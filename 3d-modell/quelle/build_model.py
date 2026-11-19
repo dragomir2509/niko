@@ -73,6 +73,18 @@ mat('pflanze',  'Pflanzen_Platzhalter',       '#4D7834', 0.9)
 mat('pv',       'PV_Module_Glas',             '#1B2533', 0.12, 0.3)
 mat('innentuer','Innentuer_weiss_lackiert',   '#F2F1EC', 0.4)
 mat('treppe',   'Treppe_Trittstufen_Eiche',   '#B8956A', 0.5)
+mat('kueche',   'Kueche_Front_weiss_matt',    '#ECEAE5', 0.45)
+mat('arbeitsplatte','Kueche_Arbeitsplatte_Stein_dunkel', '#3C3B39', 0.3)
+mat('edelstahl','Edelstahl',                  '#B4B6B8', 0.25, 1.0)
+mat('hob',      'Kochfeld_Glaskeramik',       '#151515', 0.08)
+mat('eiche',    'Holz_Eiche_Moebel',          '#B38D5F', 0.5)
+mat('stoff',    'Stoff_Polster_grau',         '#8A8D90', 0.95)
+mat('stoff_hell','Stoff_Polster_hell',        '#D3CEC5', 0.95)
+mat('bettwaesche','Bettwaesche_weiss',        '#F3F1EC', 0.9)
+mat('schrank',  'Schrank_weiss_lackiert',     '#F0EEE9', 0.4)
+mat('keramik',  'Keramik_Sanitaer_weiss',     '#F8F8F6', 0.08)
+mat('fliesen',  'Fliesen_Bad_grau',           '#C7C4BE', 0.35)
+mat('spiegel',  'Spiegel',                    '#E6E8EA', 0.02, 1.0)
 mat('hecke',    'Hecke_Formschnitt_Platzhalter', '#3F6B2E', 0.95)
 mat('erde',     'Erde_Pflanzbeet',            '#4A3B2E', 0.95)
 mat('kontext',  'Kontext_Nachbarbebauung',    '#D8D6D1', 0.9)
@@ -232,6 +244,8 @@ ROT_B = (Matrix.Translation((W / 2, TOT / 2, 0)) @ Matrix.Rotation(math.pi, 4, '
          Matrix.Translation((-W / 2, -TOT / 2, 0)))
 
 BOOLS = []   # (target, cutter-collection)
+ORIGINS = {}  # Objekt -> Drehpunkt (Tueren, Tore)
+TOGGLE = {}   # Objekt -> Drehwinkel beim Oeffnen/Schliessen (rad, um Z), wird als Custom Property 'drehwinkel' exportiert
 
 # ------------------------------------------------------------------ Polygon-Extrusion, PV, Treppen
 from shapely.geometry import LineString as _LS
@@ -295,7 +309,7 @@ def flight(o, x0, x1, ys, dirn, z0, r, n, g):
         abox(o, M['beton'], x0, x1, y0, y1, zt - r - 0.17, zt - 0.03)
         abox(o, M['treppe'], x0, x1, y0 - 0.02 if dirn < 0 else y0, y1 + 0.02 if dirn > 0 else y1, zt - 0.03, zt)
     ye = ys + dirn * (n - 1) * g
-    beam(o, M['alu'], V((x0 + 0.05, ys + dirn * 0.15, z0 + r + 0.90)), V((x0 + 0.05, ye - dirn * 0.10, z0 + (n - 1) * r + 0.90)), 0.045, 0.045)
+    beam(o, M['alu'], V((x1 - 0.05, ys + dirn * 0.15, z0 + r + 0.90)), V((x1 - 0.05, ye - dirn * 0.10, z0 + (n - 1) * r + 0.90)), 0.045, 0.045)
 
 def ext_stair(o):
     """halbgewendelte Aussentreppe in der Nische X 1,00-2,78 / Y 5,75-7,78, Antritt Westlauf (Sued) -> Austritt Ostlauf (Sued)"""
@@ -399,13 +413,16 @@ def build_house(P, coll, bay, openings=()):
     window(fr, gl, *Wf, 4.55, yo1, 0.0, 2.45)
     # Haustuer (Holz, Kassetten)
     obox(fr, M['alu'], *Wf, 3.40, 4.55, 0.0, 2.45, -0.22, -0.14)
-    obox(po, M['tuer'], *Wf, 3.47, 4.48, 0.0, 2.38, -0.20, -0.13)
+    htn = P + '_Haustuer'; ht = O(htn, coll)
+    obox(ht, M['tuer'], *Wf, 3.47, 4.48, 0.0, 2.38, -0.20, -0.13)
     pw, ph = (4.48 - 3.47 - 0.24) / 2, (2.38 - 0.30) / 4
     for i in range(2):
         for j in range(4):
             uu = 3.47 + 0.08 + i * (pw + 0.08); vv = 0.12 + j * (ph + 0.03)
-            obox(po, M['tuer'], *Wf, uu, uu + pw, vv, vv + ph - 0.03, -0.13, -0.115)
-    obox(po, M['aluh'], *Wf, 4.30, 4.34, 0.9, 1.5, -0.115, -0.06)   # Stossgriff
+            obox(ht, M['tuer'], *Wf, uu, uu + pw, vv, vv + ph - 0.03, -0.13, -0.115)
+    obox(ht, M['aluh'], *Wf, 4.30, 4.34, 0.9, 1.5, -0.115, -0.06)   # Stossgriff
+    hv = V((0.165, 3.47, 0.0)); hv = (ROT_B @ hv) if P == 'B' else hv
+    ORIGINS[htn] = tuple(hv); TOGGLE[htn] = -math.pi / 2
     # OG-Fenster im Portal (3-teilig, Mitte mit Sprossen)
     window(fr, gl, *Wf, yo0, 3.40, 3.04, 5.23)
     window(fr, gl, *Wf, 3.40, 4.55, 3.04, 5.23, rows=ndiv(3.04, 5.23, 4))
@@ -559,10 +576,11 @@ def build_house(P, coll, bay, openings=()):
     slabpoly(it, M['innen'], inn_rect.difference(VOID), 2.61, 2.94)
     slabpoly(it, M['boden'], inn_rect.difference(VOID), 2.94, 2.96)
     dgfp = sbox(XW + 0.22, 1.30, XD1 - 0.22, L - 0.22).difference(sbox(XD0 - 0.1, NY0 - 0.15, NX1 + 0.24, L))
-    dvoid = sbox(2.09, 3.68, 2.98, NY0 - 0.15)
+    dvoid = sbox(2.09, 3.68, 2.98, 6.63)          # Treppenauge OG->DG (Kopfhoehe unter der Nische, Schnitt AA)
     for g_ in getattr(dgfp, 'geoms', [dgfp]):
         cutpoly(cM, M['innen'], g_, 5.84, 6.02)
-    cutbox(cM, M['innen'], O0, X_, Y_, Z_, 2.09, 2.98, 3.68, NY0 - 0.15, 5.45, 6.03)
+    cutbox(cM, M['innen'], O0, X_, Y_, Z_, 2.09, 2.98, 3.68, 6.63, 5.45, 6.03)
+    abox(gl, M['glas'], 2.09, NX1, NY0, 6.63, 5.97, 6.0)                       # begehbares Glas ueber dem Treppenlauf in der Nische
     slabpoly(it, M['boden'], dgfp.difference(dvoid), 5.84, 5.85)
     for (z0, r) in [(-2.88, 0.18), (0.0, 0.185), (2.96, 0.18)]:
         flight(it, 2.10, 2.97, 7.58, -1, z0, r, 16, 0.26)
@@ -674,7 +692,6 @@ ce = '08_Einfriedung_Strasse'
 YP0, YP1 = -4.90, -4.30          # Pfeiler (Vorderkante = Heckenflucht)
 YF = -4.40                        # Achse Zaun / Tore
 HP = 1.60                         # Pfeilerhoehe (+ Abdeckplatte)
-ORIGINS = {}
 pfo = O('Einfriedung_Pfeiler_Putz_weiss', ce)
 zno = O('Einfriedung_Zaun_anthrazit', ce)
 sko = O('Einfriedung_Sockel_Putz_weiss', ce)
@@ -710,7 +727,7 @@ def fluegel(name, xh, xe):
     stabfeld(o, x0 + 0.06, x1 - 0.06, 0.12, 1.39)
     for zb in (0.25, 1.20):                     # Baender
         abox(o, M['alu'], xh - sgn * 0.0 - 0.015 if sgn > 0 else xh - 0.015, xh + 0.015, YF - 0.045, YF + 0.045, zb, zb + 0.10)
-    ORIGINS[name] = (xh, YF, 0.0)
+    ORIGINS[name] = (xh, YF, 0.0); TOGGLE[name] = math.pi / 2 if xe > xh else -math.pi / 2
 xm_w = (-3.12 + -0.20) / 2
 xm_o = (8.20 + 11.15) / 2
 fluegel('Tor_West_Fluegel_links', -3.12, xm_w)
@@ -749,6 +766,8 @@ for key, (zb, zt, zf) in HGT.items():
         ndoor += 1; nm = 'Tuer_%s_%02d' % (key, ndoor)
         obox(O(nm, ci), M['innentuer'], V((hx, hy, 0)), u, Z_, nvec, 0.03, ln - 0.03, zf + 0.01, zf + 2.02, -0.02, 0.02)
         ORIGINS[nm] = (hx, hy, zf)
+        cx_, cy_ = dr['closed'][0] - hx, dr['closed'][1] - hy
+        TOGGLE[nm] = math.atan2(u.x * cy_ - u.y * cx_, u.x * cx_ + u.y * cy_)
 # DG-/Mittelbau-Waende auf das Innenvolumen begrenzen (Dachschraegen)
 extI = Polygon([(1.0, 5.0), (1.0, 6.0), (1.0 + 2.38 / T70, 8.38), (L, 8.38), (L, 5.0)]).buffer(-0.22, join_style='mitre').intersection(sbox(0, 5.80, 20, 20))
 fYZ_ = lambda a, c, t: V((t, a, c))
@@ -769,6 +788,160 @@ for pts in INT['ug_ceiling_extra']:
 for (x0, x1, y0, y1) in [(2.09, 2.98, 3.68, 7.58), (8 - 2.98, 8 - 2.09, TOT - 7.58, TOT - 3.68)]:
     cutbox('CUT_ground', M['rasen'], O0, X_, Y_, Z_, x0, x1, y0, y1, -0.5, 0.1)
 BOOLS.append(('Gelaende_Rasen', 'CUT_ground'))
+
+# ================================================================== MOEBLIERUNG nach Plan (Kueche, Bad, Wohnen, Schlafen, Diele)
+cf = '10_Moeblierung'
+FO = {k: O('Moebel_' + k, cf) for k in ('Kueche', 'Bad', 'Wohnen', 'Schlafen', 'Schraenke')}
+def fb(o, m, x0, x1, y0, y1, z0, z1): abox(o, m, min(x0, x1), max(x0, x1), min(y0, y1), max(y0, y1), z0, z1)
+def counter(x0, x1, y0, y1, z, sink=None, hob=None, upper=None):
+    o = FO['Kueche']
+    fb(o, M['kueche'], x0 + 0.02, x1 - 0.02, y0 + 0.02, y1 - 0.02, z, z + 0.10)          # Sockel
+    fb(o, M['kueche'], x0, x1, y0, y1, z + 0.10, z + 0.86)
+    fb(o, M['arbeitsplatte'], x0 - 0.01, x1 + 0.01, y0 - 0.01, y1 + 0.01, z + 0.86, z + 0.90)
+    if sink: fb(o, M['edelstahl'], *sink, z + 0.90, z + 0.905)
+    if hob: fb(o, M['hob'], *hob, z + 0.90, z + 0.906)
+    if upper: fb(o, M['kueche'], *upper, z + 1.45, z + 2.25)
+def tall(x0, x1, y0, y1, z, h=2.25, o=None, m=None): fb(o or FO['Kueche'], m or M['kueche'], x0, x1, y0, y1, z, z + h)
+def wardrobe(x0, x1, y0, y1, z, h=2.30): fb(FO['Schraenke'], M['schrank'], x0, x1, y0, y1, z, z + h)
+def lowbox(x0, x1, y0, y1, z, h=0.50, m=None, o=None): fb(o or FO['Wohnen'], m or M['schrank'], x0, x1, y0, y1, z, z + h)
+def stool(cx, cy, z, r=0.18):
+    o = FO['Kueche']
+    for (a, b, c) in [(0.03, 0.0, 0.70), (r, 0.70, 0.76)]:
+        bm = o['bm']; idx = mi(o, M['eiche'] if b > 0.5 else M['edelstahl'])
+        res = bmesh.ops.create_cone(bm, cap_ends=True, segments=20, radius1=a, radius2=a, depth=c - b,
+                                    matrix=Matrix.Translation((cx, cy, z + (b + c) / 2)))
+        for fc in {f for vv in res['verts'] for f in vv.link_faces}: fc.material_index = idx
+def table(x0, x1, y0, y1, z, h=0.75, top=None):
+    o = FO['Wohnen']; m = top or M['eiche']
+    fb(o, m, x0, x1, y0, y1, z + h - 0.04, z + h)
+    for (lx, ly) in [(x0 + 0.06, y0 + 0.06), (x1 - 0.06, y0 + 0.06), (x0 + 0.06, y1 - 0.06), (x1 - 0.06, y1 - 0.06)]:
+        fb(o, M['alu'], lx - 0.025, lx + 0.025, ly - 0.025, ly + 0.025, z, z + h - 0.04)
+def chair(x0, x1, y0, y1, z, back):
+    o = FO['Wohnen']
+    fb(o, M['stoff'], x0 + 0.02, x1 - 0.02, y0 + 0.02, y1 - 0.02, z + 0.42, z + 0.47)
+    for (lx, ly) in [(x0 + 0.05, y0 + 0.05), (x1 - 0.05, y0 + 0.05), (x0 + 0.05, y1 - 0.05), (x1 - 0.05, y1 - 0.05)]:
+        fb(o, M['alu'], lx - 0.015, lx + 0.015, ly - 0.015, ly + 0.015, z, z + 0.42)
+    bx = {'-X': (x0, x0 + 0.05, y0, y1), '+X': (x1 - 0.05, x1, y0, y1), '-Y': (x0, x1, y0, y0 + 0.05), '+Y': (x0, x1, y1 - 0.05, y1)}[back]
+    fb(o, M['stoff'], *bx, z + 0.47, z + 0.88)
+def sofa(x0, x1, y0, y1, z, back, m=None):
+    o = FO['Wohnen']; m = m or M['stoff']
+    fb(o, M['alu'], x0 + 0.04, x1 - 0.04, y0 + 0.04, y1 - 0.04, z, z + 0.08)
+    fb(o, m, x0, x1, y0, y1, z + 0.08, z + 0.42)
+    bx = {'-X': (x0, x0 + 0.20, y0, y1), '+X': (x1 - 0.20, x1, y0, y1), '-Y': (x0, x1, y0, y0 + 0.20), '+Y': (x0, x1, y1 - 0.20, y1)}[back]
+    fb(o, m, *bx, z + 0.42, z + 0.80)
+def bed(x0, x1, y0, y1, z, head):
+    o = FO['Schlafen']
+    fb(o, M['eiche'], x0, x1, y0, y1, z + 0.05, z + 0.28)
+    fb(o, M['bettwaesche'], x0 + 0.03, x1 - 0.03, y0 + 0.03, y1 - 0.03, z + 0.28, z + 0.52)
+    hb = {'-X': (x0 - 0.06, x0, y0, y1), '+X': (x1, x1 + 0.06, y0, y1), '-Y': (x0, x1, y0 - 0.06, y0), '+Y': (x0, x1, y1, y1 + 0.06)}[head]
+    fb(o, M['stoff_hell'], *hb, z, z + 1.05)
+    w = (y1 - y0) if head in ('-X', '+X') else (x1 - x0)
+    n = 2 if w > 1.3 else 1
+    for k in range(n):
+        if head in ('-X', '+X'):
+            a = y0 + (k + 0.5) * w / n; xx = x0 + 0.08 if head == '-X' else x1 - 0.45
+            fb(o, M['bettwaesche'], xx, xx + 0.37, a - w / n * 0.38, a + w / n * 0.38, z + 0.52, z + 0.64)
+        else:
+            a = x0 + (k + 0.5) * w / n; yy = y0 + 0.08 if head == '-Y' else y1 - 0.45
+            fb(o, M['bettwaesche'], a - w / n * 0.38, a + w / n * 0.38, yy, yy + 0.37, z + 0.52, z + 0.64)
+    # Bettdecke (Plaid) in Akzentfarbe am Fussende
+    if head in ('-X', '+X'):
+        f0, f1 = (x1 - 0.55, x1 - 0.05) if head == '-X' else (x0 + 0.05, x0 + 0.55)
+        fb(o, M['stoff'], f0, f1, y0 + 0.02, y1 - 0.02, z + 0.52, z + 0.55)
+    else:
+        f0, f1 = (y1 - 0.55, y1 - 0.05) if head == '-Y' else (y0 + 0.05, y0 + 0.55)
+        fb(o, M['stoff'], x0 + 0.02, x1 - 0.02, f0, f1, z + 0.52, z + 0.55)
+def toilet(wx, wy, z, d):
+    """wandhaengendes WC: (wx, wy) Mitte Wandseite, d = Blickrichtung '+X','-X','+Y','-Y'"""
+    o = FO['Bad']
+    ux, uy = {'+X': (1, 0), '-X': (-1, 0), '+Y': (0, 1), '-Y': (0, -1)}[d]; px, py = -uy, ux
+    def rb(a0, a1, b0, b1, z0, z1, m):
+        xs = [wx + ux * a + px * b for a in (a0, a1) for b in (b0, b1)]; ys = [wy + uy * a + py * b for a in (a0, a1) for b in (b0, b1)]
+        fb(o, m, min(xs), max(xs), min(ys), max(ys), z + z0, z + z1)
+    rb(0.0, 0.16, -0.25, 0.25, 0.0, 1.10, M['fliesen'])          # Vorwand
+    rb(0.0, 0.02, -0.12, 0.12, 0.95, 1.10, M['edelstahl'])      # Druckplatte
+    rb(0.16, 0.70, -0.18, 0.18, 0.30, 0.42, M['keramik'])
+    rb(0.18, 0.68, -0.17, 0.17, 0.42, 0.44, M['keramik'])
+def basin(x0, x1, y0, y1, z, wall):
+    o = FO['Bad']
+    fb(o, M['eiche'], x0, x1, y0, y1, z + 0.45, z + 0.82)
+    fb(o, M['keramik'], x0 - 0.01, x1 + 0.01, y0 - 0.01, y1 + 0.01, z + 0.82, z + 0.86)
+    mx = {'-X': (x0 - 0.005, x0, y0, y1), '+X': (x1, x1 + 0.005, y0, y1), '-Y': (x0, x1, y0 - 0.005, y0), '+Y': (x0, x1, y1, y1 + 0.005)}[wall]
+    fb(o, M['spiegel'], *mx, z + 1.05, z + 1.85)
+def shower(x0, x1, y0, y1, z, glass):
+    o = FO['Bad']
+    fb(o, M['fliesen'], x0, x1, y0, y1, z, z + 0.03)
+    for side in glass:
+        g = {'-X': (x0, x0 + 0.01, y0, y1), '+X': (x1 - 0.01, x1, y0, y1), '-Y': (x0, x1, y0, y0 + 0.01), '+Y': (x0, x1, y1 - 0.01, y1)}[side]
+        fb(o, M['glas'], *g, z + 0.03, z + 2.00)
+        fb(o, M['edelstahl'], *g, z + 2.00, z + 2.02)
+def tub(x0, x1, y0, y1, z):
+    o = FO['Bad']; t = 0.07
+    fb(o, M['keramik'], x0, x1, y0, y1, z, z + 0.10)
+    for (a, b, c, d) in [(x0, x0 + t, y0, y1), (x1 - t, x1, y0, y1), (x0, x1, y0, y0 + t), (x0, x1, y1 - t, y1)]:
+        fb(o, M['keramik'], a, b, c, d, z + 0.10, z + 0.58)
+def shelf(x0, x1, y0, y1, z, h=2.0):
+    o = FO['Schraenke']
+    for k in range(5):
+        zz = z + k * (h - 0.03) / 4
+        fb(o, M['eiche'], x0, x1, y0, y1, zz, zz + 0.03)
+    for (a, b) in [(x0, x0 + 0.02), (x1 - 0.02, x1)] if (x1 - x0) > (y1 - y0) else [(y0, y0 + 0.02), (y1 - 0.02, y1)]:
+        if (x1 - x0) > (y1 - y0): fb(o, M['eiche'], a, b, y0, y1, z, z + h)
+        else: fb(o, M['eiche'], x0, x1, a, b, z, z + h)
+
+UG, EG, OG, DG = -2.88, 0.0, 2.96, 5.84
+# ---------------- Haus A
+# EG: Kueche (Zeile an WC-Wand + Insel mit Kochfeld und Barhockern), Essen, Wohnen, Diele, WC
+counter(1.40, 1.99, 0.40, 1.79, EG, sink=(1.55, 1.85, 0.47, 0.85), upper=(1.40, 1.75, 0.40, 1.79))
+tall(1.40, 1.99, 1.79, 2.40, EG)
+counter(3.03, 3.96, 0.05, 1.79, EG, hob=(3.17, 3.67, 0.45, 1.20))
+tall(3.03, 3.61, 1.79, 2.40, EG)
+for yy in (0.25, 0.86, 1.45): stool(4.27, yy, EG)
+table(5.82, 6.77, 0.93, 3.02, EG)
+for (a, b) in [(1.16, 1.62), (1.82, 2.24), (2.48, 2.93)]:
+    chair(5.25, 5.71, a, b, EG, '-X'); chair(6.90, 7.36, a, b, EG, '+X')
+sofa(6.20, 6.90, 4.35, 7.42, EG, '+X'); sofa(4.65, 6.20, 6.74, 7.42, EG, '+Y')
+lowbox(5.02, 5.67, 4.81, 6.09, EG, 0.40, M['eiche'])
+lowbox(3.89, 4.44, 7.00, 7.50, EG, 0.55)
+wardrobe(1.35, 1.94, 4.63, 6.45, EG); lowbox(1.60, 1.94, 3.70, 4.63, EG, 0.45, M['eiche'])
+toilet(0.365, 0.90, EG, '+X'); basin(1.00, 1.38, 1.55, 2.00, EG, '+X')
+# OG: WC, Bad (Wanne, Waschtisch), Kinderzimmer 1+2, Diele
+toilet(0.365, 0.90, OG, '+X'); basin(1.00, 1.38, 1.55, 2.00, OG, '+X')
+tub(1.40, 2.24, 0.40, 2.38, OG); basin(3.26, 3.75, 0.40, 1.79, OG, '+X'); tall(3.30, 3.75, 1.79, 2.40, OG, o=FO['Bad'], m=M['schrank'])
+wardrobe(3.90, 4.36, 0.40, 2.40, OG)
+bed(5.37, 7.19, 3.34, 4.35, OG, '+X'); table(5.86, 7.53, 0.40, 1.21, OG); chair(6.29, 6.77, 1.27, 1.81, OG, '+Y'); shelf(4.36, 5.20, 3.99, 4.35, OG)
+bed(5.37, 7.19, 6.57, 7.57, OG, '+X'); table(5.37, 6.77, 4.54, 5.39, OG); chair(5.78, 6.29, 5.43, 5.98, OG, '+Y'); wardrobe(4.17, 5.36, 6.98, 7.57, OG)
+wardrobe(1.35, 1.94, 3.65, 6.45, OG)
+# DG: Schlafen (Doppelbett, Nachttische, Schrankwand), Bad (Dusche, WC, Waschtisch)
+bed(3.64, 5.44, 3.63, 5.60, DG, '+Y'); lowbox(3.24, 3.61, 5.16, 5.54, DG, 0.45, M['eiche'], FO['Schlafen']); lowbox(5.46, 5.84, 5.16, 5.54, DG, 0.45, M['eiche'], FO['Schlafen'])
+wardrobe(3.09, 6.45, 2.07, 2.68, DG)
+shower(3.15, 4.15, 5.80, 6.74, DG, ['+X']); toilet(4.76, 7.70, DG, '-Y'); basin(5.25, 6.18, 7.25, 7.70, DG, '+Y')
+# UG: Bad (Dusche, WC, Waschtisch), Diele
+shower(0.95, 1.95, 0.40, 1.25, UG, ['+Y']); toilet(1.95, 1.60, UG, '-X'); basin(1.55, 1.95, 1.92, 2.38, UG, '+X')
+wardrobe(1.35, 1.94, 3.65, 6.45, UG)
+# ---------------- Haus B
+counter(6.01, 6.60, 17.56, 20.05, EG, sink=(6.10, 6.45, 17.80, 18.20), hob=(6.08, 6.55, 18.95, 19.67), upper=(6.25, 6.60, 17.56, 20.05))
+counter(4.38, 6.60, 20.05, 20.90, EG)
+for xx in (5.25, 5.77, 6.35): stool(xx, 21.17, EG)
+table(1.84, 2.77, 17.42, 19.52, EG)
+for (a, b) in [(17.56, 17.99), (18.21, 18.65), (18.86, 19.31)]:
+    chair(1.25, 1.72, a, b, EG, '-X'); chair(2.90, 3.37, a, b, EG, '+X')
+sofa(0.97, 1.79, 12.48, 15.71, EG, '-X'); sofa(1.79, 3.36, 12.48, 13.30, EG, '-Y')
+lowbox(2.31, 2.98, 13.97, 15.26, EG, 0.40, M['eiche']); lowbox(3.58, 4.08, 12.56, 13.06, EG, 0.50)
+lowbox(1.12, 1.48, 20.05, 21.38, EG, 0.80)
+wardrobe(6.03, 6.63, 13.64, 15.41, EG); lowbox(6.20, 6.63, 15.41, 16.30, EG, 0.45, M['eiche']); wardrobe(4.37, 4.97, 17.68, 18.86, EG)
+toilet(7.17, 19.56, EG, '-Y'); basin(7.25, 7.62, 18.10, 18.55, EG, '+X')
+toilet(7.17, 19.56, OG, '-Y'); basin(7.25, 7.62, 18.10, 18.55, OG, '+X')
+bed(0.38, 2.62, 12.48, 13.48, OG, '-X'); table(1.21, 2.65, 14.69, 15.54, OG); chair(1.67, 2.22, 14.02, 14.63, OG, '-Y'); wardrobe(2.62, 3.81, 12.48, 13.06, OG)
+bed(0.55, 2.62, 15.71, 16.71, OG, '-X'); table(0.70, 2.14, 18.84, 19.69, OG); chair(1.16, 1.72, 18.18, 18.78, OG, '-Y'); shelf(2.79, 3.64, 15.71, 16.07, OG)
+tall(3.51, 4.10, 17.66, 19.69, OG, o=FO['Bad'], m=M['schrank']); basin(4.27, 4.70, 18.42, 19.35, OG, '-X'); tub(5.75, 6.60, 17.66, 19.69, OG)
+wardrobe(6.03, 6.63, 13.64, 16.35, OG)
+bed(2.71, 4.91, 13.99, 15.78, DG, '+X'); lowbox(4.53, 4.88, 13.57, 13.95, DG, 0.45, M['eiche'], FO['Schlafen']); lowbox(4.53, 4.88, 15.80, 16.18, DG, 0.45, M['eiche'], FO['Schlafen'])
+sofa(1.70, 2.45, 12.70, 13.45, DG, '-X', M['stoff_hell']); wardrobe(1.55, 4.88, 17.39, 18.00, DG)
+toilet(6.35, 18.58, UG, '+X'); basin(6.35, 6.75, 17.70, 18.17, UG, '-X'); shower(6.35, 6.95, 18.93, 19.69, UG, ['+X'])
+wardrobe(6.03, 6.63, 13.64, 16.35, UG); shelf(0.40, 3.05, 17.70, 18.10, UG); shelf(0.95, 3.05, 19.30, 19.65, UG)
+# Mittelbau DG: Bad (+5,71)
+shower(3.40, 4.58, 8.10, 9.30, 5.71, ['-X']); basin(4.20, 4.58, 10.83, 11.94, 5.71, '+X'); lowbox(2.68, 2.96, 8.10, 9.28, 5.71, 0.45, M['eiche'], FO['Bad'])
 
 # ================================================================== KONTEXT (Platzhalter aus Lageplan M 1:500, +-1 m)
 ck = '06_Kontext_Nachbarn'
@@ -900,6 +1073,7 @@ for ob in bpy.data.objects:
 
 for nm, h in ORIGINS.items():
     ob = OBJS[nm]['obj']
+    if nm in TOGGLE: ob['drehwinkel'] = TOGGLE[nm]
     ob.data.transform(Matrix.Translation((-h[0], -h[1], -h[2])))
     ob.location = h
 
@@ -939,6 +1113,8 @@ CAMS = [
     cam('INNEN_12_OG_B_Kind', (6.6, 18.9, 4.5), (2.0, 13.5, 4.1), 16),
     cam('INNEN_13_DG_A_Schlafen', (6.3, 7.2, 7.4), (2.4, 2.4, 6.9), 16),
     cam('INNEN_14_UG_A_Hobby', (6.9, 7.0, -1.3), (2.0, 1.0, -1.6), 16),
+    cam('INNEN_15_EG_B_Kueche', (3.0, 15.6, 1.6), (6.0, 20.2, 0.8), 18),
+    cam('INNEN_16_OG_A_Bad', (2.9, 2.3, 4.55), (1.8, 0.5, 3.6), 14),
 ]
 def ocam(name, loc, tgt, scale):
     c = cam(name, loc, tgt)
@@ -952,7 +1128,7 @@ CAMS += [
 ]
 for (lx, ly) in [(4.0, 2.2), (4.0, 6.0), (4.0, 14.0), (4.0, 17.8)]:
     for (lz, nm_) in [(-0.7, 'UG'), (2.3, 'EG'), (5.2, 'OG'), (7.8, 'DG')]:
-        ld = bpy.data.lights.new('Innen_Licht_%s' % nm_, 'POINT'); ld.energy = 120; ld.shadow_soft_size = 0.4
+        ld = bpy.data.lights.new('Innen_Licht_%s' % nm_, 'POINT'); ld.energy = 70; ld.shadow_soft_size = 0.4
         lo = bpy.data.objects.new('Innen_Licht_%s_%.0f' % (nm_, ly), ld); ccam.objects.link(lo); lo.parent = root; lo.location = (lx, ly, lz)
 for (lz, nm_) in [(4.6, 'Mitte_OG'), (7.4, 'Mitte_DG')]:
     ld = bpy.data.lights.new('Innen_Licht_' + nm_, 'POINT'); ld.energy = 100; ld.shadow_soft_size = 0.4
@@ -1012,7 +1188,7 @@ if os.environ.get('EXPORT', '1') == '1':
         o.select_set(True)
     bpy.ops.export_scene.fbx(filepath=base + '.fbx', use_selection=True, object_types={'MESH', 'EMPTY'},
                              apply_scale_options='FBX_SCALE_UNITS', mesh_smooth_type='FACE', path_mode='COPY')
-    bpy.ops.export_scene.gltf(filepath=base + '.glb', export_format='GLB', use_selection=True)
+    bpy.ops.export_scene.gltf(filepath=base + '.glb', export_format='GLB', use_selection=True, export_extras=True)
     bpy.ops.wm.obj_export(filepath=base + '.obj', export_selected_objects=True, export_materials=True,
                           forward_axis='NEGATIVE_Z', up_axis='Y', export_uv=True, export_normals=True)
 
@@ -1029,7 +1205,7 @@ if os.environ.get('RENDER', '1') == '1':
         else: scene.render.resolution_x, scene.render.resolution_y = int(os.environ.get('RESX', '1600')), int(os.environ.get('RESY', '900'))
         for o in kontext.objects:
             o.hide_render = not aerial
-        scene.view_settings.exposure = 1.3 if 'INNEN' in c.name else 0.0
+        scene.view_settings.exposure = 0.9 if 'INNEN' in c.name else 0.0
         scene.camera = c
         scene.render.filepath = os.path.join(OUT, 'vorschau', c.name + '.png')
         bpy.ops.render.render(write_still=True)

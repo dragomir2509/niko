@@ -2,46 +2,77 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700&family=IBM+Plex+Sans:wght@400;500&family=IBM+Plex+Mono:wght@400&display=swap">
 <style>
-/* Layout: Vollflächiger Viewer, schmale Planköpfleiste oben, Standpunkte als Chips unten */
+/* Layout: Vollflaechiger Viewer; Kopfzeile mit Modus, Fussleiste mit Startpunkten/Geschossen; HUD im Bild */
 :root{
-  --bg:#ECEDEA; --panel:#F8F8F6; --fg:#22262A; --muted:#6B7176; --line:#CDD0CC; --accent:#B0884F; --sky1:#DDE6EE; --sky2:#F3F4F1;
+  --bg:#ECEDEA; --panel:#F8F8F6; --fg:#22262A; --muted:#6B7176; --line:#CDD0CC; --accent:#B0884F; --sky1:#DDE6EE; --sky2:#F3F4F1; --hud:rgba(20,22,25,.62); --hudfg:#F4F2EE;
   --f-display:"Archivo","Helvetica Neue",Arial,sans-serif; --f-body:"IBM Plex Sans",system-ui,sans-serif; --f-mono:"IBM Plex Mono",ui-monospace,monospace;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#171A1D;--panel:#20252A;--fg:#E8EAEA;--muted:#9AA1A7;--line:#343B42;--accent:#D2A86B;--sky1:#1C2833;--sky2:#14181C;color-scheme:dark}}
 :root[data-theme="dark"]{--bg:#171A1D;--panel:#20252A;--fg:#E8EAEA;--muted:#9AA1A7;--line:#343B42;--accent:#D2A86B;--sky1:#1C2833;--sky2:#14181C;color-scheme:dark}
 html,body{height:100%}
 body{background:var(--bg);color:var(--fg);font-family:var(--f-body);display:flex;flex-direction:column}
-header{display:flex;flex-wrap:wrap;gap:6px 24px;align-items:baseline;justify-content:space-between;padding-block:12px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));border-bottom:1px solid var(--line);background:var(--panel)}
-h1{font-family:var(--f-display);font-weight:700;font-size:1.15rem;margin:0;letter-spacing:.01em;text-wrap:balance}
-.meta{font-family:var(--f-mono);font-size:.75rem;color:var(--muted);display:flex;flex-wrap:wrap;gap:4px 16px}
-.meta b{color:var(--fg);font-weight:400}
-#stage{position:relative;flex:1;min-height:320px;background:linear-gradient(var(--sky1),var(--sky2))}
-canvas{display:block;width:100%;height:100%;touch-action:none}
+header{display:flex;flex-wrap:wrap;gap:8px 20px;align-items:center;justify-content:space-between;padding-block:10px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));border-bottom:1px solid var(--line);background:var(--panel)}
+h1{font-family:var(--f-display);font-weight:700;font-size:1.1rem;margin:0;letter-spacing:.01em}
+.modes{display:flex;gap:6px;flex-wrap:wrap}
+#stage{position:relative;flex:1;min-height:320px;background:linear-gradient(var(--sky1),var(--sky2));overflow:hidden}
+canvas{display:block;width:100%;height:100%;touch-action:none;outline:none}
 #status{position:absolute;inset:0;display:grid;place-items:center;font-family:var(--f-mono);font-size:.8rem;color:var(--muted)}
 .bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding-block:10px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));border-top:1px solid var(--line);background:var(--panel)}
-.bar .lbl{font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-right:4px}
-button{font:500 .8rem var(--f-body);color:var(--fg);background:transparent;border:1px solid var(--line);border-radius:3px;padding:6px 10px;cursor:pointer}
-button:hover{border-color:var(--accent)}
-button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:#1b1b1b}
-button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.bar .lbl{font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.grp{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
 .sp{flex:1}
-.hint{font-size:.72rem;color:var(--muted)}
+button,select{font:500 .8rem var(--f-body);color:var(--fg);background:transparent;border:1px solid var(--line);border-radius:3px;padding:6px 10px;cursor:pointer}
+select{background:var(--panel);max-width:100%}
+button:hover,select:hover{border-color:var(--accent)}
+button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:#1b1b1b}
+button:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.hud{position:absolute;left:max(12px,env(safe-area-inset-left,0px));top:12px;background:var(--hud);color:var(--hudfg);font-family:var(--f-mono);font-size:.75rem;padding:6px 10px;border-radius:3px;pointer-events:none}
+.help{position:absolute;right:max(12px,env(safe-area-inset-right,0px));top:12px;max-width:260px;background:var(--hud);color:var(--hudfg);font-size:.75rem;line-height:1.45;padding:8px 10px;border-radius:3px;pointer-events:none}
+.help b{font-weight:500;color:#fff}
+#cross{position:absolute;left:50%;top:50%;width:8px;height:8px;margin:-4px 0 0 -4px;border-radius:50%;border:1.5px solid rgba(255,255,255,.9);box-shadow:0 0 0 1px rgba(0,0,0,.35);pointer-events:none}
+#joy{position:absolute;left:max(18px,env(safe-area-inset-left,0px));bottom:calc(18px + env(safe-area-inset-bottom,0px));width:120px;height:120px;border-radius:50%;background:rgba(20,22,25,.28);border:1.5px solid rgba(255,255,255,.55);touch-action:none}
+#knob{position:absolute;left:50%;top:50%;width:48px;height:48px;margin:-24px 0 0 -24px;border-radius:50%;background:rgba(255,255,255,.75)}
+#toast{position:absolute;left:50%;bottom:24px;transform:translateX(-50%);background:var(--hud);color:var(--hudfg);font-size:.8rem;padding:6px 12px;border-radius:3px;pointer-events:none;opacity:0;transition:opacity .25s}
+@media (max-width:640px){.help{display:none}}
+@media (prefers-reduced-motion: reduce){#toast{transition:none}}
 </style>
 
 <header>
-  <h1>Gerlichstraße 8 · Doppelhaus mit Carports</h1>
-  <div class="meta"><span>±0,00 = <b>518,70 ü.NN</b></span><span>Dachkante <b>+8,85</b></span><span>Ausstieg <b>+11,02</b></span><span>Achse <b>N 13,8° W</b></span></div>
+  <h1>Gerlichstraße 8 · Doppelhaus</h1>
+  <div class="modes" role="group" aria-label="Ansicht">
+    <button id="m-out" data-mode="out" aria-pressed="true">Außen</button>
+    <button id="m-walk" data-mode="walk">Begehen</button>
+    <button id="m-floor" data-mode="floor">Geschosse</button>
+  </div>
 </header>
-<div id="stage"><canvas id="c"></canvas><div id="status">Modell wird geladen …</div></div>
+<div id="stage">
+  <canvas id="c" tabindex="0"></canvas>
+  <div id="status">Modell wird geladen …</div>
+  <div class="hud" id="hud" hidden></div>
+  <div class="help" id="help" hidden><b>Laufen</b> W A S D oder Pfeiltasten, <b>Shift</b> schneller<br><b>Umsehen</b> Maus gedrückt ziehen (auch hoch/runter)<br><b>Tür / Tor</b> anklicken öffnet und schließt<br><b>Treppen</b> einfach hineinlaufen</div>
+  <div id="cross" hidden></div>
+  <div id="joy" hidden><div id="knob"></div></div>
+  <div id="toast"></div>
+</div>
 <div class="bar">
-  <span class="lbl">Standpunkt</span>
-  <button id="v-so" data-v="so">Straße Südost</button>
-  <button id="v-sw" data-v="sw">Straße Südwest</button>
-  <button id="v-nw" data-v="nw">Garten Nordwest</button>
-  <button id="v-top" data-v="top">Vogelperspektive</button>
+  <div class="grp" id="g-out">
+    <span class="lbl">Standpunkt</span>
+    <button id="v-so" data-v="so">Straße Südost</button>
+    <button id="v-sw" data-v="sw">Straße Südwest</button>
+    <button id="v-nw" data-v="nw">Garten Nordwest</button>
+    <button id="v-top" data-v="top">Vogelperspektive</button>
+  </div>
+  <div class="grp" id="g-walk" hidden>
+    <label class="lbl" for="spawn">Raum</label>
+    <select id="spawn"></select>
+    <button id="t-ghost" aria-pressed="false">Durch Wände</button>
+  </div>
+  <div class="grp" id="g-floor" hidden>
+    <span class="lbl">Geschoss</span>
+    <button data-f="UG">UG</button><button data-f="EG">EG</button><button data-f="OG">OG</button><button data-f="DG">DG</button><button data-f="DT">Dach</button>
+  </div>
   <span class="sp"></span>
   <button id="t-nb" aria-pressed="true">Nachbarhäuser</button>
-  <span class="hint">Ziehen zum Drehen, Scrollen oder Pinch zum Zoomen</span>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/three@0.147.0/build/three.min.js"></script>
@@ -49,28 +80,171 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 <script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/controls/OrbitControls.js"></script>
 <script>
 (function(){
-  if(!window.THREE||!THREE.GLTFLoader||!THREE.OrbitControls){document.getElementById('status').textContent='3D-Bibliothek konnte nicht geladen werden. Bitte Seite neu laden.';return;}
-  const canvas=document.getElementById('c'), stage=document.getElementById('stage'), status=document.getElementById('status');
+  const $=id=>document.getElementById(id);
+  if(!window.THREE||!THREE.GLTFLoader||!THREE.OrbitControls){$('status').textContent='3D-Bibliothek konnte nicht geladen werden. Bitte Seite neu laden.';return;}
+  const canvas=$('c'), stage=$('stage'), status=$('status');
   const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true});
   renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
   renderer.outputEncoding=THREE.sRGBEncoding; renderer.toneMapping=THREE.ACESFilmicToneMapping; renderer.toneMappingExposure=1.05;
   renderer.shadowMap.enabled=true; renderer.shadowMap.type=THREE.PCFSoftShadowMap;
   const scene=new THREE.Scene();
-  const cam=new THREE.PerspectiveCamera(35,1,0.3,600);
-  const ctl=new THREE.OrbitControls(cam,canvas); ctl.enableDamping=true; ctl.maxPolarAngle=Math.PI*0.495; ctl.minDistance=6; ctl.maxDistance=140;
-  scene.add(new THREE.HemisphereLight(0xdfe9f3,0x6b7a55,0.75));
-  const sun=new THREE.DirectionalLight(0xfff4e2,2.1);
-  // Sonne aus Suedsuedwest, ca. 40 Grad hoch (three: -Z = Norden)
+  const cam=new THREE.PerspectiveCamera(40,1,0.05,600);
+  const orbit=new THREE.OrbitControls(cam,canvas); orbit.enableDamping=true; orbit.maxPolarAngle=Math.PI*0.495; orbit.minDistance=3; orbit.maxDistance=140;
+  const hemi=new THREE.HemisphereLight(0xe3ecf5,0x7a7262,0.8); scene.add(hemi);
+  const sun=new THREE.DirectionalLight(0xfff4e2,2.0);
   sun.position.set(-18,28,34); sun.castShadow=true; sun.shadow.mapSize.set(2048,2048);
-  Object.assign(sun.shadow.camera,{left:-35,right:35,top:35,bottom:-35,near:1,far:120}); sun.shadow.bias=-0.0004;
+  Object.assign(sun.shadow.camera,{left:-32,right:32,top:32,bottom:-32,near:1,far:120}); sun.shadow.bias=-0.0004; sun.shadow.normalBias=0.02;
   scene.add(sun);
-  const target=new THREE.Vector3(0,4,0);
+  const headLamp=new THREE.PointLight(0xfff1dd,0,9,1.6); cam.add(headLamp); scene.add(cam);
+
+  // Gebaeudekoordinaten (X Ost, Y Nord, Z oben, Planmasse) -> three.js Welt
+  const NORD=13.8*Math.PI/180, CN=Math.cos(NORD), SN=Math.sin(NORD), OX=4.0, OY=10.0275;
+  const B2T=(X,Y,Z)=>{const dx=X-OX, dy=Y-OY; return new THREE.Vector3(CN*dx-SN*dy, Z, -(SN*dx+CN*dy));};
+  const T2B=v=>{const bx=v.x, by=-v.z; return {X:CN*bx+SN*by+OX, Y:-SN*bx+CN*by+OY, Z:v.y};};
+  const dirYaw=(dX,dY)=>{const wx=CN*dX-SN*dY, wz=-(SN*dX+CN*dY); return Math.atan2(-wx,-wz);};
+
+  const SPAWNS=[
+    ['Haus A · EG Wohnen / Essen / Küche',4.6,3.9,0,2.6,0.8],
+    ['Haus A · EG Diele',1.0,6.9,0,1.0,2.5],
+    ['Haus A · UG Diele / Hobbyraum',1.0,6.9,-2.88,5.0,4.0],
+    ['Haus A · OG Diele',1.0,6.9,2.96,1.0,2.0],
+    ['Haus A · OG Kinderzimmer 2',5.0,6.1,2.96,6.6,4.8],
+    ['Haus A · DG Schlafen',3.35,4.6,5.84,5.2,4.6],
+    ['Haus A · Dachterrasse',4.2,3.6,8.89,4.2,0.5],
+    ['Haus B · EG Wohnen / Essen / Küche',3.6,15.5,0,5.6,20.2],
+    ['Haus B · EG Diele',7.05,13.4,0,7.05,16.5],
+    ['Haus B · UG Hobbyraum',2.4,14.4,-2.88,2.4,18.0],
+    ['Haus B · OG Diele',7.05,13.4,2.96,7.05,16.5],
+    ['Haus B · OG Kinderzimmer 2',3.0,14.2,2.96,0.8,14.2],
+    ['Haus B · DG Schlafen',2.0,15.0,5.84,4.6,15.0],
+    ['Haus B · Dachterrasse',3.8,16.4,8.89,3.8,19.5],
+    ['Außen · Gehweg vor dem Tor',9.8,-6.0,0,9.8,2.0],
+    ['Außen · Terrasse Haus A',3.6,-2.6,0.03,3.6,2.0],
+  ];
+  const sel=$('spawn'); SPAWNS.forEach((s,i)=>{const o=document.createElement('option'); o.value=i; o.textContent=s[0]; sel.appendChild(o);});
+
   const views={so:[22,3.5,24],sw:[-20,3.5,24],nw:[-24,3.5,-26],top:[34,32,36]};
-  const btns=[...document.querySelectorAll('[data-v]')];
-  function go(k){const p=views[k]; cam.position.set(p[0],p[1],p[2]); ctl.target.copy(target); ctl.update(); btns.forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===k?'true':'false'));}
-  btns.forEach(b=>b.addEventListener('click',()=>go(b.dataset.v)));
-  const nb=[]; const tnb=document.getElementById('t-nb');
+  const target=new THREE.Vector3(0,4,0);
+  const FLOORS={UG:-2.88,EG:0,OG:2.96,DG:5.84,DT:8.85};
+
+  let model=null; const nb=[], doors=[], colliders=[];
+  let mode='out';
+  const toast=$('toast'); let toastT=0;
+  function say(t){toast.textContent=t; toast.style.opacity=1; clearTimeout(toastT); toastT=setTimeout(()=>toast.style.opacity=0,1600);}
+
+  // ---------- Begehen
+  const P={pos:new THREE.Vector3(), yaw:0, pitch:0, vy:0, ghost:false};
+  const EYE=1.62, RAD=0.26, STEP=0.36;
+  const keys={};
+  const ray=new THREE.Raycaster(); ray.firstHitOnly=true;
+  const near=[];
+  function refreshNear(){
+    near.length=0; const c=P.pos;
+    for(const m of colliders){ const b=m.userData.bb; if(c.x>b.min.x-2&&c.x<b.max.x+2&&c.z>b.min.z-2&&c.z<b.max.z+2&&c.y>b.min.y-3&&c.y<b.max.y+2) near.push(m); }
+  }
+  function cast(o,d,far){ ray.set(o,d); ray.far=far; const h=ray.intersectObjects(near,false); return h.length?h[0]:null; }
+  const tmpV=new THREE.Vector3(), up=new THREE.Vector3(0,1,0), down=new THREE.Vector3(0,-1,0);
+  function moveH(dx,dz){
+    let mv=new THREE.Vector3(dx,0,dz);
+    for(let it=0; it<3 && mv.lengthSq()>1e-10; it++){
+      const len=mv.length(), dir=mv.clone().normalize(); let blocked=null;
+      for(const h of [STEP+0.05,0.95,1.55]){
+        const o=tmpV.set(P.pos.x,P.pos.y+h,P.pos.z);
+        for(const a of [0,0.5,-0.5]){
+          const d=dir.clone().applyAxisAngle(up,a);
+          const rr=(h<0.5?0.12:RAD); const hit=cast(o,d,len+rr);
+          if(hit){ const dd=hit.distance*Math.cos(a)+(RAD-rr); if(!blocked||dd<blocked.d){ const n=hit.face?hit.face.normal.clone().transformDirection(hit.object.matrixWorld):d.clone().negate(); n.y=0; if(n.lengthSq()<1e-6) n.copy(d).negate(); n.normalize(); blocked={d:dd,n}; } }
+        }
+      }
+      if(!blocked){ P.pos.add(mv); return; }
+      const allow=Math.max(0,blocked.d-RAD);
+      P.pos.addScaledVector(dir,Math.min(allow,len));
+      const rest=mv.clone().multiplyScalar(1-Math.min(allow,len)/len);
+      const vn=rest.dot(blocked.n); if(vn<0) rest.addScaledVector(blocked.n,-vn);
+      mv=rest;
+    }
+  }
+  function settle(dt){
+    const o=tmpV.set(P.pos.x,P.pos.y+STEP,P.pos.z);
+    const hit=cast(o,down,40);
+    if(hit){
+      const fy=hit.point.y;
+      if(fy>=P.pos.y-0.02){ P.pos.y+= (fy-P.pos.y)*Math.min(1,dt*18); P.vy=0; }
+      else { P.vy-=9.81*dt; P.pos.y=Math.max(fy,P.pos.y+P.vy*dt); if(P.pos.y===fy) P.vy=0; }
+    } else { P.vy-=9.81*dt; P.pos.y+=P.vy*dt; if(P.pos.y<-20) spawn(+sel.value); }
+  }
+  function spawn(i){
+    const s=SPAWNS[i]; P.pos.copy(B2T(s[1],s[2],s[3])); P.yaw=dirYaw(s[4]-s[1],s[5]-s[2]); P.pitch=-0.05; P.vy=0;
+    refreshNear();
+  }
+  sel.addEventListener('change',()=>{spawn(+sel.value); canvas.focus();});
+  $('t-ghost').addEventListener('click',e=>{P.ghost=!P.ghost; e.currentTarget.setAttribute('aria-pressed',String(P.ghost)); say(P.ghost?'Durch Wände: an (Leertaste hoch, C runter)':'Durch Wände: aus');});
+  addEventListener('keydown',e=>{ if(mode!=='walk') return; keys[e.code]=true; if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Space'].includes(e.code)) e.preventDefault(); });
+  addEventListener('keyup',e=>{ keys[e.code]=false; });
+  addEventListener('blur',()=>{ for(const k in keys) keys[k]=false; });
+
+  // Umsehen: Maus/Touch ziehen; Klick/Tap ohne Ziehen = Tuer schalten
+  let drag=null;
+  canvas.addEventListener('pointerdown',e=>{ drag={id:e.pointerId,x:e.clientX,y:e.clientY,moved:0}; if(mode==='walk'){ canvas.setPointerCapture(e.pointerId); canvas.focus(); } });
+  canvas.addEventListener('pointermove',e=>{ if(!drag||e.pointerId!==drag.id) return; const dx=e.clientX-drag.x, dy=e.clientY-drag.y; drag.x=e.clientX; drag.y=e.clientY; drag.moved+=Math.abs(dx)+Math.abs(dy);
+    if(mode!=='walk') return;
+    const k=e.pointerType==='touch'?0.006:0.0042; P.yaw-=dx*k; P.pitch=Math.max(-1.45,Math.min(1.45,P.pitch-dy*k)); });
+  canvas.addEventListener('pointerup',e=>{ if(!drag||e.pointerId!==drag.id) return; if(drag.moved<6) pick(e,mode!=='walk'); drag=null; });
+  canvas.addEventListener('pointercancel',()=>{drag=null;});
+
+  // Joystick (Touch)
+  const joy=$('joy'), knob=$('knob'); const J={x:0,y:0,id:null};
+  joy.addEventListener('pointerdown',e=>{J.id=e.pointerId; joy.setPointerCapture(e.pointerId); jmove(e); e.stopPropagation();});
+  joy.addEventListener('pointermove',e=>{ if(e.pointerId===J.id) jmove(e); });
+  const jend=()=>{J.id=null;J.x=0;J.y=0;knob.style.transform='';};
+  joy.addEventListener('pointerup',jend); joy.addEventListener('pointercancel',jend);
+  function jmove(e){ const r=joy.getBoundingClientRect(); let x=(e.clientX-r.left-r.width/2)/(r.width/2), y=(e.clientY-r.top-r.height/2)/(r.height/2); const l=Math.hypot(x,y); if(l>1){x/=l;y/=l;} J.x=x; J.y=y; knob.style.transform=`translate(${x*36}px,${y*36}px)`; }
+
+  // Tueren / Tore
+  const ptr=new THREE.Vector2(), pickRay=new THREE.Raycaster();
+  function pick(e,orbitMode){
+    if(!model) return;
+    const r=canvas.getBoundingClientRect(); ptr.set(((e.clientX-r.left)/r.width)*2-1, -((e.clientY-r.top)/r.height)*2+1);
+    pickRay.setFromCamera(ptr,cam); pickRay.far=orbitMode?200:4.5;
+    const hits=pickRay.intersectObjects(model.children,true).filter(h=>h.object.visible);
+    if(!hits.length) return;
+    let o=hits[0].object; while(o&&o.userData.drehwinkel===undefined) o=o.parent;
+    if(!o) return;
+    if(orbitMode&&hits[0].distance>60) return;
+    o.userData.open=!o.userData.open; o.userData.target=o.userData.base+(o.userData.open?o.userData.drehwinkel:0);
+    say(/^Tor/.test(o.name)?(o.userData.open?'Tor geöffnet':'Tor geschlossen'):'Tür umgeschaltet');
+  }
+
+  // ---------- Modi
+  const mbtn=[...document.querySelectorAll('[data-mode]')];
+  function setMode(m){
+    mode=m; mbtn.forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.mode===m)));
+    $('g-out').hidden=m!=='out'; $('g-walk').hidden=m!=='walk'; $('g-floor').hidden=m!=='floor';
+    const walk=m==='walk';
+    orbit.enabled=!walk; $('cross').hidden=!walk; $('hud').hidden=!walk; $('help').hidden=!walk;
+    $('joy').hidden=!(walk&&matchMedia('(pointer:coarse)').matches);
+    headLamp.intensity=walk?0.9:0; hemi.intensity=walk?1.05:0.8; cam.fov=walk?70:40; cam.updateProjectionMatrix();
+    renderer.clippingPlanes=[];
+    if(walk){ spawn(+sel.value); canvas.focus(); say('Begehen: ziehen zum Umsehen, W A S D zum Laufen'); }
+    else if(m==='out'){ goView('so'); }
+    else { setFloor('EG'); }
+  }
+  mbtn.forEach(b=>b.addEventListener('click',()=>setMode(b.dataset.mode)));
+  const vbtn=[...document.querySelectorAll('[data-v]')];
+  function goView(k){ const p=views[k]; cam.position.set(p[0],p[1],p[2]); orbit.target.copy(target); orbit.update(); vbtn.forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.v===k))); }
+  vbtn.forEach(b=>b.addEventListener('click',()=>goView(b.dataset.v)));
+  const fbtn=[...document.querySelectorAll('[data-f]')];
+  function setFloor(f){
+    const h=FLOORS[f]+(f==='DT'?20:1.55);
+    renderer.clippingPlanes=[new THREE.Plane(new THREE.Vector3(0,-1,0),h)];
+    orbit.target.set(0,FLOORS[f],0); cam.position.set(14,FLOORS[f]+24,18); orbit.update();
+    fbtn.forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.f===f)));
+  }
+  fbtn.forEach(b=>b.addEventListener('click',()=>setFloor(b.dataset.f)));
+  const tnb=$('t-nb');
   tnb.addEventListener('click',()=>{const on=tnb.getAttribute('aria-pressed')!=='true'; tnb.setAttribute('aria-pressed',String(on)); nb.forEach(o=>o.visible=on);});
+
+  // ---------- Laden
   const onErr=()=>{status.textContent='Modell konnte nicht geladen werden.';};
   fetch('model_glb_base64.txt').then(r=>{if(!r.ok) throw new Error(r.status); return r.text();}).then(b64=>{
     const bin=atob(b64.trim()), buf=new Uint8Array(bin.length);
@@ -78,18 +252,48 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
     new THREE.GLTFLoader().parse(buf.buffer,'',onLoad,onErr);
   }).catch(onErr);
   function onLoad(g){
-    g.scene.traverse(o=>{
+    model=g.scene;
+    model.traverse(o=>{
+      if(o.userData&&o.userData.drehwinkel!==undefined){ o.userData.base=o.rotation.y; o.userData.target=o.rotation.y; o.userData.open=false; doors.push(o); }
       if(!o.isMesh) return;
-      if(/^Nachbar/.test(o.name)) nb.push(o);
+      if(/^Nachbar/.test(o.name)||/^Nachbar/.test(o.parent&&o.parent.name)) nb.push(o);
       const big=/Gelaende_Rasen|Strasse/.test(o.name);
       o.castShadow=!big; o.receiveShadow=true;
       const ms=Array.isArray(o.material)?o.material:[o.material];
-      ms.forEach(m=>{ if(m.name==='Glas'){m.transparent=true;m.opacity=0.35;m.roughness=0.05;m.metalness=0.2;m.depthWrite=false;} });
+      ms.forEach(m=>{ if(/Glas/.test(m.name)&&!/PV/.test(m.name)){m.transparent=true;m.opacity=0.28;m.roughness=0.05;m.metalness=0.1;m.depthWrite=false;m.transmission=0;} m.side=THREE.FrontSide; });
     });
-    scene.add(g.scene); status.hidden=true; go('so');
+    scene.add(model); model.updateMatrixWorld(true);
+    model.traverse(o=>{ if(o.isMesh&&!/Pflanzen|Licht/.test(o.name)){ o.geometry.computeBoundingBox(); o.userData.bb=new THREE.Box3().setFromObject(o); colliders.push(o);} });
+    status.hidden=true; setMode('out');
+  }
+
+  // ---------- Schleife
+  const clock=new THREE.Clock(); let nearT=0;
+  const FL=[[-1,'UG'],[2.4,'EG'],[5.5,'OG'],[8.6,'DG'],[99,'Dach']];
+  function frame(){
+    const dt=Math.min(0.05,clock.getDelta());
+    for(const d of doors){ const r=d.rotation.y, t=d.userData.target; if(Math.abs(t-r)>1e-3){ d.rotation.y=r+(t-r)*Math.min(1,dt*6); d.updateMatrixWorld(true); d.traverse(m=>{ if(m.userData.bb) m.userData.bb.setFromObject(m); }); } }
+    if(mode==='walk'){
+      nearT-=dt; if(nearT<=0){ refreshNear(); nearT=0.25; }
+      let f=(keys.KeyW||keys.ArrowUp?1:0)-(keys.KeyS||keys.ArrowDown?1:0)-J.y;
+      let s=(keys.KeyD?1:0)-(keys.KeyA?1:0)+J.x;
+      if(keys.ArrowLeft) P.yaw+=1.8*dt; if(keys.ArrowRight) P.yaw-=1.8*dt;
+      const sp=(keys.ShiftLeft||keys.ShiftRight?3.2:1.5)*dt;
+      const fx=-Math.sin(P.yaw), fz=-Math.cos(P.yaw), rx=Math.cos(P.yaw), rz=-Math.sin(P.yaw);
+      let dx=(fx*f+rx*s)*sp, dz=(fz*f+rz*s)*sp;
+      if(P.ghost){ P.pos.x+=dx; P.pos.z+=dz; if(keys.Space) P.pos.y+=2*dt; if(keys.KeyC) P.pos.y-=2*dt; }
+      else { if(dx||dz) moveH(dx,dz); settle(dt); }
+      cam.position.set(P.pos.x,P.pos.y+EYE,P.pos.z);
+      cam.rotation.set(P.pitch,P.yaw,0,'YXZ');
+      const b=T2B(P.pos); const house=b.Y<7.95?'Haus A':(b.Y>12.105?'Haus B':'Mittelbau');
+      const fl=FL.find(x=>b.Z<x[0])[1];
+      const inside=b.X>0&&b.X<8&&b.Y>-2.1&&b.Y<22.1;
+      $('hud').textContent=(inside?house+' · '+fl:'Außenbereich')+'  ·  OK FFB '+(b.Z>=0?'+':'')+b.Z.toFixed(2).replace('.',',')+' m';
+    } else { orbit.update(); }
+    renderer.render(scene,cam);
   }
   function size(){const w=stage.clientWidth,h=stage.clientHeight; renderer.setSize(w,h,false); cam.aspect=w/h; cam.updateProjectionMatrix();}
   new ResizeObserver(size).observe(stage); size();
-  renderer.setAnimationLoop(()=>{ctl.update(); renderer.render(scene,cam);});
+  renderer.setAnimationLoop(frame);
 })();
 </script>

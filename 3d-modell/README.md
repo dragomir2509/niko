@@ -48,6 +48,7 @@ SketchUp liest FBX/OBJ nicht direkt. Für SketchUp die FBX über Twinmotion/Data
   einfach um Z drehen (nach innen ca. ±90°).
 
 - `09_Innenausbau` – Innenwände je Geschoss, Türblätter, UG-Bodenplatte und UG-Fenster zu den Lichtschächten
+- `10_Moeblierung` – Möblierung nach den Plansymbolen in allen Geschossen (siehe unten)
 
 Pro Haus ist das Modell nach Bauteilen getrennt: Baukörper/Putz, Lisenen und Kugeln, Holzfassade, Fenster-Rahmen,
 Glas, Dachgeschoss, Dach/Dachterrasse, Geländer, PV-Module, Außentreppe, Pergola, Erker, Portal/Vordach/Haustür,
@@ -67,8 +68,29 @@ Decken/Treppen innen und Pflanzen-Platzhalter.
 - **Durchgänge** von Haus B in den Mittelbau (OG Flur/Arbeiten, DG Bad) sind nach den Lücken in den Planwänden geöffnet.
 - **Licht:** In der Blender-Datei hängen Punktleuchten pro Geschoss, damit man innen sofort etwas sieht. Sie werden
   nicht mit exportiert.
-- **Nicht enthalten:** Möblierung, Küchen- und Sanitärobjekte (im Plan nur als Symbol gezeichnet) und die 4 Stufen
-  (4 × 18/26) im Mittelbau-Flur. Möbel setzt man am besten aus der Asset-Bibliothek des Renderers.
+- **Möblierung** ist an den Stellen und in den Maßen der Plansymbole gesetzt, als schlichte Volumenkörper mit
+  eigenen Materialien. Im Renderer lassen sie sich 1:1 durch hochwertige Assets ersetzen.
+  - Küchen: Zeile mit Spüle und Hängeschränken, Hochschränke, Insel mit Kochfeld, Barhocker
+  - Wohnen und Essen: Esstisch mit sechs Stühlen, L-Sofa, Couchtisch, Sideboard
+  - Schlafen: Doppelbett mit Nachttischen und Schrankwand im DG, Kinderzimmer mit Bett, Schreibtisch, Stuhl und Schrank
+  - Bäder und WCs: Vorwand-WC, Waschtisch mit Spiegel, Wanne bzw. Dusche mit Glas
+  - Dielen: Garderobenschränke; UG-Keller: Regale
+- **Türen** (Innentüren, Haustüren, Tore) haben die Custom Property `drehwinkel`. Das ist der Winkel in Radiant, um
+  den das Blatt um seinen Drehpunkt schwenkt. Der Web-Viewer öffnet und schließt sie damit per Klick.
+- **Nicht enthalten:** die 4 Stufen (4 × 18/26) im Mittelbau-Flur, deren Lage im Plan nicht eindeutig ist.
+
+## Begehung im Web-Viewer
+
+Der Viewer (`quelle/viewer_index.html`) hat drei Modi:
+
+- **Außen:** Orbit um das Gebäude mit vier Standpunkten
+- **Begehen:** Ich-Perspektive auf Augenhöhe 1,62 m mit Kollision an Wänden, Möbeln und Glas. Treppen und die
+  Außentreppe aufs Dach lassen sich hoch- und runterlaufen.
+  - 16 Startpunkte, vom UG bis zur Dachterrasse in beiden Häusern
+  - Steuerung: W A S D oder Pfeiltasten, Shift schneller, Maus ziehen zum Umsehen (360° und hoch/runter)
+  - Türen und Tore per Klick öffnen und schließen; auf dem Handy mit Joystick
+  - „Durch Wände“ zum freien Bewegen (Leertaste hoch, C runter)
+- **Geschosse:** Puppenhaus-Ansicht, jedes Geschoss bei 1,55 m über Fußboden aufgeschnitten
 
 ## Materialien (zum Ersetzen im Renderer)
 
