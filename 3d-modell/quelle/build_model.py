@@ -93,6 +93,20 @@ mat('kunst1',   'Kunst_Leinwand_Terrakotta',  '#B8754E', 0.9)
 mat('kunst2',   'Kunst_Leinwand_Sand',        '#CDBFA6', 0.9)
 mat('olive',    'Pflanze_Olive',              '#6F7A52', 0.9)
 mat('topf',     'Pflanzgefaess_Beton',        '#8D8A84', 0.85)
+mat('vorhang',  'Vorhang_Leinen',             '#EFEAE1', 0.95)
+mat('teak',     'Outdoor_Teak',               '#9A7650', 0.6)
+mat('outdoor',  'Outdoor_Polster_Sand',       '#DCD3C4', 0.95)
+mat('rinde',    'Baum_Rinde',                 '#5A4A3C', 0.95)
+mat('blatt',    'Baum_Laub',                  '#5B7536', 0.85)
+mat('blatt2',   'Baum_Laub_hell',             '#7A8F45', 0.85)
+mat('reifen',   'Fahrzeug_Reifen',            '#161616', 0.85)
+mat('felge',    'Fahrzeug_Felge',             '#2A2B2D', 0.25, 0.9)
+mat('kunststoff','Fahrzeug_Kunststoff_schwarz','#101112', 0.5)
+mat('autoglas', 'Fahrzeug_Glas_getoent',      '#0E1216', 0.03)
+mat('lack_gelb','Fahrzeug_Lack_Giallo',       '#E8A90B', 0.2, 0.6)
+mat('lack_schwarz','Fahrzeug_Lack_Obsidian',  '#0C0D0F', 0.2, 0.7)
+mat('lichtweiss','Fahrzeug_Licht_weiss',      '#F4F6F8', 0.1)
+mat('lichtrot', 'Fahrzeug_Licht_rot',         '#C0161B', 0.2)
 mat('hecke',    'Hecke_Formschnitt_Platzhalter', '#3F6B2E', 0.95)
 mat('erde',     'Erde_Pflanzbeet',            '#4A3B2E', 0.95)
 mat('kontext',  'Kontext_Nachbarbebauung',    '#D8D6D1', 0.9)
@@ -682,6 +696,8 @@ abox(te, M['holzt'], 0.0, 1.82, 22.07, 22.80, -0.02, 0.03)
 hh = O('Gelaende_Hecken_hoch', ca)
 abox(hh, M['hecke'], 7.45, 8.00, -3.35, -0.90, 0.0, 2.00)        # hohe Hecke statt Holz-Sichtschutz an Terrasse A
 abox(hh, M['hecke'], 11.00, 11.55, -4.25, 19.55, 0.0, 1.80)      # Meterhecke Sichtschutz Ostgrenze entlang Zufahrt
+abox(hh, M['hecke'], -3.52, -3.05, -4.25, 5.45, 0.0, 1.80)       # Meterhecke Westgrenze
+abox(hh, M['hecke'], -3.52, -3.05, 10.85, 26.20, 0.0, 1.80)
 mu = O('Gelaende_Muelltonnenhaus', ca)
 abox(mu, M['alu'], 5.90, 7.40, -4.10, -3.40, 0.0, 1.35)
 
@@ -1039,6 +1055,217 @@ rug(3.2, 5.9, 3.3, 6.0, DG); rug(2.4, 5.2, 13.6, 16.2, DG)
 # Mittelbau DG: Bad (+5,71)
 shower(3.40, 4.58, 8.10, 9.30, 5.71, ['-X']); basin(4.20, 4.58, 10.83, 11.94, 5.71, '+X'); lowbox(2.68, 2.96, 8.10, 9.28, 5.71, 0.45, M['eiche'], FO['Bad'])
 
+# ================================================================== WOHNWAENDE, VORHAENGE, AUSSENMOEBEL, BAEUME, FAHRZEUGE
+cx_ = '11_Ausstattung_Fahrzeuge'
+# --- Wohnwaende (Marmorpaneel raumhoch, TV, schwebendes Sideboard mit LED)
+def mediawall(xw, sgn, y0, y1, z, hroom):
+    o = FO['Wohnen']
+    fb(o, M['arbeitsplatte'], xw, xw + sgn * 0.03, y0, y1, z, z + hroom)
+    ym = (y0 + y1) / 2
+    fb(o, M['hob'], xw + sgn * 0.03, xw + sgn * 0.065, ym - 0.72, ym + 0.72, z + 1.05, z + 1.87)
+    fb(o, M['eiche'], xw + sgn * 0.03, xw + sgn * 0.48, y0 + 0.15, y1 - 0.15, z + 0.26, z + 0.62)
+    fb(o, M['leuchte'], xw + sgn * 0.05, xw + sgn * 0.46, y0 + 0.17, y1 - 0.17, z + 0.255, z + 0.26)
+    for yy in (y0 + 0.45, y1 - 0.65):
+        fb(o, M['bronze'], xw + sgn * 0.12, xw + sgn * 0.30, yy, yy + 0.18, z + 0.62, z + 0.92)
+mediawall(3.10, +1, 4.15, 6.95, EG, 2.61)
+mediawall(4.90, -1, 13.20, 15.90, EG, 2.61)
+# --- Vorhaenge (Leinen, gewellt, je Fensterseite gerafft)
+vh = O('Moebel_Vorhaenge', cf)
+def curtain(xc, y0, y1, z0, z1, amp=0.035, per=0.16):
+    bm = vh['bm']; idx = mi(vh, M['vorhang'])
+    n = max(4, int((y1 - y0) / per * 6))
+    cols = []
+    for i in range(n + 1):
+        y = y0 + (y1 - y0) * i / n; x = xc + amp * math.sin(2 * math.pi * (y - y0) / per)
+        cols.append((bm.verts.new((x, y, z0)), bm.verts.new((x, y, z1))))
+    for (a, b), (c, d) in zip(cols, cols[1:]):
+        f = bm.faces.new([a, c, d, b]); f.material_index = idx
+for (y0, y1) in [(1.40, 1.95), (2.80, 3.35), (4.60, 5.15), (6.00, 6.55)]:
+    curtain(7.52, y0, y1, 0.03, 2.58)
+for (y0, y1) in [(13.50, 14.05), (14.90, 15.45), (16.70, 17.25), (18.10, 18.65)]:
+    curtain(0.48, y0, y1, 0.03, 2.58)
+for (y0, y1) in [(3.20, 3.80), (6.05, 6.65)]:
+    curtain(6.68, y0, y1, 5.86, 8.12)
+for (y0, y1) in [(13.40, 14.00), (16.25, 16.85)]:
+    curtain(1.32, y0, y1, 5.86, 8.12)
+# --- Aussenmoebel (Teak, Outdoor-Polster)
+ao = O('Aussen_Moebel', cx_)
+def osofa(x0, x1, y0, y1, z, back):
+    fb(ao, M['teak'], x0, x1, y0, y1, z, z + 0.32)
+    fb(ao, M['outdoor'], x0 + 0.04, x1 - 0.04, y0 + 0.04, y1 - 0.04, z + 0.32, z + 0.44)
+    bx = {'-X': (x0, x0 + 0.18, y0, y1), '+X': (x1 - 0.18, x1, y0, y1), '-Y': (x0, x1, y0, y0 + 0.18), '+Y': (x0, x1, y1 - 0.18, y1)}[back]
+    fb(ao, M['outdoor'], *bx, z + 0.44, z + 0.78)
+def otable(x0, x1, y0, y1, z, h=0.34, m=None): fb(ao, m or M['travertin'], x0, x1, y0, y1, z, z + h)
+def parasol(cx, cy, z, r=1.4):
+    cyl(ao, M['travertin'], cx, cy, z, z + 0.08, 0.35); cyl(ao, M['teak'], cx, cy, z + 0.08, z + 2.35, 0.025)
+    bm = ao['bm']; idx = mi(ao, M['outdoor'])
+    res = bmesh.ops.create_cone(bm, cap_ends=True, segments=16, radius1=r, radius2=0.03, depth=0.35, matrix=Matrix.Translation((cx, cy, z + 2.42)))
+    for fc in {f for vv in res['verts'] for f in vv.link_faces}: fc.material_index = idx
+osofa(1.85, 4.15, -3.38, -2.62, 0.03, '-Y'); otable(2.55, 3.45, -2.40, -1.85, 0.03); osofa(4.55, 5.30, -3.0, -1.95, 0.03, '+X'); parasol(5.2, -3.0, 0.03)
+def roof_set(rot):
+    T = (lambda x, y: (8 - x, TOT - y)) if rot else (lambda x, y: (x, y))
+    def R(x0, x1, y0, y1):
+        a, b = T(x0, y0); c, d = T(x1, y1); return min(a, c), max(a, c), min(b, d), max(b, d)
+    flip = {'-X': '+X', '+X': '-X', '-Y': '+Y', '+Y': '-Y'}
+    osofa(*R(2.30, 5.70, 4.55, 5.25), 8.89, flip['+Y'] if rot else '+Y')
+    otable(*R(3.30, 4.70, 3.55, 4.20), 8.89)
+    otable(*R(3.95, 5.05, 5.95, 7.40), 8.89, 0.74, M['teak'])
+    for (a, b) in [(6.10, 6.55), (6.85, 7.30)]:
+        for (x0, x1, bk) in [(3.45, 3.90, '-X'), (5.10, 5.55, '+X')]:
+            xx0, xx1, yy0, yy1 = R(x0, x1, a, b)
+            fb(ao, M['outdoor'], xx0, xx1, yy0, yy1, 8.89 + 0.40, 8.89 + 0.46)
+            fb(ao, M['teak'], xx0 + 0.03, xx1 - 0.03, yy0 + 0.03, yy1 - 0.03, 8.89, 8.89 + 0.40)
+roof_set(False); roof_set(True)
+# --- Baeume (Kronen aus Blattballen, Stamm mit Aesten)
+bo = O('Aussen_Baeume', cx_)
+import random
+def tree(cx, cy, h, rc, seed):
+    rnd = random.Random(seed)
+    bm = bo['bm']
+    def cone(p0, p1, r0, r1, m):
+        d = V(p1) - V(p0); L_ = d.length; q = d.to_track_quat('Z', 'Y').to_matrix().to_4x4()
+        res = bmesh.ops.create_cone(bm, cap_ends=True, segments=10, radius1=r0, radius2=r1, depth=L_, matrix=Matrix.Translation((V(p0) + V(p1)) / 2) @ q)
+        idx = mi(bo, m)
+        for fc in {f for vv in res['verts'] for f in vv.link_faces}: fc.material_index = idx
+    top = (cx, cy, h * 0.62)
+    cone((cx, cy, 0), top, 0.16 * h / 7, 0.07, M['rinde'])
+    for k in range(5):
+        a = rnd.uniform(0, 2 * math.pi); zz = h * rnd.uniform(0.38, 0.6)
+        cone((cx, cy, zz), (cx + math.cos(a) * rc * 0.7, cy + math.sin(a) * rc * 0.7, zz + h * 0.25), 0.05, 0.015, M['rinde'])
+    for k in range(int(40 + rc * 18)):
+        u = rnd.uniform(0, 2 * math.pi); v = rnd.uniform(-1, 1); rr = rc * rnd.uniform(0.25, 1.0) ** 0.5
+        p = V((cx + math.cos(u) * math.sqrt(1 - v * v) * rr, cy + math.sin(u) * math.sqrt(1 - v * v) * rr, h * 0.68 + v * rr * 0.75))
+        res = bmesh.ops.create_icosphere(bm, subdivisions=1, radius=rnd.uniform(0.28, 0.55) * rc / 2.2, matrix=Matrix.Translation(p))
+        idx = mi(bo, M['blatt'] if k % 3 else M['blatt2'])
+        for fc in {f for vv in res['verts'] for f in vv.link_faces}: fc.material_index = idx
+tree(0.6, -3.7, 6.5, 2.0, 1); tree(7.4, -3.6, 7.5, 2.3, 2); tree(1.2, 25.3, 7.0, 2.2, 3); tree(6.8, 25.6, 6.0, 1.9, 4); tree(-2.7, 19.5, 5.5, 1.6, 5); tree(-2.6, 13.6, 5.0, 1.4, 6)
+# --- Fahrzeuge
+def wheel(o, cx, cy, cz, r, w, side, caliper):
+    bm = o['bm']
+    rot = Matrix.Rotation(math.pi / 2, 4, 'X')
+    def c(rad, y0, y1, m, seg=40):
+        res = bmesh.ops.create_cone(bm, cap_ends=True, segments=seg, radius1=rad, radius2=rad, depth=abs(y1 - y0), matrix=Matrix.Translation((cx, cy + (y0 + y1) / 2, cz)) @ rot)
+        idx = mi(o, m)
+        for fc in {f for vv in res['verts'] for f in vv.link_faces}: fc.material_index = idx
+    c(r, -w / 2, w / 2, M['reifen'], 48)
+    c(r * 0.98, -w / 2 - 0.006, w / 2 + 0.006, M['reifen'], 48)
+    rr = r * 0.70; yo = side * (w / 2 + 0.004)
+    c(rr, yo - side * 0.03, yo, M['felge'], 48)
+    for k in range(10):
+        a = k * math.pi / 5
+        bm2 = o['bm']; idx = mi(o, M['felge'])
+        dirv = V((math.cos(a), 0, math.sin(a)))
+        p0 = V((cx, cy + yo + side * 0.012, cz)); p1 = p0 + dirv * rr * 0.95
+        beam(o, M['felge'], p0, p1, 0.05, 0.03, up=V((0, 1, 0)))
+    c(0.07, yo, yo + side * 0.02, M['felge'], 24)
+    if caliper:
+        bx = cx + 0.12; fb(o, caliper, bx, bx + 0.09, cy + side * (w / 2 - 0.09) - 0.03, cy + side * (w / 2 - 0.09) + 0.03, cz + 0.05, cz + 0.22)
+def loft(o, stations, mat_fn):
+    """stations: Liste (x, [ (y,z) Halbprofil von unten-Mitte nach oben-Mitte ])"""
+    bm = o['bm']; rings = []
+    for (x, half) in stations:
+        full = half + [(-y, z) for (y, z) in reversed(half[1:-1])]
+        rings.append([bm.verts.new((x, y, z)) for (y, z) in full])
+    n = len(rings[0])
+    for r0, r1 in zip(rings, rings[1:]):
+        for i in range(n):
+            j = (i + 1) % n
+            f = bm.faces.new([r0[i], r0[j], r1[j], r1[i]])
+            cen = sum((v.co for v in f.verts), V((0, 0, 0))) / 4
+            f.material_index = mi(o, mat_fn(cen))
+    for r, rev in ((rings[0], True), (rings[-1], False)):
+        cen = sum((v.co for v in r), V((0, 0, 0))) / len(r); cv = bm.verts.new(cen)
+        for i in range(n):
+            j = (i + 1) % n
+            f = bm.faces.new([r[j], r[i], cv] if rev else [r[i], r[j], cv]); f.material_index = mi(o, mat_fn(cen))
+def resample(pts, n):
+    d = [0.0]
+    for a, b in zip(pts, pts[1:]): d.append(d[-1] + math.dist(a, b))
+    out = []
+    for k in range(n):
+        t = d[-1] * k / (n - 1)
+        for i in range(len(d) - 1):
+            if d[i] <= t <= d[i + 1] + 1e-9:
+                f = (t - d[i]) / max(1e-9, d[i + 1] - d[i]); a, b = pts[i], pts[i + 1]
+                out.append((a[0] + (b[0] - a[0]) * f, a[1] + (b[1] - a[1]) * f)); break
+    return out
+def interp(tab, x):
+    for (x0, v0), (x1, v1) in zip(tab, tab[1:]):
+        if x0 <= x <= x1: return v0 + (v1 - v0) * (x - x0) / (x1 - x0)
+    return tab[-1][1]
+def place(o, Xc, Yfront, frm):
+    """Fahrzeug-lokale Koordinaten (x nach hinten, y quer) -> Gebaeude: rueckwaerts eingeparkt, Front zeigt nach Sueden (zur Zufahrt)"""
+    bm = o['bm']
+    for v in bm.verts:
+        x, y, z = v.co; v.co = V((Xc - y, Yfront + x, z))
+# Super-SUV (Urus-Anmutung), Giallo, Haus A Carport
+uo = O('Fahrzeug_SuperSUV_Karosserie', cx_)
+ZT = [(0, 0.66), (0.35, 0.80), (1.40, 0.98), (2.20, 1.60), (3.55, 1.64), (4.55, 1.40), (4.95, 1.22), (5.11, 1.02)]
+ZB = [(0, 0.34), (0.5, 0.24), (4.6, 0.24), (5.11, 0.36)]
+BL = [(0, 0.99), (5.11, 1.06)]
+WD = [(0, 0.82), (0.7, 0.99), (2.5, 1.01), (4.7, 0.99), (5.11, 0.88)]
+st = []
+for k in range(56):
+    x = 5.11 * (k / 55) ** 1.0
+    zt, zb, belt, w = interp(ZT, x), interp(ZB, x), interp(BL, x), interp(WD, x)
+    if zt > belt + 0.12:
+        half = [(0, zb), (0.82 * w, zb), (w, zb + 0.16), (w, belt - 0.06), (w - 0.04, belt), (0.74 * w, zt - 0.07), (0.5 * w, zt), (0, zt)]
+    else:
+        half = [(0, zb), (0.82 * w, zb), (w, zb + 0.16), (w, zt - 0.10), (0.86 * w, zt - 0.02), (0.5 * w, zt), (0, zt)]
+    st.append((x, resample(half, 14)))
+def urus_mat(c):
+    x, y, z = c
+    if z < 0.40: return M['kunststoff']
+    belt = interp(BL, x)
+    if z > belt + 0.03 and 1.45 < x < 4.85:
+        if 2.25 < x < 3.95 and abs(y) < 0.52: return M['lack_gelb']
+        return M['autoglas']
+    return M['lack_gelb']
+loft(uo, st, urus_mat)
+ud = O('Fahrzeug_SuperSUV_Details', cx_)
+for xw in (1.05, 4.05):
+    for s_ in (1, -1):
+        wheel(ud, xw, s_ * 0.86, 0.41, 0.41, 0.30, s_, M['lack_gelb'])
+fb(ud, M['kunststoff'], -0.01, 0.06, -0.62, 0.62, 0.30, 0.60)
+for s_ in (1, -1):
+    fb(ud, M['lichtweiss'], 0.12, 0.55, s_ * 0.62 - 0.22, s_ * 0.62 + 0.22, 0.735, 0.75)
+    fb(ud, M['autoglas'], 1.85, 2.05, s_ * 1.0 - 0.08, s_ * 1.0 + 0.10, 1.05, 1.17)
+fb(ud, M['lichtrot'], 5.02, 5.13, -0.92, 0.92, 1.02, 1.05)
+place(uo, -1.76, 5.45, None); place(ud, -1.76, 5.45, None)
+# Gelaendewagen (G-Klasse-Anmutung), Obsidian, Haus B Carport
+go = O('Fahrzeug_Gelaendewagen_Karosserie', cx_)
+gd = O('Fahrzeug_Gelaendewagen_Details', cx_)
+fb(go, M['lack_schwarz'], 0.05, 4.62, -0.93, 0.93, 0.44, 1.13)
+fb(go, M['lack_schwarz'], 0.00, 1.32, -0.88, 0.88, 1.10, 1.15)
+for xw in (0.95, 3.84):
+    fb(go, M['lack_schwarz'], xw - 0.55, xw + 0.55, -0.99, 0.99, 0.80, 1.06)
+prism(go, M['lack_schwarz'], [(1.30, 1.13), (1.50, 1.92), (4.60, 1.95), (4.62, 1.13)], lambda a, c, t: V((a, t, c)), -0.86, 0.86)
+for (x0, x1) in [(1.62, 2.42), (2.56, 3.42), (3.56, 4.42)]:
+    for s_ in (1, -1):
+        fb(gd, M['autoglas'], x0, x1, s_ * 0.86 - 0.012, s_ * 0.86 + 0.012, 1.22, 1.82)
+fb(gd, M['autoglas'], 4.60, 4.625, -0.74, 0.74, 1.25, 1.82)
+beam(gd, M['autoglas'], V((1.35, 0, 1.20)), V((1.52, 0, 1.86)), 1.62, 0.02, up=V((1, 0, 0)))
+for s_ in (1, -1):
+    cyl_x = lambda o_, m_, cy_, cz_, r_, x0_, x1_: beam(o_, m_, V((x0_, cy_, cz_)), V((x1_, cy_, cz_)), r_ * 1.6, r_ * 1.6)
+    bm = gd['bm']; rot = Matrix.Rotation(math.pi / 2, 4, 'Y')
+    res = bmesh.ops.create_cone(bm, cap_ends=True, segments=32, radius1=0.115, radius2=0.115, depth=0.06, matrix=Matrix.Translation((-0.01, s_ * 0.62, 0.95)) @ rot)
+    for fc in {f for vv in res['verts'] for f in vv.link_faces}: fc.material_index = mi(gd, M['lichtweiss'])
+    fb(gd, M['lichtweiss'], 0.12, 0.22, s_ * 0.82 - 0.05, s_ * 0.82 + 0.05, 1.15, 1.19)
+    fb(gd, M['kunststoff'], 1.35, 3.95, s_ * 0.93, s_ * 1.06, 0.40, 0.45)
+    fb(gd, M['lack_schwarz'], 1.50, 1.62, s_ * 0.93, s_ * 1.08, 1.30, 1.45)
+    fb(gd, M['lichtrot'], 4.58, 4.64, s_ * 0.86 - 0.06, s_ * 0.86 + 0.06, 0.85, 1.10)
+fb(gd, M['kunststoff'], -0.03, 0.03, -0.42, 0.42, 0.62, 1.02)
+for zz in (0.70, 0.80, 0.90):
+    fb(gd, M['felge'], -0.045, -0.025, -0.40, 0.40, zz, zz + 0.022)
+fb(gd, M['kunststoff'], -0.08, 0.15, -0.95, 0.95, 0.36, 0.60)
+bm = gd['bm']; rot = Matrix.Rotation(math.pi / 2, 4, 'Y')
+res = bmesh.ops.create_cone(bm, cap_ends=True, segments=40, radius1=0.40, radius2=0.40, depth=0.24, matrix=Matrix.Translation((4.74, 0, 1.05)) @ rot)
+for fc in {f for vv in res['verts'] for f in vv.link_faces}: fc.material_index = mi(gd, M['kunststoff'])
+for xw in (0.95, 3.84):
+    for s_ in (1, -1):
+        wheel(gd, xw, s_ * 0.84, 0.42, 0.42, 0.30, s_, None)
+place(go, 10.03, 19.62, None); place(gd, 10.03, 19.62, None)
+
 # ================================================================== KONTEXT (Platzhalter aus Lageplan M 1:500, +-1 m)
 ck = '06_Kontext_Nachbarn'
 P0 = V((585, 1005)); ex = V((0.974, -0.231)); ey = V((-0.231, -0.974)); sc = 15.9
@@ -1164,8 +1391,9 @@ def box_uv(ob):
 for ob in bpy.data.objects:
     if ob.type == 'MESH':
         box_uv(ob)
+        sm = ob.name.startswith('Fahrzeug_SuperSUV_Karosserie')
         for p in ob.data.polygons:
-            p.use_smooth = False
+            p.use_smooth = sm
 
 for nm, h in ORIGINS.items():
     ob = OBJS[nm]['obj']

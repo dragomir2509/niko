@@ -55,6 +55,21 @@ select option{background:#1A1C20}
 #bar{margin:26px auto 0;width:min(320px,70vw);height:2px;background:rgba(255,255,255,.12);border-radius:2px;overflow:hidden}
 #bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--gold),var(--gold2));transition:width .2s}
 #pct{margin-top:10px;font-family:var(--f-mono);font-size:.72rem;color:var(--muted)}
+#gal{position:absolute;inset:0;background:#0E1012;overflow:hidden}
+#gal .sl{position:absolute;inset:0;opacity:0;transition:opacity 1.2s ease}
+#gal .sl.on{opacity:1}
+#gal .sl img{width:100%;height:100%;object-fit:cover;transform-origin:50% 55%;max-width:none}
+#gal .sl.on img{animation:kb 9s ease-out forwards}
+@keyframes kb{from{transform:scale(1.0)}to{transform:scale(1.08)}}
+#gcap{position:absolute;left:max(28px,env(safe-area-inset-left,0px));bottom:calc(env(safe-area-inset-bottom,0px) + 112px);pointer-events:none}
+#gcap .k{font-size:.64rem;letter-spacing:.26em;text-transform:uppercase;color:var(--gold2)}
+#gcap .t{font-family:var(--f-display);font-size:clamp(1.6rem,3.6vw,2.8rem);line-height:1.05;text-shadow:0 2px 20px rgba(0,0,0,.6)}
+.navb{position:absolute;top:50%;transform:translateY(-50%);width:46px;height:46px;border-radius:50%;font-size:1.2rem;display:grid;place-items:center;cursor:pointer;color:var(--fg)}
+#gprev{left:max(14px,env(safe-area-inset-left,0px))} #gnext{right:max(14px,env(safe-area-inset-right,0px))}
+#thumbs{display:flex;gap:6px;overflow-x:auto;max-width:min(720px,70vw);padding-bottom:2px}
+#thumbs button{flex:0 0 auto;width:64px;height:38px;border-radius:7px;border:1px solid var(--line);padding:0;overflow:hidden;cursor:pointer;opacity:.6;background:#222}
+#thumbs button[aria-current="true"]{opacity:1;border-color:var(--gold2)}
+#thumbs img{width:100%;height:100%;object-fit:cover}
 @media (max-width:760px){#brand h1{font-size:1.25rem}#brand .s{display:none}#help{display:none}#time{width:120px}#cap .t{font-size:1.5rem}#hud{top:calc(env(safe-area-inset-top,0px) + 132px)}}
 @media (prefers-reduced-motion: reduce){#fade,#cap,#toast,#load{transition:none}}
 </style>
@@ -62,6 +77,8 @@ select option{background:#1A1C20}
 <div id="stage">
   <canvas id="c" tabindex="0" aria-label="3D-Modell Gerlichstraße 8"></canvas>
   <div id="tags"></div>
+  <div id="gal" hidden><div id="slides"></div><div id="gcap"><div class="k" id="gk"></div><div class="t" id="gt"></div></div>
+    <button class="navb glass" id="gprev" aria-label="Vorheriges Bild">‹</button><button class="navb glass" id="gnext" aria-label="Nächstes Bild">›</button></div>
   <div id="fade"></div>
   <div id="cap"><div class="k" id="capk"></div><div class="t" id="capt"></div></div>
   <div id="cross" hidden></div>
@@ -73,7 +90,9 @@ select option{background:#1A1C20}
   <div id="top">
     <div id="brand" class="glass"><div class="k">Neubau · München</div><h1>Gerlichstraße 8</h1><div class="s">Doppelhaus mit Carports · UG bis Dachterrasse</div></div>
     <div id="modes" class="glass" role="group" aria-label="Ansicht">
-      <button class="btn" data-mode="out" aria-pressed="true">Außen</button>
+      <button class="btn" data-mode="gal">Galerie</button>
+      <button class="btn" data-mode="pano">360°</button>
+      <button class="btn" data-mode="out" aria-pressed="true">3D Außen</button>
       <button class="btn" data-mode="tour">Rundgang</button>
       <button class="btn" data-mode="walk">Begehen</button>
       <button class="btn" data-mode="floor">Geschosse</button>
@@ -83,6 +102,8 @@ select option{background:#1A1C20}
 
   <div id="bottom">
     <div id="ctl" class="glass">
+      <div class="grp" id="g-gal" hidden><span class="lbl">Bilder</span><div id="thumbs"></div><button class="btn o" id="gplay">Pause</button></div>
+      <div class="grp" id="g-pano" hidden><label class="lbl" for="panosel">Standort</label><select id="panosel"></select></div>
       <div class="grp" id="g-out">
         <span class="lbl">Blick</span>
         <button class="btn" data-v="hero">Straße</button>
@@ -103,8 +124,8 @@ select option{background:#1A1C20}
         <span class="lbl">Geschoss</span>
         <button class="btn" data-f="UG">UG</button><button class="btn" data-f="EG">EG</button><button class="btn" data-f="OG">OG</button><button class="btn" data-f="DG">DG</button><button class="btn" data-f="DT">Dach</button>
       </div>
-      <span class="sep"></span>
-      <div class="grp">
+      <span class="sep" id="tsep"></span>
+      <div class="grp" id="g-time">
         <label class="lbl" for="time">Tageszeit</label>
         <input id="time" type="range" min="6" max="23.5" step="0.05" value="16.5">
         <span id="tlabel">16:30</span>
@@ -242,8 +263,9 @@ select option{background:#1A1C20}
   addEventListener('keyup',e=>{ keys[e.code]=false; }); addEventListener('blur',()=>{ for(const k in keys) keys[k]=false; });
 
   let drag=null;
-  canvas.addEventListener('pointerdown',e=>{ drag={id:e.pointerId,x:e.clientX,y:e.clientY,moved:0}; if(mode==='walk'){ canvas.setPointerCapture(e.pointerId); canvas.focus(); } if(mode==='out') orbit.autoRotate=false; });
+  canvas.addEventListener('pointerdown',e=>{ drag={id:e.pointerId,x:e.clientX,y:e.clientY,moved:0}; if(mode==='pano') canvas.setPointerCapture(e.pointerId); if(mode==='walk'){ canvas.setPointerCapture(e.pointerId); canvas.focus(); } if(mode==='out') orbit.autoRotate=false; });
   canvas.addEventListener('pointermove',e=>{ if(!drag||e.pointerId!==drag.id) return; const dx=e.clientX-drag.x, dy=e.clientY-drag.y; drag.x=e.clientX; drag.y=e.clientY; drag.moved+=Math.abs(dx)+Math.abs(dy);
+    if(mode==='pano'){ const k=PV.fov/75*0.0045; PV.yaw+=dx*k; PV.pitch=Math.max(-1.4,Math.min(1.4,PV.pitch+dy*k)); return; }
     if(mode!=='walk') return; const k=e.pointerType==='touch'?0.006:0.0042; P.yaw-=dx*k; P.pitch=Math.max(-1.45,Math.min(1.45,P.pitch-dy*k)); });
   canvas.addEventListener('pointerup',e=>{ if(!drag||e.pointerId!==drag.id) return; if(drag.moved<6) pick(e,mode!=='walk'); drag=null; });
   canvas.addEventListener('pointercancel',()=>{drag=null;});
@@ -282,11 +304,35 @@ select option{background:#1A1C20}
   }
   $('tour-btn').addEventListener('click',()=>{ tour.playing=!tour.playing; $('tour-btn').textContent=tour.playing?'Pause':'Weiter'; if(tour.playing&&!fly) playShot(tour.i+1); });
 
+  // ---------- Galerie und 360-Grad-Panoramen (fotorealistische Cycles-Renderings)
+  let GAL=[], PANOS=[], gi=0, gTimer=null, gPlay=true;
+  const slides=$('slides'), thumbs=$('thumbs');
+  fetch('galerie.json').then(r=>r.ok?r.json():{bilder:[],panoramen:[]}).then(j=>{ GAL=j.bilder||[]; PANOS=j.panoramen||[];
+    GAL.forEach((g,i)=>{ const d=document.createElement('div'); d.className='sl'; const im=document.createElement('img'); im.src=g.f; im.alt=g.t; im.loading=i<2?'eager':'lazy'; d.appendChild(im); slides.appendChild(d);
+      const b=document.createElement('button'); b.setAttribute('aria-label',g.t); const ti=document.createElement('img'); ti.src=g.f; ti.alt=''; b.appendChild(ti); b.addEventListener('click',()=>{showSlide(i); restartTimer();}); thumbs.appendChild(b); });
+    const ps=$('panosel'); PANOS.forEach((p,i)=>{const o=document.createElement('option'); o.value=i; o.textContent=p.t; ps.appendChild(o);});
+    if(!GAL.length) document.querySelector('[data-mode="gal"]').hidden=true;
+    if(!PANOS.length) document.querySelector('[data-mode="pano"]').hidden=true;
+  }).catch(()=>{});
+  function showSlide(i){ if(!GAL.length) return; gi=(i+GAL.length)%GAL.length; [...slides.children].forEach((d,k)=>d.classList.toggle('on',k===gi)); [...thumbs.children].forEach((b,k)=>b.setAttribute('aria-current',String(k===gi))); $('gk').textContent=GAL[gi].k; $('gt').textContent=GAL[gi].t; }
+  function restartTimer(){ clearInterval(gTimer); if(gPlay&&mode==='gal') gTimer=setInterval(()=>showSlide(gi+1),7000); }
+  $('gprev').addEventListener('click',()=>{showSlide(gi-1); restartTimer();}); $('gnext').addEventListener('click',()=>{showSlide(gi+1); restartTimer();});
+  $('gplay').addEventListener('click',()=>{gPlay=!gPlay; $('gplay').textContent=gPlay?'Pause':'Abspielen'; restartTimer();});
+  addEventListener('keydown',e=>{ if(mode==='gal'){ if(e.key==='ArrowRight'){showSlide(gi+1);restartTimer();} if(e.key==='ArrowLeft'){showSlide(gi-1);restartTimer();} } });
+  const panoScene=new THREE.Scene(), panoCam=new THREE.PerspectiveCamera(75,1,0.1,100);
+  const panoMat=new THREE.MeshBasicMaterial({side:THREE.BackSide}); const panoSphere=new THREE.Mesh(new THREE.SphereGeometry(50,64,32),panoMat); panoSphere.scale.x=-1; panoSphere.material.side=THREE.FrontSide; panoScene.add(panoSphere);
+  const PV={yaw:0,pitch:0,fov:75,tex:{}}; const tl=new THREE.TextureLoader();
+  function showPano(i){ const p=PANOS[i]; if(!p) return; const go=t=>{ panoMat.map=t; panoMat.needsUpdate=true; PV.yaw=0; PV.pitch=0; };
+    if(PV.tex[i]) go(PV.tex[i]); else tl.load(p.f,t=>{ t.encoding=THREE.sRGBEncoding; t.anisotropy=8; PV.tex[i]=t; go(t); }); caption(p.k||'360°',p.t); }
+  $('panosel').addEventListener('change',e=>fadeTo(()=>showPano(+e.target.value)));
+  canvas.addEventListener('wheel',e=>{ if(mode==='pano'){ PV.fov=Math.max(35,Math.min(95,PV.fov+e.deltaY*0.03)); e.preventDefault(); } },{passive:false});
+
   // ---------- Modi
   const mbtn=[...document.querySelectorAll('[data-mode]')];
   function setMode(m){
     mode=m; mbtn.forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.mode===m)));
-    ['out','tour','walk','floor'].forEach(k=>$('g-'+k).hidden=k!==m);
+    ['gal','pano','out','tour','walk','floor'].forEach(k=>$('g-'+k).hidden=k!==m);
+    const flat=(m==='gal'||m==='pano'); $('g-time').hidden=flat; $('tsep').hidden=flat; $('gal').hidden=m!=='gal'; clearInterval(gTimer);
     const walk=m==='walk';
     orbit.enabled=(m==='out'||m==='floor'); orbit.autoRotate=false; $('cross').hidden=!walk; $('hud').hidden=!walk; $('help').hidden=!walk||mobile;
     $('joy').hidden=!(walk&&mobile); headLamp.intensity=walk?0.55:0; cam.fov=walk?68:38; cam.updateProjectionMatrix();
@@ -296,6 +342,8 @@ select option{background:#1A1C20}
     if(walk){ fadeTo(()=>{spawn(+sel.value);}); canvas.focus(); say('Ziehen zum Umsehen · W A S D zum Laufen · Türen anklicken'); }
     else if(m==='out'){ fadeTo(()=>goView('hero')); }
     else if(m==='tour'){ tour.playing=true; $('tour-btn').textContent='Pause'; playShot(0); }
+    else if(m==='gal'){ showSlide(gi); restartTimer(); }
+    else if(m==='pano'){ fadeTo(()=>showPano(+$('panosel').value||0)); }
     else { fadeTo(()=>setFloor('EG')); }
   }
   mbtn.forEach(b=>b.addEventListener('click',()=>setMode(b.dataset.mode)));
@@ -358,7 +406,7 @@ select option{background:#1A1C20}
     $('load').style.opacity=0; setTimeout(()=>$('load').hidden=true,1250);
     caption('Neubau · München','Gerlichstraße 8');
     mode='intro'; orbit.enabled=false;
-    startFly([[60,-60,55],[4,10,3]],VIEWS.hero,6.5,()=>{ caption('',''); mode='out'; orbit.enabled=true; orbit.autoRotate=true; mbtn.forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.mode==='out'))); });
+    startFly([[60,-60,55],[4,10,3]],VIEWS.hero,6.5,()=>{ caption('',''); if(GAL.length){ fadeTo(()=>setMode('gal')); return; } mode='out'; orbit.enabled=true; orbit.autoRotate=true; mbtn.forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.mode==='out'))); });
   }
 
   // ---------- Schleife
@@ -383,6 +431,8 @@ select option{background:#1A1C20}
       $('hud').textContent=(inside?house+' · '+fl:'Außenbereich')+'   OK FFB '+(b.Z>=0?'+':'')+b.Z.toFixed(2).replace('.',',')+' m';
     } else if(mode==='out'||mode==='floor'){ orbit.update(); }
     if(mode==='floor') placeTags();
+    if(mode==='gal') return;
+    if(mode==='pano'){ PV.yaw+= (drag?0:dt*0.012); panoCam.fov=PV.fov; panoCam.aspect=cam.aspect; panoCam.updateProjectionMatrix(); panoCam.rotation.set(PV.pitch,PV.yaw,0,'YXZ'); renderer.clippingPlanes=[]; renderer.render(panoScene,panoCam); return; }
     sky.position.copy(cam.position);
     renderer.render(scene,cam);
   }

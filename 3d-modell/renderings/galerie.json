@@ -1,0 +1,61 @@
+{
+ "bilder": [
+  {
+   "f": "EXT_01_Strasse_Abendsonne.jpg",
+   "k": "Außen",
+   "t": "Ankommen in der Abendsonne"
+  },
+  {
+   "f": "EXT_02_SuperSUV_Carport.jpg",
+   "k": "Zufahrt West",
+   "t": "Carport Haus A"
+  },
+  {
+   "f": "EXT_03_Gelaendewagen.jpg",
+   "k": "Zufahrt Ost",
+   "t": "Carport Haus B"
+  },
+  {
+   "f": "EXT_04_Vogel_Abendsonne.jpg",
+   "k": "Überblick",
+   "t": "Doppelhaus mit Dachterrassen"
+  },
+  {
+   "f": "INT_01_A_Wohnen.jpg",
+   "k": "Haus A · EG",
+   "t": "Wohnen mit Marmor-Wohnwand"
+  },
+  {
+   "f": "INT_02_A_Kueche_Essen.jpg",
+   "k": "Haus A · EG",
+   "t": "Kochinsel und Essplatz"
+  },
+  {
+   "f": "INT_03_B_Kueche.jpg",
+   "k": "Haus B · EG",
+   "t": "Küche und Essen"
+  },
+  {
+   "f": "INT_04_B_Wohnwand.jpg",
+   "k": "Haus B · EG",
+   "t": "Wohnen mit Wohnwand"
+  }
+ ],
+ "panoramen": [
+  {
+   "f": "PANO_A_EG_Wohnen.jpg",
+   "k": "360° · Haus A",
+   "t": "Wohnen, Essen, Küche"
+  },
+  {
+   "f": "PANO_B_EG_Kueche.jpg",
+   "k": "360° · Haus B",
+   "t": "Küche und Essen"
+  },
+  {
+   "f": "PANO_A_Dachterrasse.jpg",
+   "k": "360°",
+   "t": "Dachterrasse"
+  }
+ ]
+}
