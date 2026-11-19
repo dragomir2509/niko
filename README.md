@@ -8,7 +8,8 @@ Leitidee **QUIET CAPITAL**. Private Investmentgesellschaft für Immobilien in M�
 |---|---|
 | Figma: Strategie, 3 Creative Directions, Brandbook, Komponenten, Desktop, Mobile | https://www.figma.com/design/Sr2eA42uORF2LwXhtmes4Q |
 | Lovable: funktionsfähige Website (Editor) | https://lovable.dev/projects/05ffd391-8030-4b22-a006-5d99e124e550 |
-| Lovable: Vorschau | https://id-preview--05ffd391-8030-4b22-a006-5d99e124e550.lovable.app |
+| Lovable: veröffentlichte Website (Staging) | https://rn-invest-muenchen.lovable.app |
+| QA-Screenshots (Desktop, iPhone) | [`design/qa/`](design/qa) |
 | Brand Guideline | [`brand/BRAND-GUIDELINE.md`](brand/BRAND-GUIDELINE.md) |
 | Finale Website-Texte | [`brand/COPY.md`](brand/COPY.md) |
 | Design Tokens | [`brand/tokens.css`](brand/tokens.css) · [`brand/tokens.json`](brand/tokens.json) |

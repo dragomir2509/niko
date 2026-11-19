@@ -205,7 +205,8 @@ Zusatz: Jede Anfrage wird vertraulich behandelt.
 - Nachricht*
 - Einwilligung*: Ich bin einverstanden, dass meine Angaben zur Bearbeitung meiner Anfrage verarbeitet werden. Hinweise in der Datenschutzerklärung.
 - Button: Anfrage vertraulich senden
-- Erfolg: Vielen Dank. Ihre Anfrage ist eingegangen. Wir melden uns persönlich.
+- Erfolg (mit Formular-Endpunkt): Vielen Dank. Ihre Anfrage ist eingegangen. Wir melden uns persönlich.
+- Ohne Endpunkt (E-Mail-Fallback): Ihr E-Mail-Programm wurde geöffnet. Bitte senden Sie die vorbereitete Nachricht ab. Falls sich kein Programm geöffnet hat, schreiben Sie uns direkt an [E-Mail-Adresse].
 - Fehler: Die Anfrage konnte nicht übermittelt werden. Bitte schreiben Sie uns direkt an [E-Mail-Adresse].
 - Validierung: „Bitte geben Sie Ihren Namen an.“ · „Bitte geben Sie eine gültige E-Mail-Adresse an.“ · „Bitte beschreiben Sie Ihr Anliegen kurz.“ · „Bitte bestätigen Sie die Einwilligung.“
 
@@ -217,3 +218,8 @@ Zusatz: Jede Anfrage wird vertraulich behandelt.
 - Private Investmentgesellschaft · München
 - © 2026 RN INVEST · [Rechtsform, Sitz, Registergericht]
 - Impressum · Datenschutz · Nach oben
+
+## 404-Seite
+
+- 404 · Diese Seite existiert nicht. · Zur Startseite
+- Fehlerseite: Diese Seite konnte nicht geladen werden. · Bitte versuchen Sie es erneut. · Erneut laden / Zur Startseite
