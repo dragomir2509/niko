@@ -112,8 +112,8 @@ Keine Goldtöne, keine Signalfarben. Fehlerzustände: `#D2A193` (gedämpftes Ter
 
 | Rolle | Schrift | Gewicht | Desktop | Mobile | Laufweite |
 |---|---|---|---|---|---|
-| Display XL (Hero) | Newsreader (opsz 72) | Light 300 | 128 / 0,98 | 50 / 1,02 | −2,5 % |
-| Display L (Sektion) | Newsreader | Light 300 | 80 / 1,04 | 40 / 1,08 | −2 % |
+| Display XL (Hero) | Newsreader (opsz 72) | Light 300 | 128 / 0,98 | 44 / 1,02 | −2,5 % |
+| Display L (Sektion) | Newsreader | Light 300 | 80 / 1,04 | 36 / 1,08 | −2 % |
 | Display M | Newsreader | Light 300 | 48 / 1,10 | 30 / 1,15 | −1,5 % |
 | Heading S | Newsreader | Regular 400 | 28 / 1,25 | 22 / 1,3 | −0,5 % |
 | Italic-Akzent | Newsreader Italic | Light 300 | wie Kontext | | |

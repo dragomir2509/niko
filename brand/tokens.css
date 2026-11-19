@@ -17,8 +17,8 @@
   /* Type */
   --rn-font-serif: "Newsreader", "Times New Roman", serif;
   --rn-font-sans: "Hanken Grotesk", "Helvetica Neue", Arial, sans-serif;
-  --rn-display-xl: clamp(3.125rem, 1.6rem + 6.4vw, 8rem);      /* 50 → 128 */
-  --rn-display-l:  clamp(2.5rem, 1.6rem + 3.6vw, 5rem);         /* 40 → 80 */
+  --rn-display-xl: clamp(2.75rem, 1.2rem + 6.6vw, 8rem);       /* 44 → 128 */
+  --rn-display-l:  clamp(2.25rem, 1.4rem + 3.8vw, 5rem);        /* 36 → 80 */
   --rn-display-m:  clamp(1.875rem, 1.4rem + 1.6vw, 3rem);       /* 30 → 48 */
   --rn-heading-s:  clamp(1.375rem, 1.2rem + 0.5vw, 1.75rem);    /* 22 → 28 */
   --rn-lead: clamp(1.125rem, 1.05rem + 0.3vw, 1.25rem);         /* 18 → 20 */
