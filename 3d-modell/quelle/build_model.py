@@ -515,14 +515,11 @@ abox(te, M['holzt'], 1.61, 5.70, -3.43, -1.14, -0.02, 0.03)          # Terrasse 
 abox(te, M['holzt'], 1.82, 6.22, 22.07, 24.08, -0.02, 0.03)          # Terrasse Haus B
 abox(te, M['holzt'], -1.63, 0.0, 16.65, 22.80, -0.02, 0.03)
 abox(te, M['holzt'], 0.0, 1.82, 22.07, 22.80, -0.02, 0.03)
-sc_ = O('Gelaende_Sichtschutz_Terrasse_A', ca)
-for k in range(int((3.45 - 1.16) / 0.11)):
-    y = -3.45 + k * 0.11
-    abox(sc_, M['holz'], 7.90, 7.97, y, y + 0.07, 0.0, 1.60)
-abox(sc_, M['alu'], 7.89, 7.98, -3.50, -3.45, 0.0, 1.65)
-abox(sc_, M['alu'], 7.89, 7.98, -1.16, -1.11, 0.0, 1.65)
+hh = O('Gelaende_Hecken_hoch', ca)
+abox(hh, M['hecke'], 7.45, 8.00, -3.35, -0.90, 0.0, 2.00)        # hohe Hecke statt Holz-Sichtschutz an Terrasse A
+abox(hh, M['hecke'], 11.00, 11.55, -4.25, 19.55, 0.0, 1.80)      # Meterhecke Sichtschutz Ostgrenze entlang Zufahrt
 mu = O('Gelaende_Muelltonnenhaus', ca)
-abox(mu, M['alu'], 6.00, 7.80, -3.95, -3.20, 0.0, 1.35)
+abox(mu, M['alu'], 5.90, 7.40, -4.10, -3.40, 0.0, 1.35)
 
 # ================================================================== EINFRIEDUNG STRASSE (Pfeiler verputzt, Fluegeltore, Zaun + Hecke)
 ce = '08_Einfriedung_Strasse'

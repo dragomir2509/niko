@@ -39,7 +39,8 @@ SketchUp liest FBX/OBJ nicht direkt. Für SketchUp die FBX über Twinmotion/Data
 - `08_Einfriedung_Strasse` – durchgehende Einfriedung zur Gerlichstraße: weiß verputzte Pfeiler mit Steinabdeckung,
   je ein zweiflügeliges Drehtor in Anthrazit an der West- und Ostzufahrt (lichte Breite ca. 2,95 m, Höhe 1,45 m),
   dazwischen vor dem Garten von Haus A ein Zaun aus Flachstahlstäben (1,30 m) auf weißem Sockel mit Formschnitthecke
-  (1,15 m) zur Straße. Jeder Torflügel ist ein eigenes Objekt mit dem Ursprung im Drehpunkt; zum Öffnen
+  (1,15 m) zur Straße. Hohe Hecke (2,00 m) statt Holz-Sichtschutz an der Terrasse von Haus A, Meterhecke (1,80 m)
+  als Sichtschutz entlang der Ostgrenze neben der Zufahrt (Objekt `Gelaende_Hecken_hoch`). Jeder Torflügel ist ein eigenes Objekt mit dem Ursprung im Drehpunkt; zum Öffnen
   einfach um Z drehen (nach innen ca. ±90°).
 
 Pro Haus ist das Modell nach Bauteilen getrennt: Baukörper/Putz, Lisenen und Kugeln, Holzfassade, Fenster-Rahmen,
