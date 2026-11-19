@@ -1,0 +1,182 @@
+{
+ "viewBox": [
+  0,
+  0,
+  1000,
+  1077
+ ],
+ "zoomViewBoxProfilB": [
+  324.3,
+  304.6,
+  501.5,
+  467.7
+ ],
+ "marienplatz": {
+  "x": 59.53,
+  "y": 51.12
+ },
+ "points": [
+  {
+   "name": "Obermenzing",
+   "profile": "A",
+   "labelSide": "end",
+   "x": 25.94,
+   "y": 39.56,
+   "lat": 48.164,
+   "lon": 11.468
+  },
+  {
+   "name": "Pasing",
+   "profile": "A",
+   "labelSide": "end",
+   "x": 23.75,
+   "y": 45.65,
+   "lat": 48.15,
+   "lon": 11.461
+  },
+  {
+   "name": "Solln",
+   "profile": "A",
+   "labelSide": "end",
+   "x": 43.12,
+   "y": 76.08,
+   "lat": 48.08,
+   "lon": 11.523
+  },
+  {
+   "name": "Obersendling",
+   "profile": "A",
+   "labelSide": "end",
+   "x": 47.19,
+   "y": 68.69,
+   "lat": 48.097,
+   "lon": 11.536
+  },
+  {
+   "name": "Harlaching",
+   "profile": "A",
+   "labelSide": "start",
+   "x": 56.88,
+   "y": 69.99,
+   "lat": 48.094,
+   "lon": 11.567
+  },
+  {
+   "name": "Berg am Laim",
+   "profile": "A",
+   "labelSide": "start",
+   "x": 77.5,
+   "y": 56.95,
+   "lat": 48.124,
+   "lon": 11.633
+  },
+  {
+   "name": "Moosach",
+   "profile": "A",
+   "labelSide": "end",
+   "x": 40.0,
+   "y": 32.6,
+   "lat": 48.18,
+   "lon": 11.513
+  },
+  {
+   "name": "Milbertshofen",
+   "profile": "AB",
+   "labelSide": "start",
+   "x": 59.37,
+   "y": 31.3,
+   "lat": 48.183,
+   "lon": 11.575
+  },
+  {
+   "name": "Bogenhausen",
+   "profile": "A",
+   "labelSide": "start",
+   "x": 72.81,
+   "y": 44.34,
+   "lat": 48.153,
+   "lon": 11.618
+  },
+  {
+   "name": "Gräfelfing",
+   "profile": "A",
+   "labelSide": "end",
+   "x": 15.0,
+   "y": 59.99,
+   "lat": 48.117,
+   "lon": 11.433
+  },
+  {
+   "name": "Pullach",
+   "profile": "A",
+   "labelSide": "end",
+   "x": 42.81,
+   "y": 84.34,
+   "lat": 48.061,
+   "lon": 11.522
+  },
+  {
+   "name": "Grünwald",
+   "profile": "A",
+   "labelSide": "end",
+   "x": 43.44,
+   "y": 93.9,
+   "lat": 48.039,
+   "lon": 11.524
+  },
+  {
+   "name": "Maxvorstadt",
+   "profile": "B",
+   "labelSide": "end",
+   "x": 56.88,
+   "y": 46.08,
+   "lat": 48.149,
+   "lon": 11.567
+  },
+  {
+   "name": "Lehel",
+   "profile": "B",
+   "labelSide": "start",
+   "x": 63.44,
+   "y": 50.86,
+   "lat": 48.138,
+   "lon": 11.588
+  },
+  {
+   "name": "Schwabing",
+   "profile": "B",
+   "labelSide": "start",
+   "x": 62.5,
+   "y": 39.13,
+   "lat": 48.165,
+   "lon": 11.585
+  },
+  {
+   "name": "Au",
+   "profile": "B",
+   "labelSide": "end",
+   "x": 62.5,
+   "y": 56.51,
+   "lat": 48.125,
+   "lon": 11.585
+  },
+  {
+   "name": "Haidhausen",
+   "profile": "B",
+   "labelSide": "start",
+   "x": 66.56,
+   "y": 54.34,
+   "lat": 48.13,
+   "lon": 11.598
+  },
+  {
+   "name": "Obergiesing",
+   "profile": "B",
+   "labelSide": "start",
+   "x": 64.06,
+   "y": 62.17,
+   "lat": 48.112,
+   "lon": 11.59
+  }
+ ]
+}
