@@ -47,17 +47,17 @@ def mat(key, name, hexcol, rough=0.6, metal=0.0, trans=0.0):
     MATS[key] = m
     return m
 
-mat('putz',     'Putz_hellgrau_Fassade',      '#E3E2DD', 0.85)
-mat('putzw',    'Putz_weiss_Portal_Attika',   '#F3F2EE', 0.85)
-mat('putzg',    'Putz_grau_Erker',            '#B4B3AF', 0.85)
+mat('putz',     'Putz_weiss_Fassade',         '#F2F1ED', 0.85)
+mat('putzw',    'Putz_weiss_Portal_Attika',   '#F4F3EF', 0.85)
+mat('putzg',    'Putz_weiss_Erker',           '#F2F1ED', 0.85)
 mat('lisene',   'Lisenen_Eckquaderung',       '#EEECE6', 0.75)
 mat('stein',    'Kugeln_Abdeckplatten_Stein', '#F1EFEA', 0.5)
-mat('holz',     'Holz_Fassade_Laerche_horizontal', '#C6AC7C', 0.7)
-mat('holzt',    'Holz_Terrassendielen',       '#99744F', 0.75)
-mat('tuer',     'Holz_Haustuer_Eiche',        '#C4A267', 0.5)
+mat('holz',     'Fassadenpaneel_anthrazit',   '#303235', 0.45, 0.35)
+mat('holzt',    'Terrassenplatten_Feinsteinzeug', '#BEB9B0', 0.6)
+mat('tuer',     'Haustuer_anthrazit',         '#2C2E31', 0.4, 0.4)
 mat('alu',      'Alu_anthrazit_RAL7016',      '#3A3D41', 0.4, 0.6)
-mat('aluh',     'Alu_hellgrau_Blechabdeckung','#C8C9CA', 0.4, 0.6)
-mat('stehfalz', 'Metall_Stehfalz_hellgrau',   '#BDC0C2', 0.35, 0.7)
+mat('aluh',     'Alu_anthrazit_Abdeckung',    '#33363A', 0.4, 0.6)
+mat('stehfalz', 'Metall_Stehfalz_anthrazit',  '#35383C', 0.4, 0.6)
 mat('glas',     'Glas',                       '#EEF4F6', 0.02, 0.0, 1.0)
 mat('beton',    'Sichtbeton_Carport',         '#A9A8A2', 0.85)
 mat('gruen',    'Gruendach_extensiv',         '#6D7E45', 0.95)
@@ -67,24 +67,32 @@ mat('rasen',    'Rasen',                      '#5E893B', 0.95)
 mat('pflaster', 'Pflaster_Fahrspur',          '#A19D96', 0.85)
 mat('asphalt',  'Asphalt_Strasse',            '#47494C', 0.9)
 mat('gehweg',   'Gehweg',                     '#B2B0AB', 0.85)
-mat('innen',    'Innen_Wand_Decke',           '#EDEAE5', 0.9)
-mat('boden',    'Innen_Boden',                '#A58866', 0.6)
+mat('innen',    'Innen_Wand_Decke',           '#F3F1EC', 0.92)
+mat('boden',    'Parkett_Eiche_hell_Landhausdiele', '#C9AE88', 0.55)
 mat('pflanze',  'Pflanzen_Platzhalter',       '#4D7834', 0.9)
 mat('pv',       'PV_Module_Glas',             '#1B2533', 0.12, 0.3)
 mat('innentuer','Innentuer_weiss_lackiert',   '#F2F1EC', 0.4)
 mat('treppe',   'Treppe_Trittstufen_Eiche',   '#B8956A', 0.5)
-mat('kueche',   'Kueche_Front_weiss_matt',    '#ECEAE5', 0.45)
-mat('arbeitsplatte','Kueche_Arbeitsplatte_Stein_dunkel', '#3C3B39', 0.3)
+mat('kueche',   'Kueche_Front_Eiche_geraeuchert', '#4E4237', 0.45)
+mat('arbeitsplatte','Marmor_Calacatta',      '#EDE9E3', 0.12)
 mat('edelstahl','Edelstahl',                  '#B4B6B8', 0.25, 1.0)
 mat('hob',      'Kochfeld_Glaskeramik',       '#151515', 0.08)
-mat('eiche',    'Holz_Eiche_Moebel',          '#B38D5F', 0.5)
-mat('stoff',    'Stoff_Polster_grau',         '#8A8D90', 0.95)
-mat('stoff_hell','Stoff_Polster_hell',        '#D3CEC5', 0.95)
+mat('eiche',    'Holz_Nussbaum',              '#5B4131', 0.4)
+mat('stoff',    'Leder_Cognac',               '#8B5A3A', 0.55)
+mat('stoff_hell','Boucle_Sand',                '#D9D0C3', 0.97)
 mat('bettwaesche','Bettwaesche_weiss',        '#F3F1EC', 0.9)
-mat('schrank',  'Schrank_weiss_lackiert',     '#F0EEE9', 0.4)
+mat('schrank',  'Schrank_Eiche_geraeuchert',  '#5A4B3E', 0.45)
 mat('keramik',  'Keramik_Sanitaer_weiss',     '#F8F8F6', 0.08)
 mat('fliesen',  'Fliesen_Bad_grau',           '#C7C4BE', 0.35)
 mat('spiegel',  'Spiegel',                    '#E6E8EA', 0.02, 1.0)
+mat('travertin','Travertin',                  '#D8CDBB', 0.6)
+mat('bronze',   'Bronze_gebuerstet',          '#8E6B44', 0.35, 1.0)
+mat('teppich',  'Teppich_Wolle_Greige',       '#B9B0A2', 0.98)
+mat('leuchte',  'Leuchte_Schirm_warm',        '#F3E3C4', 0.5)
+mat('kunst1',   'Kunst_Leinwand_Terrakotta',  '#B8754E', 0.9)
+mat('kunst2',   'Kunst_Leinwand_Sand',        '#CDBFA6', 0.9)
+mat('olive',    'Pflanze_Olive',              '#6F7A52', 0.9)
+mat('topf',     'Pflanzgefaess_Beton',        '#8D8A84', 0.85)
 mat('hecke',    'Hecke_Formschnitt_Platzhalter', '#3F6B2E', 0.95)
 mat('erde',     'Erde_Pflanzbeet',            '#4A3B2E', 0.95)
 mat('kontext',  'Kontext_Nachbarbebauung',    '#D8D6D1', 0.9)
@@ -431,7 +439,7 @@ def build_house(P, coll, bay, openings=()):
     obox(po, M['putzw'], *Wf, 2.46, yo0, 0.0, 5.65, 0.0, 0.25)
     obox(po, M['putzw'], *Wf, yo1, 5.49, 0.0, 5.65, 0.0, 0.25)
     obox(po, M['putzw'], *Wf, 2.46, 5.49, 5.23, 5.65, 0.0, 0.25)
-    obox(po, M['putzw'], *Wf, 2.60, 5.35, 2.55, 2.98, 0.0, 1.0)
+    obox(po, M['alu'], *Wf, 2.60, 5.35, 2.70, 2.90, 0.0, 1.0)
 
     # Suedfassade (Erkerseite): 2 bodentiefe Balkontueren OG
     for (x0, x1) in [(2.35, 3.20), (4.79, 5.65)]:
@@ -460,25 +468,15 @@ def build_house(P, coll, bay, openings=()):
     Sb = (V((0, -bd, 0)), X_, Z_, -Y_)
     window(fr, gl, *Sb, d0, d1, 0.0, 2.45, rec=0.10, cols=[(d0 + d1) / 2], cutcoll=cE, cutmat=M['putzg'], wall_t=0.3)
 
-    # ---------- Lisenen (Eckquaderung), Abdeckplatten, Kugeln
-    h = 5.88 / 16
-    corners = [(-0.03, 0.75, -0.03, 0.75), (W - 0.75, W + 0.03, -0.03, 0.75),
-               (-0.03, 0.75, L - 0.75, L + 0.03), (W - 0.75, W + 0.03, L - 0.75, L + 0.03)]
-    for (x0, x1, y0, y1) in corners:
-        for k in range(16):
-            abox(li, M['lisene'], x0, x1, y0, y1, k * h, (k + 1) * h - 0.02)
-        cx, cy = (x0 + x1) / 2, (y0 + y1) / 2
-        abox(li, M['stein'], cx - 0.48, cx + 0.48, cy - 0.48, cy + 0.48, 5.88, 6.04)
-        sphere(li, M['stein'], V((cx, cy, 6.04 + 0.275)), 0.275)
-
     # ---------- Attika / DG-Terrassen (OK Bruestung +6,88 / Pflanzkaesten +7,00)
     for (x0, x1) in [(W - 0.30, W), (0.0, 0.30)]:
-        abox(at, M['putz'], x0, x1, 0.75, L - 0.75, 6.0, 6.88)
-        abox(at, M['aluh'], x0 - 0.02, x1 + 0.02, 0.73, L - 0.73, 6.88, 6.92)
+        abox(at, M['putz'], x0, x1, 0.0, L, 6.0, 6.88)
+        abox(at, M['aluh'], x0 - 0.02, x1 + 0.02, -0.02, L + 0.02, 6.88, 6.92)
     abox(at, M['holzt'], 7.005, W - 0.30, 0.75, L, 6.0, 6.035)
     abox(at, M['holzt'], 0.30, XW, 0.75, NY0, 6.0, 6.035)            # Westterrasse unter Dachueberstand
     abox(at, M['holzt'], 0.30, 1.0, NY0, L, 6.0, 6.035)
-    abox(at, M['kies'], 0.75, W - 0.75, 0.0, 1.0, 6.0, 6.025)
+    abox(at, M['kies'], 0.30, W - 0.30, 0.0, 1.0, 6.0, 6.025)
+    abox(at, M['aluh'], 0.0, W, -0.02, 0.02, 5.96, 6.02)                 # Dachrand Sued anthrazit
     for (x0, x1, y0, y1) in [(7.10, 7.68, 0.95, 2.35), (7.10, 7.68, 5.75, 7.15), (0.32, 0.90, 0.95, 2.35)]:
         abox(at, M['alu'], x0, x1, y0, y1, 6.035, 6.95)
         abox(at, M['erde'], x0 + 0.04, x1 - 0.04, y0 + 0.04, y1 - 0.04, 6.95, 6.96)
@@ -691,7 +689,7 @@ abox(mu, M['alu'], 5.90, 7.40, -4.10, -3.40, 0.0, 1.35)
 ce = '08_Einfriedung_Strasse'
 YP0, YP1 = -4.90, -4.30          # Pfeiler (Vorderkante = Heckenflucht)
 YF = -4.40                        # Achse Zaun / Tore
-HP = 1.60                         # Pfeilerhoehe (+ Abdeckplatte)
+HP = 1.95                         # Pfeilerhoehe (+ Abdeckplatte)
 pfo = O('Einfriedung_Pfeiler_Putz_weiss', ce)
 zno = O('Einfriedung_Zaun_anthrazit', ce)
 sko = O('Einfriedung_Sockel_Putz_weiss', ce)
@@ -716,17 +714,17 @@ for (xa, xb) in [(0.20, 2.47), (2.87, 5.13), (5.53, 7.80)]:
     abox(hko, M['hecke'], xa, xb, YP0, YF - 0.14, 0.0, 1.15)
 # Zweifluegelige Drehtore anthrazit, je Fluegel eigenes Objekt mit Ursprung im Drehpunkt (zum Oeffnen um Z drehen)
 def fluegel(name, xh, xe):
+    """blickdichter Torfluegel 1,80 m, Alu anthrazit mit horizontalen Schattenfugen"""
     o = O(name, ce)
     sgn = 1 if xe > xh else -1
     a, b = xh + sgn * 0.02, xe - sgn * 0.01
     x0, x1 = min(a, b), max(a, b)
-    abox(o, M['alu'], x0, x0 + 0.06, YF - 0.03, YF + 0.03, 0.06, 1.45)
-    abox(o, M['alu'], x1 - 0.06, x1, YF - 0.03, YF + 0.03, 0.06, 1.45)
-    abox(o, M['alu'], x0, x1, YF - 0.03, YF + 0.03, 1.39, 1.45)
-    abox(o, M['alu'], x0, x1, YF - 0.03, YF + 0.03, 0.06, 0.12)
-    stabfeld(o, x0 + 0.06, x1 - 0.06, 0.12, 1.39)
-    for zb in (0.25, 1.20):                     # Baender
-        abox(o, M['alu'], xh - sgn * 0.0 - 0.015 if sgn > 0 else xh - 0.015, xh + 0.015, YF - 0.045, YF + 0.045, zb, zb + 0.10)
+    abox(o, M['alu'], x0, x1, YF - 0.03, YF + 0.03, 0.06, 1.80)
+    for k in range(1, 9):
+        zz = 0.06 + k * (1.74 / 9)
+        abox(o, M['aluh'], x0 + 0.03, x1 - 0.03, YF - 0.036, YF + 0.036, zz - 0.006, zz + 0.006)
+    for zb in (0.25, 1.50):
+        abox(o, M['alu'], xh - 0.015, xh + 0.015, YF - 0.045, YF + 0.045, zb, zb + 0.10)
     ORIGINS[name] = (xh, YF, 0.0); TOGGLE[name] = math.pi / 2 if xe > xh else -math.pi / 2
 xm_w = (-3.12 + -0.20) / 2
 xm_o = (8.20 + 11.15) / 2
@@ -793,64 +791,151 @@ BOOLS.append(('Gelaende_Rasen', 'CUT_ground'))
 cf = '10_Moeblierung'
 FO = {k: O('Moebel_' + k, cf) for k in ('Kueche', 'Bad', 'Wohnen', 'Schlafen', 'Schraenke')}
 def fb(o, m, x0, x1, y0, y1, z0, z1): abox(o, m, min(x0, x1), max(x0, x1), min(y0, y1), max(y0, y1), z0, z1)
-def counter(x0, x1, y0, y1, z, sink=None, hob=None, upper=None):
+def counter(x0, x1, y0, y1, z, sink=None, hob=None, upper=None, wall=None, waterfall=False):
+    """grifflose Kueche Eiche geraeuchert, Calacatta-Marmor, Spritzschutz und Wasserfallkanten"""
     o = FO['Kueche']
-    fb(o, M['kueche'], x0 + 0.02, x1 - 0.02, y0 + 0.02, y1 - 0.02, z, z + 0.10)          # Sockel
+    fb(o, M['alu'], x0 + 0.05, x1 - 0.05, y0 + 0.05, y1 - 0.05, z, z + 0.10)
     fb(o, M['kueche'], x0, x1, y0, y1, z + 0.10, z + 0.86)
-    fb(o, M['arbeitsplatte'], x0 - 0.01, x1 + 0.01, y0 - 0.01, y1 + 0.01, z + 0.86, z + 0.90)
-    if sink: fb(o, M['edelstahl'], *sink, z + 0.90, z + 0.905)
-    if hob: fb(o, M['hob'], *hob, z + 0.90, z + 0.906)
+    # Grifffugen
+    if (x1 - x0) < (y1 - y0):
+        for xx in ((x0 - 0.002, x0 + 0.004), (x1 - 0.004, x1 + 0.002)):
+            fb(o, M['alu'], xx[0], xx[1], y0 + 0.02, y1 - 0.02, z + 0.80, z + 0.83)
+    else:
+        for yy in ((y0 - 0.002, y0 + 0.004), (y1 - 0.004, y1 + 0.002)):
+            fb(o, M['alu'], x0 + 0.02, x1 - 0.02, yy[0], yy[1], z + 0.80, z + 0.83)
+    fb(o, M['arbeitsplatte'], x0 - 0.01, x1 + 0.01, y0 - 0.01, y1 + 0.01, z + 0.86, z + 0.92)
+    if waterfall:
+        if (x1 - x0) < (y1 - y0):
+            fb(o, M['arbeitsplatte'], x0 - 0.01, x1 + 0.01, y0 - 0.01, y0 + 0.05, z, z + 0.86); fb(o, M['arbeitsplatte'], x0 - 0.01, x1 + 0.01, y1 - 0.05, y1 + 0.01, z, z + 0.86)
+        else:
+            fb(o, M['arbeitsplatte'], x0 - 0.01, x0 + 0.05, y0 - 0.01, y1 + 0.01, z, z + 0.86); fb(o, M['arbeitsplatte'], x1 - 0.05, x1 + 0.01, y0 - 0.01, y1 + 0.01, z, z + 0.86)
+    if sink: fb(o, M['edelstahl'], *sink, z + 0.915, z + 0.921); fb(o, M['bronze'], sink[0] + 0.02, sink[0] + 0.05, (sink[2] + sink[3]) / 2 - 0.015, (sink[2] + sink[3]) / 2 + 0.015, z + 0.92, z + 1.22)
+    if hob: fb(o, M['hob'], *hob, z + 0.92, z + 0.926)
+    if wall:
+        w = {'-X': (x0, x0 + 0.02, y0, y1), '+X': (x1 - 0.02, x1, y0, y1)}[wall]
+        fb(o, M['arbeitsplatte'], *w, z + 0.92, z + 1.45)
     if upper: fb(o, M['kueche'], *upper, z + 1.45, z + 2.25)
-def tall(x0, x1, y0, y1, z, h=2.25, o=None, m=None): fb(o or FO['Kueche'], m or M['kueche'], x0, x1, y0, y1, z, z + h)
-def wardrobe(x0, x1, y0, y1, z, h=2.30): fb(FO['Schraenke'], M['schrank'], x0, x1, y0, y1, z, z + h)
-def lowbox(x0, x1, y0, y1, z, h=0.50, m=None, o=None): fb(o or FO['Wohnen'], m or M['schrank'], x0, x1, y0, y1, z, z + h)
-def stool(cx, cy, z, r=0.18):
+def tall(x0, x1, y0, y1, z, h=2.25, o=None, m=None):
+    o = o or FO['Kueche']; m = m or M['kueche']
+    fb(o, m, x0, x1, y0, y1, z, z + h)
+    n = max(1, int(round(max(x1 - x0, y1 - y0) / 0.6)))
+    for k in range(1, n):
+        if (x1 - x0) > (y1 - y0): xx = x0 + k * (x1 - x0) / n; fb(o, M['alu'], xx - 0.003, xx + 0.003, y0 - 0.003, y1 + 0.003, z + 0.02, z + h - 0.02)
+        else: yy = y0 + k * (y1 - y0) / n; fb(o, M['alu'], x0 - 0.003, x1 + 0.003, yy - 0.003, yy + 0.003, z + 0.02, z + h - 0.02)
+def wardrobe(x0, x1, y0, y1, z, h=2.30): tall(x0, x1, y0, y1, z, h, FO['Schraenke'], M['schrank'])
+def lowbox(x0, x1, y0, y1, z, h=0.50, m=None, o=None): fb(o or FO['Wohnen'], m or M['eiche'], x0, x1, y0, y1, z, z + h)
+def cyl(o, m, cx, cy, z0, z1, r, seg=24):
+    bm = o['bm']; idx = mi(o, m)
+    res = bmesh.ops.create_cone(bm, cap_ends=True, segments=seg, radius1=r, radius2=r, depth=z1 - z0, matrix=Matrix.Translation((cx, cy, (z0 + z1) / 2)))
+    for fc in {f for vv in res['verts'] for f in vv.link_faces}: fc.material_index = idx
+def stool(cx, cy, z, r=0.20):
     o = FO['Kueche']
-    for (a, b, c) in [(0.03, 0.0, 0.70), (r, 0.70, 0.76)]:
-        bm = o['bm']; idx = mi(o, M['eiche'] if b > 0.5 else M['edelstahl'])
-        res = bmesh.ops.create_cone(bm, cap_ends=True, segments=20, radius1=a, radius2=a, depth=c - b,
-                                    matrix=Matrix.Translation((cx, cy, z + (b + c) / 2)))
-        for fc in {f for vv in res['verts'] for f in vv.link_faces}: fc.material_index = idx
+    cyl(o, M['bronze'], cx, cy, z, z + 0.02, 0.19); cyl(o, M['bronze'], cx, cy, z, z + 0.66, 0.025); cyl(o, M['stoff'], cx, cy, z + 0.66, z + 0.75, r)
 def table(x0, x1, y0, y1, z, h=0.75, top=None):
-    o = FO['Wohnen']; m = top or M['eiche']
-    fb(o, m, x0, x1, y0, y1, z + h - 0.04, z + h)
-    for (lx, ly) in [(x0 + 0.06, y0 + 0.06), (x1 - 0.06, y0 + 0.06), (x0 + 0.06, y1 - 0.06), (x1 - 0.06, y1 - 0.06)]:
-        fb(o, M['alu'], lx - 0.025, lx + 0.025, ly - 0.025, ly + 0.025, z, z + h - 0.04)
-def chair(x0, x1, y0, y1, z, back):
+    """Esstisch: Marmorplatte, zwei Travertin-Wangen (bzw. Schreibtisch Nussbaum)"""
     o = FO['Wohnen']
-    fb(o, M['stoff'], x0 + 0.02, x1 - 0.02, y0 + 0.02, y1 - 0.02, z + 0.42, z + 0.47)
+    if top is None and (x1 - x0) * (y1 - y0) > 1.5:
+        fb(o, M['arbeitsplatte'], x0, x1, y0, y1, z + h - 0.05, z + h)
+        if (y1 - y0) > (x1 - x0):
+            for yy in (y0 + 0.35, y1 - 0.55): fb(o, M['travertin'], x0 + 0.18, x1 - 0.18, yy, yy + 0.2, z, z + h - 0.05)
+        else:
+            for xx in (x0 + 0.35, x1 - 0.55): fb(o, M['travertin'], xx, xx + 0.2, y0 + 0.18, y1 - 0.18, z, z + h - 0.05)
+    else:
+        fb(o, top or M['eiche'], x0, x1, y0, y1, z + h - 0.035, z + h)
+        for (lx, ly) in [(x0 + 0.05, y0 + 0.05), (x1 - 0.05, y0 + 0.05), (x0 + 0.05, y1 - 0.05), (x1 - 0.05, y1 - 0.05)]:
+            fb(o, M['bronze'], lx - 0.015, lx + 0.015, ly - 0.015, ly + 0.015, z, z + h - 0.035)
+def chair(x0, x1, y0, y1, z, back):
+    """Polsterstuhl Leder cognac, schlanke Bronzebeine"""
+    o = FO['Wohnen']
+    fb(o, M['stoff'], x0 + 0.01, x1 - 0.01, y0 + 0.01, y1 - 0.01, z + 0.40, z + 0.48)
     for (lx, ly) in [(x0 + 0.05, y0 + 0.05), (x1 - 0.05, y0 + 0.05), (x0 + 0.05, y1 - 0.05), (x1 - 0.05, y1 - 0.05)]:
-        fb(o, M['alu'], lx - 0.015, lx + 0.015, ly - 0.015, ly + 0.015, z, z + 0.42)
-    bx = {'-X': (x0, x0 + 0.05, y0, y1), '+X': (x1 - 0.05, x1, y0, y1), '-Y': (x0, x1, y0, y0 + 0.05), '+Y': (x0, x1, y1 - 0.05, y1)}[back]
-    fb(o, M['stoff'], *bx, z + 0.47, z + 0.88)
+        fb(o, M['bronze'], lx - 0.012, lx + 0.012, ly - 0.012, ly + 0.012, z, z + 0.40)
+    bx = {'-X': (x0, x0 + 0.07, y0, y1), '+X': (x1 - 0.07, x1, y0, y1), '-Y': (x0, x1, y0, y0 + 0.07), '+Y': (x0, x1, y1 - 0.07, y1)}[back]
+    fb(o, M['stoff'], *bx, z + 0.48, z + 0.84)
 def sofa(x0, x1, y0, y1, z, back, m=None):
-    o = FO['Wohnen']; m = m or M['stoff']
-    fb(o, M['alu'], x0 + 0.04, x1 - 0.04, y0 + 0.04, y1 - 0.04, z, z + 0.08)
-    fb(o, m, x0, x1, y0, y1, z + 0.08, z + 0.42)
-    bx = {'-X': (x0, x0 + 0.20, y0, y1), '+X': (x1 - 0.20, x1, y0, y1), '-Y': (x0, x1, y0, y0 + 0.20), '+Y': (x0, x1, y1 - 0.20, y1)}[back]
-    fb(o, m, *bx, z + 0.42, z + 0.80)
+    """flaches Modulsofa (Minotti-Anmutung): Bouclé, zurueckgesetzter Sockel, Sitz- und Rueckenkissen"""
+    o = FO['Wohnen']; m = m or M['stoff_hell']
+    fb(o, M['alu'], x0 + 0.08, x1 - 0.08, y0 + 0.08, y1 - 0.08, z, z + 0.06)
+    fb(o, m, x0, x1, y0, y1, z + 0.06, z + 0.28)
+    along_y = back in ('-X', '+X'); L0, L1 = (y0, y1) if along_y else (x0, x1)
+    n = max(1, int(round((L1 - L0) / 0.95))); step = (L1 - L0) / n
+    bd = 0.24
+    for k in range(n):
+        a, b = L0 + k * step + 0.006, L0 + (k + 1) * step - 0.006
+        if along_y:
+            sx0, sx1 = (x0 + bd, x1) if back == '-X' else (x0, x1 - bd)
+            fb(o, m, sx0, sx1, a, b, z + 0.28, z + 0.40)
+            bx = (x0, x0 + bd) if back == '-X' else (x1 - bd, x1)
+            fb(o, m, bx[0], bx[1], a, b, z + 0.28, z + 0.74)
+        else:
+            sy0, sy1 = (y0 + bd, y1) if back == '-Y' else (y0, y1 - bd)
+            fb(o, m, a, b, sy0, sy1, z + 0.28, z + 0.40)
+            by = (y0, y0 + bd) if back == '-Y' else (y1 - bd, y1)
+            fb(o, m, a, b, by[0], by[1], z + 0.28, z + 0.74)
+    # zwei Zierkissen in Cognac
+    for k in (0.2, 0.75):
+        c = L0 + (L1 - L0) * k
+        if along_y:
+            xx = (x0 + bd, x0 + bd + 0.14) if back == '-X' else (x1 - bd - 0.14, x1 - bd)
+            fb(o, M['stoff'], xx[0], xx[1], c - 0.22, c + 0.22, z + 0.40, z + 0.80)
+        else:
+            yy = (y0 + bd, y0 + bd + 0.14) if back == '-Y' else (y1 - bd - 0.14, y1 - bd)
+            fb(o, M['stoff'], c - 0.22, c + 0.22, yy[0], yy[1], z + 0.40, z + 0.80)
 def bed(x0, x1, y0, y1, z, head):
+    """niedriges Polsterbett, breites Kopfteil Bouclé, Plaid Cognac"""
     o = FO['Schlafen']
-    fb(o, M['eiche'], x0, x1, y0, y1, z + 0.05, z + 0.28)
-    fb(o, M['bettwaesche'], x0 + 0.03, x1 - 0.03, y0 + 0.03, y1 - 0.03, z + 0.28, z + 0.52)
-    hb = {'-X': (x0 - 0.06, x0, y0, y1), '+X': (x1, x1 + 0.06, y0, y1), '-Y': (x0, x1, y0 - 0.06, y0), '+Y': (x0, x1, y1, y1 + 0.06)}[head]
-    fb(o, M['stoff_hell'], *hb, z, z + 1.05)
+    fb(o, M['eiche'], x0 - 0.06, x1 + 0.06, y0 - 0.06, y1 + 0.06, z + 0.06, z + 0.24)
+    fb(o, M['alu'], x0 + 0.1, x1 - 0.1, y0 + 0.1, y1 - 0.1, z, z + 0.06)
+    fb(o, M['bettwaesche'], x0 + 0.02, x1 - 0.02, y0 + 0.02, y1 - 0.02, z + 0.24, z + 0.50)
+    ext = 0.25
+    hb = {'-X': (x0 - 0.16, x0 - 0.04, y0 - ext, y1 + ext), '+X': (x1 + 0.04, x1 + 0.16, y0 - ext, y1 + ext),
+          '-Y': (x0 - ext, x1 + ext, y0 - 0.16, y0 - 0.04), '+Y': (x0 - ext, x1 + ext, y1 + 0.04, y1 + 0.16)}[head]
+    fb(o, M['stoff_hell'], *hb, z, z + 1.15)
     w = (y1 - y0) if head in ('-X', '+X') else (x1 - x0)
     n = 2 if w > 1.3 else 1
     for k in range(n):
         if head in ('-X', '+X'):
-            a = y0 + (k + 0.5) * w / n; xx = x0 + 0.08 if head == '-X' else x1 - 0.45
-            fb(o, M['bettwaesche'], xx, xx + 0.37, a - w / n * 0.38, a + w / n * 0.38, z + 0.52, z + 0.64)
+            a = y0 + (k + 0.5) * w / n; xx = x0 + 0.06 if head == '-X' else x1 - 0.48
+            fb(o, M['bettwaesche'], xx, xx + 0.42, a - w / n * 0.4, a + w / n * 0.4, z + 0.50, z + 0.66)
+            fb(o, M['stoff_hell'], xx + 0.30 if head == '-X' else xx - 0.12, xx + 0.42 if head == '-X' else xx, a - w / n * 0.3, a + w / n * 0.3, z + 0.50, z + 0.62)
         else:
-            a = x0 + (k + 0.5) * w / n; yy = y0 + 0.08 if head == '-Y' else y1 - 0.45
-            fb(o, M['bettwaesche'], a - w / n * 0.38, a + w / n * 0.38, yy, yy + 0.37, z + 0.52, z + 0.64)
-    # Bettdecke (Plaid) in Akzentfarbe am Fussende
+            a = x0 + (k + 0.5) * w / n; yy = y0 + 0.06 if head == '-Y' else y1 - 0.48
+            fb(o, M['bettwaesche'], a - w / n * 0.4, a + w / n * 0.4, yy, yy + 0.42, z + 0.50, z + 0.66)
     if head in ('-X', '+X'):
-        f0, f1 = (x1 - 0.55, x1 - 0.05) if head == '-X' else (x0 + 0.05, x0 + 0.55)
-        fb(o, M['stoff'], f0, f1, y0 + 0.02, y1 - 0.02, z + 0.52, z + 0.55)
+        f0, f1 = (x1 - 0.65, x1 + 0.02) if head == '-X' else (x0 - 0.02, x0 + 0.65)
+        fb(o, M['stoff'], f0, f1, y0 - 0.01, y1 + 0.01, z + 0.44, z + 0.53)
     else:
-        f0, f1 = (y1 - 0.55, y1 - 0.05) if head == '-Y' else (y0 + 0.05, y0 + 0.55)
-        fb(o, M['stoff'], x0 + 0.02, x1 - 0.02, f0, f1, z + 0.52, z + 0.55)
+        f0, f1 = (y1 - 0.65, y1 + 0.02) if head == '-Y' else (y0 - 0.02, y0 + 0.65)
+        fb(o, M['stoff'], x0 - 0.01, x1 + 0.01, f0, f1, z + 0.44, z + 0.53)
+def basin(x0, x1, y0, y1, z, wall):
+    """schwebender Waschtisch Nussbaum, Marmorplatte, Aufsatzbecken, hinterleuchteter Spiegel"""
+    o = FO['Bad']
+    fb(o, M['eiche'], x0, x1, y0, y1, z + 0.45, z + 0.80)
+    fb(o, M['arbeitsplatte'], x0 - 0.01, x1 + 0.01, y0 - 0.01, y1 + 0.01, z + 0.80, z + 0.84)
+    cx, cy = (x0 + x1) / 2, (y0 + y1) / 2
+    cyl(o, M['keramik'], cx, cy, z + 0.84, z + 0.97, min(0.2, (x1 - x0) / 2.6, (y1 - y0) / 2.6) if min(x1 - x0, y1 - y0) < 0.45 else 0.19)
+    mx = {'-X': (x0 - 0.04, x0, y0 + 0.05, y1 - 0.05), '+X': (x1, x1 + 0.04, y0 + 0.05, y1 - 0.05), '-Y': (x0 + 0.05, x1 - 0.05, y0 - 0.04, y0), '+Y': (x0 + 0.05, x1 - 0.05, y1, y1 + 0.04)}[wall]
+    fb(o, M['leuchte'], *mx, z + 1.10, z + 1.90)
+    mm = {'-X': (x0 - 0.045, x0 - 0.04, y0 + 0.08, y1 - 0.08), '+X': (x1 + 0.04, x1 + 0.045, y0 + 0.08, y1 - 0.08), '-Y': (x0 + 0.08, x1 - 0.08, y0 - 0.045, y0 - 0.04), '+Y': (x0 + 0.08, x1 - 0.08, y1 + 0.04, y1 + 0.045)}[wall]
+    fb(o, M['spiegel'], *mm, z + 1.13, z + 1.87)
+def rug(x0, x1, y0, y1, z): fb(FO['Wohnen'], M['teppich'], x0, x1, y0, y1, z + 0.002, z + 0.014)
+def pendant(cx, cy, zc, z, r=0.17):
+    o = FO['Wohnen']
+    cyl(o, M['alu'], cx, cy, z + 1.75, zc, 0.004, 6)
+    cyl(o, M['bronze'], cx, cy, z + 1.62, z + 1.75, r, 32)
+    cyl(o, M['leuchte'], cx, cy, z + 1.60, z + 1.62, r - 0.02, 32)
+def olive(cx, cy, z):
+    o = FO['Wohnen']
+    cyl(o, M['topf'], cx, cy, z, z + 0.48, 0.30, 32)
+    cyl(o, M['eiche'], cx, cy, z + 0.48, z + 1.35, 0.04, 8)
+    for (dx, dy, dz, r) in [(0, 0, 1.75, 0.42), (0.18, 0.1, 1.55, 0.3), (-0.15, -0.12, 1.6, 0.32), (0.05, -0.2, 1.95, 0.26)]:
+        icoblob(o, M['olive'], V((cx + dx, cy + dy, z + dz)), r, 1.0, 1.0, 0.8)
+def art(wall, a0, a1, z0, z1, wv, m):
+    o = FO['Wohnen']
+    if wall in ('X+', 'X-'):
+        fb(o, m, wv - (0.04 if wall == 'X+' else 0), wv + (0 if wall == 'X+' else 0.04), a0, a1, z0, z1)
+    else:
+        fb(o, m, a0, a1, wv - (0.04 if wall == 'Y+' else 0), wv + (0 if wall == 'Y+' else 0.04), z0, z1)
 def toilet(wx, wy, z, d):
     """wandhaengendes WC: (wx, wy) Mitte Wandseite, d = Blickrichtung '+X','-X','+Y','-Y'"""
     o = FO['Bad']
@@ -862,7 +947,7 @@ def toilet(wx, wy, z, d):
     rb(0.0, 0.02, -0.12, 0.12, 0.95, 1.10, M['edelstahl'])      # Druckplatte
     rb(0.16, 0.70, -0.18, 0.18, 0.30, 0.42, M['keramik'])
     rb(0.18, 0.68, -0.17, 0.17, 0.42, 0.44, M['keramik'])
-def basin(x0, x1, y0, y1, z, wall):
+def _basin_alt(x0, x1, y0, y1, z, wall):
     o = FO['Bad']
     fb(o, M['eiche'], x0, x1, y0, y1, z + 0.45, z + 0.82)
     fb(o, M['keramik'], x0 - 0.01, x1 + 0.01, y0 - 0.01, y1 + 0.01, z + 0.82, z + 0.86)
@@ -892,16 +977,16 @@ def shelf(x0, x1, y0, y1, z, h=2.0):
 UG, EG, OG, DG = -2.88, 0.0, 2.96, 5.84
 # ---------------- Haus A
 # EG: Kueche (Zeile an WC-Wand + Insel mit Kochfeld und Barhockern), Essen, Wohnen, Diele, WC
-counter(1.40, 1.99, 0.40, 1.79, EG, sink=(1.55, 1.85, 0.47, 0.85), upper=(1.40, 1.75, 0.40, 1.79))
+counter(1.40, 1.99, 0.40, 1.79, EG, sink=(1.55, 1.85, 0.47, 0.85), wall='-X')
 tall(1.40, 1.99, 1.79, 2.40, EG)
-counter(3.03, 3.96, 0.05, 1.79, EG, hob=(3.17, 3.67, 0.45, 1.20))
+counter(3.03, 3.96, 0.05, 1.79, EG, hob=(3.17, 3.67, 0.45, 1.20), waterfall=True)
 tall(3.03, 3.61, 1.79, 2.40, EG)
 for yy in (0.25, 0.86, 1.45): stool(4.27, yy, EG)
 table(5.82, 6.77, 0.93, 3.02, EG)
 for (a, b) in [(1.16, 1.62), (1.82, 2.24), (2.48, 2.93)]:
     chair(5.25, 5.71, a, b, EG, '-X'); chair(6.90, 7.36, a, b, EG, '+X')
 sofa(6.20, 6.90, 4.35, 7.42, EG, '+X'); sofa(4.65, 6.20, 6.74, 7.42, EG, '+Y')
-lowbox(5.02, 5.67, 4.81, 6.09, EG, 0.40, M['eiche'])
+lowbox(5.02, 5.67, 4.81, 6.09, EG, 0.32, M['travertin'])
 lowbox(3.89, 4.44, 7.00, 7.50, EG, 0.55)
 wardrobe(1.35, 1.94, 4.63, 6.45, EG); lowbox(1.60, 1.94, 3.70, 4.63, EG, 0.45, M['eiche'])
 toilet(0.365, 0.90, EG, '+X'); basin(1.00, 1.38, 1.55, 2.00, EG, '+X')
@@ -920,14 +1005,14 @@ shower(3.15, 4.15, 5.80, 6.74, DG, ['+X']); toilet(4.76, 7.70, DG, '-Y'); basin(
 shower(0.95, 1.95, 0.40, 1.25, UG, ['+Y']); toilet(1.95, 1.60, UG, '-X'); basin(1.55, 1.95, 1.92, 2.38, UG, '+X')
 wardrobe(1.35, 1.94, 3.65, 6.45, UG)
 # ---------------- Haus B
-counter(6.01, 6.60, 17.56, 20.05, EG, sink=(6.10, 6.45, 17.80, 18.20), hob=(6.08, 6.55, 18.95, 19.67), upper=(6.25, 6.60, 17.56, 20.05))
-counter(4.38, 6.60, 20.05, 20.90, EG)
+counter(6.01, 6.60, 17.56, 20.05, EG, sink=(6.10, 6.45, 17.80, 18.20), hob=(6.08, 6.55, 18.95, 19.67), wall='+X')
+counter(4.38, 6.60, 20.05, 20.90, EG, waterfall=True)
 for xx in (5.25, 5.77, 6.35): stool(xx, 21.17, EG)
 table(1.84, 2.77, 17.42, 19.52, EG)
 for (a, b) in [(17.56, 17.99), (18.21, 18.65), (18.86, 19.31)]:
     chair(1.25, 1.72, a, b, EG, '-X'); chair(2.90, 3.37, a, b, EG, '+X')
 sofa(0.97, 1.79, 12.48, 15.71, EG, '-X'); sofa(1.79, 3.36, 12.48, 13.30, EG, '-Y')
-lowbox(2.31, 2.98, 13.97, 15.26, EG, 0.40, M['eiche']); lowbox(3.58, 4.08, 12.56, 13.06, EG, 0.50)
+lowbox(2.31, 2.98, 13.97, 15.26, EG, 0.32, M['travertin']); lowbox(3.58, 4.08, 12.56, 13.06, EG, 0.50)
 lowbox(1.12, 1.48, 20.05, 21.38, EG, 0.80)
 wardrobe(6.03, 6.63, 13.64, 15.41, EG); lowbox(6.20, 6.63, 15.41, 16.30, EG, 0.45, M['eiche']); wardrobe(4.37, 4.97, 17.68, 18.86, EG)
 toilet(7.17, 19.56, EG, '-Y'); basin(7.25, 7.62, 18.10, 18.55, EG, '+X')
@@ -940,6 +1025,17 @@ bed(2.71, 4.91, 13.99, 15.78, DG, '+X'); lowbox(4.53, 4.88, 13.57, 13.95, DG, 0.
 sofa(1.70, 2.45, 12.70, 13.45, DG, '-X', M['stoff_hell']); wardrobe(1.55, 4.88, 17.39, 18.00, DG)
 toilet(6.35, 18.58, UG, '+X'); basin(6.35, 6.75, 17.70, 18.17, UG, '-X'); shower(6.35, 6.95, 18.93, 19.69, UG, ['+X'])
 wardrobe(6.03, 6.63, 13.64, 16.35, UG); shelf(0.40, 3.05, 17.70, 18.10, UG); shelf(0.95, 3.05, 19.30, 19.65, UG)
+# Atmosphaere: Teppiche, Pendelleuchten, Oliven, Kunst
+rug(4.55, 6.15, 4.15, 7.0, EG); rug(5.45, 7.15, 0.6, 3.35, EG)
+rug(1.85, 3.60, 13.25, 15.95, EG); rug(1.45, 3.15, 17.10, 19.85, EG)
+for yy in (1.45, 1.98, 2.51): pendant(6.30, yy, 2.61, EG)
+for xx in (1.98, 2.31, 2.64) if False else (): pass
+for yy in (17.95, 18.47, 18.99): pendant(2.31, yy, 2.61, EG)
+for yy in (0.55, 1.25): pendant(3.50, yy, 2.61, EG, 0.13)
+for xx in (4.95, 5.85): pendant(xx, 20.48, 2.61, EG, 0.13)
+olive(7.15, 3.75, EG); olive(1.05, 16.45, EG)
+art('X+', 4.8, 6.7, 1.15, 2.25, 7.635, M['kunst1']); art('X-', 13.0, 15.2, 1.15, 2.25, 0.365, M['kunst2'])
+rug(3.2, 5.9, 3.3, 6.0, DG); rug(2.4, 5.2, 13.6, 16.2, DG)
 # Mittelbau DG: Bad (+5,71)
 shower(3.40, 4.58, 8.10, 9.30, 5.71, ['-X']); basin(4.20, 4.58, 10.83, 11.94, 5.71, '+X'); lowbox(2.68, 2.96, 8.10, 9.28, 5.71, 0.45, M['eiche'], FO['Bad'])
 
