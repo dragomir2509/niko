@@ -1,16 +1,23 @@
 # RN INVEST · Corporate Identity & Website
 
-Leitidee **QUIET CAPITAL**. Private Investmentgesellschaft für Immobilien in München.
+**Aktuell: V2 „Terminus“** (hell, Halbton, Raster, Mythos). V1 „Quiet Capital“ bleibt als Archiv erhalten.
+
+RN Invest UG (haftungsbeschränkt), 82166 Gräfelfing. Ankauf von Grundstücken und Häusern in München und im Landkreis.
 
 ## Ergebnisse
 
 | Deliverable | Ort |
 |---|---|
-| Figma: Strategie, 3 Creative Directions, Brandbook, Komponenten, Desktop, Mobile | https://www.figma.com/design/Sr2eA42uORF2LwXhtmes4Q |
+| Figma (Seiten „V2 · Terminus“ = aktuell; übrige Seiten = V1-Archiv) | https://www.figma.com/design/Sr2eA42uORF2LwXhtmes4Q |
 | Lovable: funktionsfähige Website (Editor) | https://lovable.dev/projects/05ffd391-8030-4b22-a006-5d99e124e550 |
 | Lovable: veröffentlichte Website (Staging) | https://rn-invest-muenchen.lovable.app |
 | QA-Screenshots (Desktop, iPhone) | [`design/qa/`](design/qa) |
-| Brand Guideline | [`brand/BRAND-GUIDELINE.md`](brand/BRAND-GUIDELINE.md) |
+| Brand V2 „Terminus“ | [`brand/v2/BRAND-V2.md`](brand/v2/BRAND-V2.md) |
+| Website-Texte V2 | [`brand/v2/COPY-V2.md`](brand/v2/COPY-V2.md) |
+| Logo, Embleme, Halbton-Bilder, Karte V2 | [`brand/v2/`](brand/v2) |
+| Interaktive Münchenkarte (React) | [`design/v2/components/MunichMap.tsx`](design/v2/components/MunichMap.tsx) |
+| Figma-Exporte & QA V2 | [`design/v2/`](design/v2) |
+| Brand Guideline V1 | [`brand/BRAND-GUIDELINE.md`](brand/BRAND-GUIDELINE.md) |
 | Finale Website-Texte | [`brand/COPY.md`](brand/COPY.md) |
 | Design Tokens | [`brand/tokens.css`](brand/tokens.css) · [`brand/tokens.json`](brand/tokens.json) |
 | Logo (Wortmarke, Monogramm) | [`brand/logo/`](brand/logo) |
