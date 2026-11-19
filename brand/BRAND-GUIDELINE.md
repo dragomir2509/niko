@@ -216,3 +216,20 @@ Fokuszustände: 1 px Outline Bone mit 4 px Offset, nur bei `:focus-visible`.
 - **Präsentationen und Investment-Memoranden:** Ink-Titelseite mit Wortmarke, Inhalt auf Travertine mit Ink-Text, Kapitelnummern wie auf der Website.
 - **Dokumente (NDA, LOI):** Wortmarke Ink oben links, 12 mm; Fußzeile mit Haarlinie.
 - **OG-Bild:** `brand/og-image.png`.
+
+---
+
+## 13. Offene Punkte vor Veröffentlichung
+
+**Unternehmensangaben (Platzhalter in `src/config/site.ts` der Website und in `brand/COPY.md`)**
+- Rechtsform, Sitz, Registergericht und Registernummer, Vertretungsberechtigte (Impressum nach § 5 DDG)
+- Öffentliche E-Mail-Adresse, Telefonnummer, Geschäftsanschrift
+- Domain (für `SITE.url`, Canonical, JSON-LD, OG-URL)
+- Datenschutzerklärung (inkl. Formularverarbeitung, Hosting, Google Fonts; empfohlen: Schriften selbst hosten)
+- Formular-Endpunkt (`VITE_FORM_ENDPOINT`, z. B. Formspree, Basin oder eigener Webhook); bis dahin öffnet das Formular eine vorbefüllte E-Mail
+
+**Rechtliche Prüfung**
+- Hinweis zu Co-Investments („kein öffentliches Angebot, keine Anlageberatung“) durch Kapitalmarktrecht prüfen lassen, insbesondere bei späteren konkreten Beteiligungsangeboten (VermAnlG, KAGB, WpPG).
+
+**Bildmaterial**
+- Alle vier Motive sind KI-generierte Art-Direction-Referenzen. Ersatz durch ein eigenes Architektur-Shooting (Münchner Fassaden, Materialdetails, Licht) oder lizenzierte Architekturfotografie. Eigene Projekte erst zeigen, wenn sie belegt sind.
