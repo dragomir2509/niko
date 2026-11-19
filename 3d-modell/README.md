@@ -35,7 +35,12 @@ SketchUp liest FBX/OBJ nicht direkt. Für SketchUp die FBX über Twinmotion/Data
 - `04_Carports` – Sichtbeton, OK +3,00, extensives Gründach (eigenes Objekt, löschbar)
 - `05_Aussenanlagen` – Gelände, Gerlichstraße mit Gehwegen, Fahrspuren, Holzterrassen, Sichtschutz, Müllhaus
 - `06_Kontext_Nachbarn` – Platzhalter-Kubaturen der Nachbarhäuser für Schattenwurf (siehe Hinweise)
-- `07_Kameras_Licht` – sechs Perspektiven, vier Orthogonalansichten, Sonne
+- `07_Kameras_Licht` – sieben Perspektiven, vier Orthogonalansichten, Sonne
+- `08_Einfriedung_Strasse` – durchgehende Einfriedung zur Gerlichstraße: weiß verputzte Pfeiler mit Steinabdeckung,
+  je ein zweiflügeliges Drehtor in Anthrazit an der West- und Ostzufahrt (lichte Breite ca. 2,95 m, Höhe 1,45 m),
+  dazwischen vor dem Garten von Haus A ein Zaun aus Flachstahlstäben (1,30 m) auf weißem Sockel mit Formschnitthecke
+  (1,15 m) zur Straße. Jeder Torflügel ist ein eigenes Objekt mit dem Ursprung im Drehpunkt; zum Öffnen
+  einfach um Z drehen (nach innen ca. ±90°).
 
 Pro Haus ist das Modell nach Bauteilen getrennt: Baukörper/Putz, Lisenen und Kugeln, Holzfassade, Fenster-Rahmen,
 Glas, Dachgeschoss, Dach/Dachterrasse, Geländer, Erker, Portal/Vordach/Haustür, Innenraum und Pflanzen-Platzhalter.
@@ -72,7 +77,8 @@ abzustimmen:
 5. **Mittelbau:** Mansarde nach Schnitt BB (70° bis +7,20, dann 45° bis First +8,88), Fuß auf der
    Durchfahrtsdecke +3,00. Oben im Westen vollverglast (Ansicht West), oben im Osten Stehfalz mit einem Fenster.
 6. **Carports:** Sichtbeton mit Gründach. Das Gründach ist eine Annahme und kann als eigenes Objekt
-   gelöscht werden.
+   gelöscht werden. Das Carport West (Haus A) ist zur Zufahrt nach Süden offen und wird an der Ecke von einer
+   Stütze getragen, hinten (Norden) schließt eine Wand ab.
 7. **Außenanlagen:** Fahrspuren mit Rasenmittelstreifen, Terrassen und Müllhaus sind nach dem EG-Plan vereinfacht.
    Bäume, Hecken und Möblierung fehlen bewusst, weil sie im Renderer mit dessen Assets besser aussehen.
 8. **Nachbarbebauung:** grobe Kubaturen aus dem Lageplan 1:500 (Lage ±1–2 m). Traufe 6,2 m und Satteldach

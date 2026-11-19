@@ -70,6 +70,7 @@ mat('gehweg',   'Gehweg',                     '#B2B0AB', 0.85)
 mat('innen',    'Innen_Wand_Decke',           '#EDEAE5', 0.9)
 mat('boden',    'Innen_Boden',                '#A58866', 0.6)
 mat('pflanze',  'Pflanzen_Platzhalter',       '#4D7834', 0.9)
+mat('hecke',    'Hecke_Formschnitt_Platzhalter', '#3F6B2E', 0.95)
 mat('erde',     'Erde_Pflanzbeet',            '#4A3B2E', 0.95)
 mat('kontext',  'Kontext_Nachbarbebauung',    '#D8D6D1', 0.9)
 mat('kontextd', 'Kontext_Dach',               '#8A6E62', 0.9)
@@ -474,7 +475,7 @@ obox(mf, M['alu'], V((4.0, L, 8.88)), Y_, X_, Z_, 0.0, MID, -0.13, 0.13, -0.03, 
 cc = '04_Carports'
 cw = O('Carport_West_Haus_A', cc)
 abox(cw, M['beton'], -3.52, 0.0, 5.52, 10.80, 2.75, 3.00)
-abox(cw, M['beton'], -3.52, 0.0, 5.52, 5.72, 0.0, 2.75)
+abox(cw, M['beton'], -3.52, -3.30, 5.52, 5.74, 0.0, 2.75)          # Stuetze SW, Einfahrt von Sueden offen
 abox(cw, M['beton'], -3.52, 0.0, 10.60, 10.80, 0.0, 2.75)
 co = O('Carport_Ost_Haus_B', cc)
 abox(co, M['beton'], 8.52, 11.55, 19.58, 25.96, 2.75, 3.00)
@@ -521,7 +522,56 @@ for k in range(int((3.45 - 1.16) / 0.11)):
 abox(sc_, M['alu'], 7.89, 7.98, -3.50, -3.45, 0.0, 1.65)
 abox(sc_, M['alu'], 7.89, 7.98, -1.16, -1.11, 0.0, 1.65)
 mu = O('Gelaende_Muelltonnenhaus', ca)
-abox(mu, M['alu'], 4.40, 7.60, -4.85, -4.10, 0.0, 1.35)
+abox(mu, M['alu'], 6.00, 7.80, -3.95, -3.20, 0.0, 1.35)
+
+# ================================================================== EINFRIEDUNG STRASSE (Pfeiler verputzt, Fluegeltore, Zaun + Hecke)
+ce = '08_Einfriedung_Strasse'
+YP0, YP1 = -4.90, -4.30          # Pfeiler (Vorderkante = Heckenflucht)
+YF = -4.40                        # Achse Zaun / Tore
+HP = 1.60                         # Pfeilerhoehe (+ Abdeckplatte)
+ORIGINS = {}
+pfo = O('Einfriedung_Pfeiler_Putz_weiss', ce)
+zno = O('Einfriedung_Zaun_anthrazit', ce)
+sko = O('Einfriedung_Sockel_Putz_weiss', ce)
+hko = O('Einfriedung_Hecke', ce)
+PFEILER = [(-3.52, -3.12), (-0.20, 0.20), (2.47, 2.87), (5.13, 5.53), (7.80, 8.20), (11.15, 11.55)]
+for (x0, x1) in PFEILER:
+    abox(pfo, M['putzw'], x0, x1, YP0, YP1, -0.02, HP)
+    abox(pfo, M['stein'], x0 - 0.04, x1 + 0.04, YP0 - 0.04, YP1 + 0.04, HP, HP + 0.08)
+def stabfeld(o, x0, x1, z0, z1, pitch=0.11, bw=0.04, bt=0.012):
+    n = max(1, int((x1 - x0) / pitch))
+    step = (x1 - x0) / n
+    for k in range(1, n):
+        x = x0 + k * step
+        abox(o, M['alu'], x - bw / 2, x + bw / 2, YF - bt / 2, YF + bt / 2, z0, z1)
+# Zaunfelder vor dem Garten Haus A: Sockel weiss, Flachstahlstaebe anthrazit, Hecke strassenseitig
+for (xa, xb) in [(0.20, 2.47), (2.87, 5.13), (5.53, 7.80)]:
+    abox(sko, M['putzw'], xa, xb, YF - 0.12, YF + 0.12, -0.02, 0.30)
+    abox(sko, M['stein'], xa, xb, YF - 0.14, YF + 0.14, 0.30, 0.34)
+    abox(zno, M['alu'], xa, xb, YF - 0.025, YF + 0.025, 0.34, 0.39)
+    abox(zno, M['alu'], xa, xb, YF - 0.025, YF + 0.025, 1.25, 1.30)
+    stabfeld(zno, xa, xb, 0.39, 1.25)
+    abox(hko, M['hecke'], xa, xb, YP0, YF - 0.14, 0.0, 1.15)
+# Zweifluegelige Drehtore anthrazit, je Fluegel eigenes Objekt mit Ursprung im Drehpunkt (zum Oeffnen um Z drehen)
+def fluegel(name, xh, xe):
+    o = O(name, ce)
+    sgn = 1 if xe > xh else -1
+    a, b = xh + sgn * 0.02, xe - sgn * 0.01
+    x0, x1 = min(a, b), max(a, b)
+    abox(o, M['alu'], x0, x0 + 0.06, YF - 0.03, YF + 0.03, 0.06, 1.45)
+    abox(o, M['alu'], x1 - 0.06, x1, YF - 0.03, YF + 0.03, 0.06, 1.45)
+    abox(o, M['alu'], x0, x1, YF - 0.03, YF + 0.03, 1.39, 1.45)
+    abox(o, M['alu'], x0, x1, YF - 0.03, YF + 0.03, 0.06, 0.12)
+    stabfeld(o, x0 + 0.06, x1 - 0.06, 0.12, 1.39)
+    for zb in (0.25, 1.20):                     # Baender
+        abox(o, M['alu'], xh - sgn * 0.0 - 0.015 if sgn > 0 else xh - 0.015, xh + 0.015, YF - 0.045, YF + 0.045, zb, zb + 0.10)
+    ORIGINS[name] = (xh, YF, 0.0)
+xm_w = (-3.12 + -0.20) / 2
+xm_o = (8.20 + 11.15) / 2
+fluegel('Tor_West_Fluegel_links', -3.12, xm_w)
+fluegel('Tor_West_Fluegel_rechts', -0.20, xm_w)
+fluegel('Tor_Ost_Fluegel_links', 8.20, xm_o)
+fluegel('Tor_Ost_Fluegel_rechts', 11.15, xm_o)
 
 # ================================================================== KONTEXT (Platzhalter aus Lageplan M 1:500, +-1 m)
 ck = '06_Kontext_Nachbarn'
@@ -637,6 +687,11 @@ for ob in bpy.data.objects:
         for p in ob.data.polygons:
             p.use_smooth = False
 
+for nm, h in ORIGINS.items():
+    ob = OBJS[nm]['obj']
+    ob.data.transform(Matrix.Translation((-h[0], -h[1], -h[2])))
+    ob.location = h
+
 # ------------------------------------------------------------------ Nordausrichtung (Root-Empty)
 NORD = 13.8   # Gebaeudeachse weicht um 13,8 Grad nach Westen von Nord ab (Nordpfeil EG / Lageplan)
 root = bpy.data.objects.new('Gerlichstr8_ROOT_Nordausrichtung', None)
@@ -665,6 +720,7 @@ CAMS = [
     cam('CAM_04_Garten_Nordwest', (-12.0, 30.0, 1.65), (4.0, 13.0, 4.8), 24, 0.08),
     cam('CAM_05_Vogel_Suedost', (32.0, -24.0, 24.0), (4.0, 10.0, 3.0), 35),
     cam('CAM_06_Vogel_Nordwest', (-24.0, 40.0, 22.0), (4.0, 10.0, 3.0), 35),
+    cam('CAM_07_Strasse_Einfriedung', (2.0, -15.5, 1.65), (4.0, 4.0, 3.2), 24, 0.10),
 ]
 def ocam(name, loc, tgt, scale):
     c = cam(name, loc, tgt)
