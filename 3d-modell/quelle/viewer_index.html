@@ -1,0 +1,94 @@
+<title>Gerlichstraße 8 – 3D</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700&family=IBM+Plex+Sans:wght@400;500&family=IBM+Plex+Mono:wght@400&display=swap">
+<style>
+/* Layout: Vollflächiger Viewer, schmale Planköpfleiste oben, Standpunkte als Chips unten */
+:root{
+  --bg:#ECEDEA; --panel:#F8F8F6; --fg:#22262A; --muted:#6B7176; --line:#CDD0CC; --accent:#B0884F; --sky1:#DDE6EE; --sky2:#F3F4F1;
+  --f-display:"Archivo","Helvetica Neue",Arial,sans-serif; --f-body:"IBM Plex Sans",system-ui,sans-serif; --f-mono:"IBM Plex Mono",ui-monospace,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#171A1D;--panel:#20252A;--fg:#E8EAEA;--muted:#9AA1A7;--line:#343B42;--accent:#D2A86B;--sky1:#1C2833;--sky2:#14181C;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#171A1D;--panel:#20252A;--fg:#E8EAEA;--muted:#9AA1A7;--line:#343B42;--accent:#D2A86B;--sky1:#1C2833;--sky2:#14181C;color-scheme:dark}
+html,body{height:100%}
+body{background:var(--bg);color:var(--fg);font-family:var(--f-body);display:flex;flex-direction:column}
+header{display:flex;flex-wrap:wrap;gap:6px 24px;align-items:baseline;justify-content:space-between;padding-block:12px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));border-bottom:1px solid var(--line);background:var(--panel)}
+h1{font-family:var(--f-display);font-weight:700;font-size:1.15rem;margin:0;letter-spacing:.01em;text-wrap:balance}
+.meta{font-family:var(--f-mono);font-size:.75rem;color:var(--muted);display:flex;flex-wrap:wrap;gap:4px 16px}
+.meta b{color:var(--fg);font-weight:400}
+#stage{position:relative;flex:1;min-height:320px;background:linear-gradient(var(--sky1),var(--sky2))}
+canvas{display:block;width:100%;height:100%;touch-action:none}
+#status{position:absolute;inset:0;display:grid;place-items:center;font-family:var(--f-mono);font-size:.8rem;color:var(--muted)}
+.bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding-block:10px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));border-top:1px solid var(--line);background:var(--panel)}
+.bar .lbl{font-size:.7rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-right:4px}
+button{font:500 .8rem var(--f-body);color:var(--fg);background:transparent;border:1px solid var(--line);border-radius:3px;padding:6px 10px;cursor:pointer}
+button:hover{border-color:var(--accent)}
+button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:#1b1b1b}
+button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.sp{flex:1}
+.hint{font-size:.72rem;color:var(--muted)}
+</style>
+
+<header>
+  <h1>Gerlichstraße 8 · Doppelhaus mit Carports</h1>
+  <div class="meta"><span>±0,00 = <b>518,70 ü.NN</b></span><span>Dachkante <b>+8,85</b></span><span>Ausstieg <b>+11,02</b></span><span>Achse <b>N 13,8° W</b></span></div>
+</header>
+<div id="stage"><canvas id="c"></canvas><div id="status">Modell wird geladen …</div></div>
+<div class="bar">
+  <span class="lbl">Standpunkt</span>
+  <button id="v-so" data-v="so">Straße Südost</button>
+  <button id="v-sw" data-v="sw">Straße Südwest</button>
+  <button id="v-nw" data-v="nw">Garten Nordwest</button>
+  <button id="v-top" data-v="top">Vogelperspektive</button>
+  <span class="sp"></span>
+  <button id="t-nb" aria-pressed="true">Nachbarhäuser</button>
+  <span class="hint">Ziehen zum Drehen, Scrollen oder Pinch zum Zoomen</span>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.149.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.149.0/examples/js/loaders/GLTFLoader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.149.0/examples/js/controls/OrbitControls.js"></script>
+<script>
+(function(){
+  const canvas=document.getElementById('c'), stage=document.getElementById('stage'), status=document.getElementById('status');
+  const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true});
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+  renderer.outputEncoding=THREE.sRGBEncoding; renderer.toneMapping=THREE.ACESFilmicToneMapping; renderer.toneMappingExposure=1.05;
+  renderer.shadowMap.enabled=true; renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+  const scene=new THREE.Scene();
+  const cam=new THREE.PerspectiveCamera(35,1,0.3,600);
+  const ctl=new THREE.OrbitControls(cam,canvas); ctl.enableDamping=true; ctl.maxPolarAngle=Math.PI*0.495; ctl.minDistance=6; ctl.maxDistance=140;
+  scene.add(new THREE.HemisphereLight(0xdfe9f3,0x6b7a55,0.75));
+  const sun=new THREE.DirectionalLight(0xfff4e2,2.1);
+  // Sonne aus Suedsuedwest, ca. 40 Grad hoch (three: -Z = Norden)
+  sun.position.set(-18,28,34); sun.castShadow=true; sun.shadow.mapSize.set(2048,2048);
+  Object.assign(sun.shadow.camera,{left:-35,right:35,top:35,bottom:-35,near:1,far:120}); sun.shadow.bias=-0.0004;
+  scene.add(sun);
+  const target=new THREE.Vector3(0,4,0);
+  const views={so:[22,3.5,24],sw:[-20,3.5,24],nw:[-24,3.5,-26],top:[34,32,36]};
+  const btns=[...document.querySelectorAll('[data-v]')];
+  function go(k){const p=views[k]; cam.position.set(p[0],p[1],p[2]); ctl.target.copy(target); ctl.update(); btns.forEach(b=>b.setAttribute('aria-pressed',b.dataset.v===k?'true':'false'));}
+  btns.forEach(b=>b.addEventListener('click',()=>go(b.dataset.v)));
+  const nb=[]; const tnb=document.getElementById('t-nb');
+  tnb.addEventListener('click',()=>{const on=tnb.getAttribute('aria-pressed')!=='true'; tnb.setAttribute('aria-pressed',String(on)); nb.forEach(o=>o.visible=on);});
+  const onErr=()=>{status.textContent='Modell konnte nicht geladen werden.';};
+  fetch('model_glb_base64.txt').then(r=>{if(!r.ok) throw new Error(r.status); return r.text();}).then(b64=>{
+    const bin=atob(b64.trim()), buf=new Uint8Array(bin.length);
+    for(let i=0;i<bin.length;i++) buf[i]=bin.charCodeAt(i);
+    new THREE.GLTFLoader().parse(buf.buffer,'',onLoad,onErr);
+  }).catch(onErr);
+  function onLoad(g){
+    g.scene.traverse(o=>{
+      if(!o.isMesh) return;
+      if(/^Nachbar/.test(o.name)) nb.push(o);
+      const big=/Gelaende_Rasen|Strasse/.test(o.name);
+      o.castShadow=!big; o.receiveShadow=true;
+      const ms=Array.isArray(o.material)?o.material:[o.material];
+      ms.forEach(m=>{ if(m.name==='Glas'){m.transparent=true;m.opacity=0.35;m.roughness=0.05;m.metalness=0.2;m.depthWrite=false;} });
+    });
+    scene.add(g.scene); status.hidden=true; go('so');
+  }
+  function size(){const w=stage.clientWidth,h=stage.clientHeight; renderer.setSize(w,h,false); cam.aspect=w/h; cam.updateProjectionMatrix();}
+  new ResizeObserver(size).observe(stage); size();
+  renderer.setAnimationLoop(()=>{ctl.update(); renderer.render(scene,cam);});
+})();
+</script>
