@@ -44,11 +44,12 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
   <span class="hint">Ziehen zum Drehen, Scrollen oder Pinch zum Zoomen</span>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/three@0.149.0/build/three.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.149.0/examples/js/loaders/GLTFLoader.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.149.0/examples/js/controls/OrbitControls.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/loaders/GLTFLoader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.147.0/examples/js/controls/OrbitControls.js"></script>
 <script>
 (function(){
+  if(!window.THREE||!THREE.GLTFLoader||!THREE.OrbitControls){document.getElementById('status').textContent='3D-Bibliothek konnte nicht geladen werden. Bitte Seite neu laden.';return;}
   const canvas=document.getElementById('c'), stage=document.getElementById('stage'), status=document.getElementById('status');
   const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true});
   renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
