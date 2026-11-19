@@ -70,6 +70,9 @@ mat('gehweg',   'Gehweg',                     '#B2B0AB', 0.85)
 mat('innen',    'Innen_Wand_Decke',           '#EDEAE5', 0.9)
 mat('boden',    'Innen_Boden',                '#A58866', 0.6)
 mat('pflanze',  'Pflanzen_Platzhalter',       '#4D7834', 0.9)
+mat('pv',       'PV_Module_Glas',             '#1B2533', 0.12, 0.3)
+mat('innentuer','Innentuer_weiss_lackiert',   '#F2F1EC', 0.4)
+mat('treppe',   'Treppe_Trittstufen_Eiche',   '#B8956A', 0.5)
 mat('hecke',    'Hecke_Formschnitt_Platzhalter', '#3F6B2E', 0.95)
 mat('erde',     'Erde_Pflanzbeet',            '#4A3B2E', 0.95)
 mat('kontext',  'Kontext_Nachbarbebauung',    '#D8D6D1', 0.9)
@@ -230,8 +233,126 @@ ROT_B = (Matrix.Translation((W / 2, TOT / 2, 0)) @ Matrix.Rotation(math.pi, 4, '
 
 BOOLS = []   # (target, cutter-collection)
 
+# ------------------------------------------------------------------ Polygon-Extrusion, PV, Treppen
+from shapely.geometry import LineString as _LS
+from shapely.ops import split as _split
+from shapely.geometry.polygon import orient as _orient
+
+def holes_free(g):
+    out = []; geoms = list(getattr(g, 'geoms', [g]))
+    while geoms:
+        p = geoms.pop()
+        if p.is_empty or p.area < 1e-4: continue
+        if p.geom_type != 'Polygon':
+            geoms += list(getattr(p, 'geoms', [])); continue
+        if len(p.interiors) == 0:
+            out.append(p); continue
+        hx = Polygon(p.interiors[0]).centroid.x
+        geoms += list(_split(p, _LS([(hx, -100), (hx, 100)])).geoms)
+    res = []
+    for q in out:
+        c = list(_orient(q.simplify(0.002), 1.0).exterior.coords)[:-1]
+        cc = [c[0]]
+        for pt in c[1:]:
+            if abs(pt[0] - cc[-1][0]) > 1e-5 or abs(pt[1] - cc[-1][1]) > 1e-5: cc.append(pt)
+        if len(cc) >= 3: res.append(cc)
+    return res
+
+def extrude(o, m, pts, z0, z1):
+    bm = o['bm']; idx = mi(o, m); n = len(pts)
+    b = [bm.verts.new((x, y, z0)) for (x, y) in pts]
+    t = [bm.verts.new((x, y, z1)) for (x, y) in pts]
+    for vs in (b[::-1], t):
+        f = bm.faces.new(vs); f.material_index = idx
+    for i in range(n):
+        j = (i + 1) % n
+        f = bm.faces.new([b[i], b[j], t[j], t[i]]); f.material_index = idx
+
+def slabpoly(o, m, g, z0, z1):
+    for pts in holes_free(g):
+        extrude(o, m, pts, z0, z1)
+
+def cutpoly(coll, m, g, z0, z1):
+    for pts in holes_free(g):
+        k = CUTN.get(coll, 0); CUTN[coll] = k + 1
+        extrude(O('%s_%03d' % (coll, k), coll), m, pts, z0, z1)
+
+def pv_field(o, org, u, v, n, u0, u1, v0, v1, cols, rows, off=0.04, gap=0.02):
+    du, dv = (u1 - u0) / cols, (v1 - v0) / rows
+    for i in range(cols):
+        for j in range(rows):
+            a, b = u0 + i * du + gap / 2, u0 + (i + 1) * du - gap / 2
+            c, d = v0 + j * dv + gap / 2, v0 + (j + 1) * dv - gap / 2
+            obox(o, M['alu'], org, u, v, n, a, b, c, d, off, off + 0.035)            # Modulrahmen
+            obox(o, M['pv'], org, u, v, n, a + 0.025, b - 0.025, c + 0.025, d - 0.025, off + 0.035, off + 0.04)
+
+def flight(o, x0, x1, ys, dirn, z0, r, n, g):
+    """gerader Lauf: n Steigungen, Antritt bei ys, Laufrichtung dirn (+1/-1 in Y)"""
+    for i in range(n - 1):
+        zt = z0 + (i + 1) * r
+        ya, yb = ys + dirn * i * g, ys + dirn * (i + 1) * g
+        y0, y1 = min(ya, yb), max(ya, yb)
+        abox(o, M['beton'], x0, x1, y0, y1, zt - r - 0.17, zt - 0.03)
+        abox(o, M['treppe'], x0, x1, y0 - 0.02 if dirn < 0 else y0, y1 + 0.02 if dirn > 0 else y1, zt - 0.03, zt)
+    ye = ys + dirn * (n - 1) * g
+    beam(o, M['alu'], V((x0 + 0.05, ys + dirn * 0.15, z0 + r + 0.90)), V((x0 + 0.05, ye - dirn * 0.10, z0 + (n - 1) * r + 0.90)), 0.045, 0.045)
+
+def ext_stair(o):
+    """halbgewendelte Aussentreppe in der Nische X 1,00-2,78 / Y 5,75-7,78, Antritt Westlauf (Sued) -> Austritt Ostlauf (Sued)"""
+    BX0, BX1, BY0, BY1 = 1.00, 2.78, 5.75, 7.78
+    CX, CY = 1.815, 6.75; XI_W, XI_E = 1.78, 1.85
+    RW = 0.46; L1 = CY - BY0; LA = math.pi * RW; Ltot = L1 + LA + L1
+    N = 15; RISE = 2.80 / N; G = Ltot / (N - 1)
+    per = [(BX0, BY0), (BX0, BY1), (BX1, BY1), (BX1, BY0)]
+    def tpar(pt):
+        x, y = pt
+        if abs(x - BX0) < 1e-6: return y - BY0
+        if abs(y - BY1) < 1e-6: return (BY1 - BY0) + (x - BX0)
+        return (BY1 - BY0) + (BX1 - BX0) + (BY1 - y)
+    def cut(sv):
+        if sv <= L1:
+            y = BY0 + sv; return (XI_W, y), (BX0, y), 0.0 + (sv)
+        if sv >= L1 + LA:
+            y = CY - (sv - L1 - LA); return (XI_E, y), (BX1, y), 10.0 - (CY - y)
+        th = math.pi - (sv - L1) / RW
+        dx, dy = math.cos(th), math.sin(th)
+        ts = []
+        if dx < -1e-9: ts.append((BX0 - CX) / dx)
+        if dx > 1e-9: ts.append((BX1 - CX) / dx)
+        if dy > 1e-9: ts.append((BY1 - CY) / dy)
+        tt = min(t for t in ts if t > 0)
+        return (CX, CY), (CX + dx * tt, CY + dy * tt), 5.0
+    corners = [(BX0, BY1), (BX1, BY1)]
+    foot = sbox(BX0, BY0, BX1, BY1)
+    for i in range(N - 1):
+        A0, B0, ia = cut(i * G); A1, B1, ib = cut((i + 1) * G)
+        t0, t1 = tpar(B0), tpar(B1)
+        mid = [c for c in corners if t0 < tpar(c) < t1]
+        inner = []
+        if ia < 5 and ib >= 5: inner = [(XI_W, CY)]
+        if ia == 5 and ib > 5: inner = [(XI_E, CY)]
+        if ia < 5 and ib > 5: inner = [(XI_E, CY), (XI_W, CY)]
+        poly = Polygon([A0, B0] + mid + [B1, A1] + inner).buffer(0).intersection(foot)
+        if poly.is_empty or poly.area < 0.01: continue
+        zt = 6.0 + (i + 1) * RISE
+        poly = poly.buffer(-0.008)
+        slabpoly(o, M['alu'], poly, zt - 0.05, zt)
+        # Aussenpfosten + Handlauf
+        pm = B0 if i == 0 else B1
+        inward = V((CX - pm[0], CY - pm[1], 0)).normalized() * 0.04
+        beam(o, M['alu'], V((pm[0] + inward.x, pm[1] + inward.y, zt - 0.05)), V((pm[0] + inward.x, pm[1] + inward.y, zt + 0.95)), 0.03, 0.03)
+    # Handlauf aussen (Polylinie ueber den Pfosten) und Mittelwange
+    pts = []
+    for i in range(N):
+        A_, B_, _ = cut(min(i * G, Ltot))
+        inward = V((CX - B_[0], CY - B_[1], 0)).normalized() * 0.04
+        pts.append(V((B_[0] + inward.x, B_[1] + inward.y, 6.0 + max(i, 1) * RISE + 0.95)))
+    for a_, b_ in zip(pts, pts[1:]):
+        if (b_ - a_).length > 0.01: beam(o, M['alu'], a_, b_, 0.05, 0.04)
+    abox(o, M['alu'], XI_W, XI_E, BY0, CY, 6.0, 6.0 + (N - 1) * RISE + 0.95)
+
 # ================================================================== HAUS (lokal wie Haus A)
-def build_house(P, coll, bay):
+def build_house(P, coll, bay, openings=()):
     sh = O(P + '_Baukoerper_Putz', coll)
     fr = O(P + '_Fenster_Rahmen', coll)
     gl = O(P + '_Glas', coll)
@@ -242,10 +363,12 @@ def build_house(P, coll, bay):
     da = O(P + '_Dach_Dachterrasse', coll)
     er = O(P + '_Erker_Balkon', coll)
     po = O(P + '_Portal_Vordach_Tuer', coll)
-    inn = O(P + '_Innenraum', coll)
+    pvo = O(P + '_PV_Module', coll)
+    XD0, XW, XD1 = 1.0, 1.55, 7.005      # DG: Suedecke / Westwand (Terrasse unter Ueberstand) / Ostwand
+    NX1, NY0, NY1 = 2.76, 5.75, 7.73     # Nische Aussentreppe
     pf = O(P + '_Pflanzen_Platzhalter', coll)
     cM, cE, cD, cX = 'CUT_' + P + '_main', 'CUT_' + P + '_bay', 'CUT_' + P + '_dg', 'CUT_' + P + '_box'
-    BOOLS.extend([(sh, cM), (er, cE), (dg, cD), (P + '_Ausstieg', cX)])
+    BOOLS.extend([(sh, cM), (er, cE), (dg, cD)])
 
     # ---------- Baukoerper EG+OG (Wandstaerke 36,5)
     abox(sh, M['putz'], 0, W, 0, L, 0, 6.0)
@@ -336,92 +459,120 @@ def build_house(P, coll, bay):
         abox(at, M['putz'], x0, x1, 0.75, L - 0.75, 6.0, 6.88)
         abox(at, M['aluh'], x0 - 0.02, x1 + 0.02, 0.73, L - 0.73, 6.88, 6.92)
     abox(at, M['holzt'], 7.005, W - 0.30, 0.75, L, 6.0, 6.035)
-    abox(at, M['holzt'], 0.30, 0.92, 0.75, L, 6.0, 6.035)
+    abox(at, M['holzt'], 0.30, XW, 0.75, NY0, 6.0, 6.035)            # Westterrasse unter Dachueberstand
+    abox(at, M['holzt'], 0.30, 1.0, NY0, L, 6.0, 6.035)
     abox(at, M['kies'], 0.75, W - 0.75, 0.0, 1.0, 6.0, 6.025)
-    for (x0, x1) in [(7.10, 7.68), (0.32, 0.90)]:
-        for (y0, y1) in [(0.95, 2.35), (5.75, 7.15)]:
-            abox(at, M['alu'], x0, x1, y0, y1, 6.035, 6.95)
-            abox(at, M['erde'], x0 + 0.04, x1 - 0.04, y0 + 0.04, y1 - 0.04, 6.95, 6.96)
-            for t in (0.2, 0.5, 0.8):
-                icoblob(pf, M['pflanze'], V(((x0 + x1) / 2, y0 + (y1 - y0) * t, 7.05)), 0.32, 0.9, 1.0, 0.7)
+    for (x0, x1, y0, y1) in [(7.10, 7.68, 0.95, 2.35), (7.10, 7.68, 5.75, 7.15), (0.32, 0.90, 0.95, 2.35)]:
+        abox(at, M['alu'], x0, x1, y0, y1, 6.035, 6.95)
+        abox(at, M['erde'], x0 + 0.04, x1 - 0.04, y0 + 0.04, y1 - 0.04, 6.95, 6.96)
+        for t in (0.2, 0.5, 0.8):
+            icoblob(pf, M['pflanze'], V(((x0 + x1) / 2, y0 + (y1 - y0) * t, 7.05)), 0.32, 0.9, 1.0, 0.7)
 
-    # ---------- Dachgeschoss (Mansarde: 70 Grad Sued-/Stirnseite, Ost/West zurueckgesetzt)
-    XD0, XD1 = 0.92, 7.005
+    # ---------- Dachgeschoss (Mansarde: 70 Grad Stirnseite mit PV, Ost buendig, West zurueckgesetzt mit Dachueberstand)
     prof = [(1.0, 6.0), (1.0 + 2.38 / T70, 8.38), (L, 8.38), (L, 6.0)]
     fYZ = lambda a, c, t: V((t, a, c))
     prism(dg, M['putz'], prof, fYZ, XD0, XD1)
     ext = Polygon([(1.0, 5.0), (1.0, 6.0), (1.0 + 2.38 / T70, 8.38), (L, 8.38), (L, 5.0)])
     inner = ext.buffer(-0.22, join_style='mitre').intersection(sbox(0, 5.99, 20, 20))
-    cutprism(cD, M['innen'], list(inner.exterior.coords)[:-1], fYZ, XD0 + 0.22, XD1 - 0.22)
+    cutprism(cD, M['innen'], list(inner.exterior.coords)[:-1], fYZ, XW + 0.22, XD1 - 0.22)
+    cutbox(cD, M['putz'], O0, X_, Y_, Z_, XD0 - 0.05, XW, 1.90, NY1, 5.99, 8.40)          # Westterrasse (Ruecksprung)
+    cutbox(cD, M['putz'], O0, X_, Y_, Z_, XD0 - 0.05, NX1, NY0, NY1, 5.99, 8.45)          # Treppennische Aussentreppe
+    for (x0, x1, z0, z1) in [o[1:] for o in openings if o[0] == 'D']:
+        cutbox(cD, M['innen'], O0, X_, Y_, Z_, x0, x1, L - 0.35, L + 0.05, z0, z1)
     ED = (V((XD1, 0, 0)), Y_, Z_, X_)
-    WD = (V((XD0, 0, 0)), Y_, Z_, -X_)
+    WD = (V((XW, 0, 0)), Y_, Z_, -X_)
     ysl = lambda z: 1.0 + (z - 6.0) / T70
-    # DG-Fenster Ost (4-teilig) / West (3-teilig)
     window(fr, gl, *ED, 3.28, 6.60, 6.0, 8.10, rec=0.09, cols=ndiv(3.28, 6.60, 4), cutcoll=cD, cutmat=M['putz'], wall_t=0.25)
     window(fr, gl, *WD, 2.56, 5.56, 6.0, 8.10, rec=0.09, cols=ndiv(2.56, 5.56, 3), cutcoll=cD, cutmat=M['putz'], wall_t=0.25)
     clad(ho, M['holz'], *ED, 0.0, 7.23, 6.0, 8.38, holes=[(3.28, 6.60, 6.0, 8.10)], ustart=lambda z: ysl(z) + 0.01)
-    clad(ho, M['holz'], *WD, 0.0, L, 6.0, 8.38, holes=[(2.56, 5.56, 6.0, 8.10)], ustart=lambda z: ysl(z) + 0.01)
-    # 70-Grad-Flaeche mit Verglasung
+    clad(ho, M['holz'], *WD, 1.90, NY0, 6.0, 8.38, holes=[(2.56, 5.56, 6.0, 8.10)])
+    # 70-Grad-Stirnflaeche: Photovoltaik (6 x 2 Module), seitlich Holz
     SL = (V((0, 1.0, 6.0)), X_, V((0, C70, S70)), V((0, -S70, C70)))
     s = lambda z: (z - 6.0) / S70
     smax = s(8.38)
-    gx0, gx1, gs0, gs1 = 1.93, 6.10, s(6.15), s(8.06)
-    window(fr, gl, *SL, gx0, gx1, gs0, gs1, rec=0.06, cols=ndiv(gx0, gx1, 6), rows=[s(7.12)],
-           cutcoll=cD, cutmat=M['putz'], wall_t=0.25)
+    gx0, gx1, gs0, gs1 = 1.75, 6.23, s(6.12), s(8.06)
+    pv_field(pvo, *SL, gx0, gx1, gs0, gs1, 6, 2)
     clad(ho, M['holz'], *SL, XD0, XD1, 0.0, gs1, holes=[(gx0, gx1, gs0, gs1)])
     obox(ho, M['alu'], *SL, XD0, XD1, gs1, smax, 0.0, 0.03)
 
-    # ---------- Dach (+8,38 / +8,62 / Attika +8,85) und Dachterrasse
-    abox(da, M['alu'], 0.85, 7.10, 1.29, L, 8.38, 8.62)
-    abox(da, M['putzw'], 1.00, 6.95, 1.34, L, 8.62, 8.85)
-    abox(da, M['kies'], 1.05, 6.90, 1.39, L - 0.05, 8.85, 8.87)
-    RX0, RX1, RY0, RY1 = 1.74, 6.31, 2.55, 7.85
-    abox(da, M['platten'], RX0 + 0.04, RX1 - 0.04, RY0 + 0.04, RY1 - 0.04, 8.87, 8.89)
+    # ---------- Dach (+8,38 / +8,62 / Attika +8,85) mit Treppenloch, Dachterrasse
+    hole = sbox(XD0 - 0.3, NY0, NX1, L + 0.1)
+    slabpoly(da, M['alu'], sbox(0.85, 1.29, 7.10, L).difference(hole), 8.38, 8.62)
+    slabpoly(da, M['putzw'], sbox(1.00, 1.34, 6.95, L).difference(hole), 8.62, 8.85)
+    slabpoly(da, M['kies'], sbox(1.05, 1.39, 6.90, L - 0.05).difference(hole), 8.85, 8.87)
+    RX0, RX1, RY0, RY1 = 1.58, 6.38, 2.48, 7.78
+    slabpoly(da, M['platten'], sbox(RX0 + 0.04, RY0 + 0.04, RX1 - 0.04, RY1 - 0.04).difference(hole), 8.87, 8.89)
     dd = lambda z: (z - 8.85) * 0.26
     ge = O(P + '_Dachterrasse_Gelaender', coll)
     for k in range(7):
         zb = 8.92 + k * 0.13; zt = zb + 0.07; d = dd(zb + 0.035); t = 0.035
         abox(ge, M['stehfalz'], RX0 + d, RX1 - d, RY0 + d - t / 2, RY0 + d + t / 2, zb, zt)           # Sued
         abox(ge, M['stehfalz'], RX1 - d - t / 2, RX1 - d + t / 2, RY0 + d, RY1 - d, zb, zt)           # Ost
-        abox(ge, M['stehfalz'], 3.80, RX1 - d, RY1 - d - t / 2, RY1 - d + t / 2, zb, zt)              # Nord
-        abox(ge, M['stehfalz'], RX0 + d - t / 2, RX0 + d + t / 2, RY0 + d, 5.54, zb, zt)              # West
+        abox(ge, M['stehfalz'], 3.86, RX1 - d, RY1 - d - t / 2, RY1 - d + t / 2, zb, zt)              # Nord (bis Kamin)
+        abox(ge, M['stehfalz'], RX0 + d - t / 2, RX0 + d + t / 2, RY0 + d, NY0, zb, zt)               # West (bis Treppe)
     d = dd(9.80)
     abox(ge, M['alu'], RX0 + d - 0.03, RX1 - d + 0.03, RY0 + d - 0.03, RY0 + d + 0.03, 9.78, 9.82)
     abox(ge, M['alu'], RX1 - d - 0.03, RX1 - d + 0.03, RY0 + d, RY1 - d + 0.03, 9.78, 9.82)
-    abox(ge, M['alu'], 3.80, RX1 - d, RY1 - d - 0.03, RY1 - d + 0.03, 9.78, 9.82)
-    abox(ge, M['alu'], RX0 + d - 0.03, RX0 + d + 0.03, RY0 + d, 5.54, 9.78, 9.82)
-    # geneigte Pfosten
+    abox(ge, M['alu'], 3.86, RX1 - d, RY1 - d - 0.03, RY1 - d + 0.03, 9.78, 9.82)
+    abox(ge, M['alu'], RX0 + d - 0.03, RX0 + d + 0.03, RY0 + d, NY0, 9.78, 9.82)
     def posts(p_a, p_b, inward, n):
         for i in range(n + 1):
             p = p_a.lerp(p_b, i / n)
             beam(ge, M['alu'], V((p.x, p.y, 8.87)), V((p.x + inward.x * dd(9.80), p.y + inward.y * dd(9.80), 9.80)), 0.04, 0.04)
     posts(V((RX0, RY0)), V((RX1, RY0)), V((0, 1)), 3)
     posts(V((RX1, RY0)), V((RX1, RY1)), V((-1, 0)), 3)
-    posts(V((RX0, RY0)), V((RX0, 5.54)), V((1, 0)), 2)
+    posts(V((RX0, RY0)), V((RX0, NY0)), V((1, 0)), 2)
+    # Absturzsicherung Glas am Treppenloch (Sued- und Ostkante)
+    for (x0, x1, y0, y1) in [(RX0 + 0.25, 1.80, NY0 - 0.03, NY0 - 0.01), (NX1 + 0.01, NX1 + 0.03, NY0, 6.62)]:
+        abox(gl, M['glas'], x0, x1, y0, y1, 8.87, 9.85)
+        abox(ge, M['alu'], x0 - 0.01, x1 + 0.01, y0 - 0.02, y1 + 0.02, 9.85, 9.90)
+    # geneigtes PV-Element an der Dachkante (Plan Dachterrasse: Y 1,62-2,07)
+    vv = V((0, 0.45, 0.95)).normalized(); nn = V((0, -0.95, 0.45)).normalized()
+    PVR = (V((0, 1.62, 8.87)), X_, vv, nn)
+    pv_field(pvo, *PVR, 1.75, 6.23, 0.0, (vv * 1.0).length * 0.98, 6, 1, off=0.0)
+    for xp in (1.85, 4.0, 6.13):
+        abox(ge, M['alu'], xp - 0.03, xp + 0.03, 2.02, 2.08, 8.85, 9.80)
+    # Kamin und Pergola (+11,02)
+    abox(da, M['putzw'], 2.82, 3.82, 6.64, 7.94, 8.85, 11.02)
+    abox(da, M['alu'], 2.79, 3.85, 6.61, 7.97, 11.02, 11.06)
+    pg = O(P + '_Pergola', coll)
+    for (px, py) in [(2.86, 5.55), (5.21, 5.55), (5.21, 7.90)]:
+        abox(pg, M['alu'], px - 0.04, px + 0.04, py - 0.04, py + 0.04, 8.87, 10.90)
+    for (x0, x1, y0, y1) in [(2.82, 5.25, 5.51, 5.59), (2.82, 5.25, 7.86, 7.94), (2.82, 2.90, 5.51, 6.64), (5.17, 5.25, 5.51, 7.94)]:
+        abox(pg, M['alu'], x0, x1, y0, y1, 10.90, 11.02)
+    yl = 5.66
+    while yl < 7.84:
+        for (a, b) in intervals_minus(2.90, 5.17, [(2.80, 3.84)] if yl > 6.60 else []):
+            abox(pg, M['alu'], a, b, yl, yl + 0.04, 10.92, 11.00)
+        yl += 0.15
 
-    # Treppenausstieg (+11,02) und Kamin/Schacht
-    bxo = O(P + '_Ausstieg', coll)
-    abox(bxo, M['putzw'], 1.0, 2.7, 5.54, L, 8.85, 10.92)
-    cutbox(cX, M['innen'], O0, X_, Y_, Z_, 1.2, 2.5, 5.74, L - 0.2, 8.84, 10.72)
-    window(fr, gl, V((0, 5.54, 0)), X_, Z_, -Y_, 1.55, 2.50, 8.87, 10.85, rec=0.08, cutcoll=cX, cutmat=M['putzw'], wall_t=0.2)
-    window(fr, gl, V((2.7, 0, 0)), Y_, Z_, X_, 5.72, 6.52, 8.87, 10.85, rec=0.08, cutcoll=cX, cutmat=M['putzw'], wall_t=0.2)
-    abox(da, M['alu'], 0.95, 2.75, 5.49, L, 10.92, 11.02)
-    abox(da, M['putzw'], 2.83, 3.80, 6.65, 7.92, 8.85, 11.02)
-    abox(da, M['alu'], 2.80, 3.83, 6.62, 7.95, 11.02, 11.06)
+    # ---------- Aussentreppe DG-Terrasse -> Dachterrasse (15 x 18,7 x 26, halbgewendelt, Stahl anthrazit)
+    ext_stair(O(P + '_Aussentreppe', coll))
 
-    # ---------- Innenraum (Decken/Boeden, damit Fenster nicht "durchsichtig" wirken)
-    abox(inn, M['boden'], 0.3, W - 0.3, 0.3, L - 0.3, -0.03, 0.0)
-    abox(inn, M['innen'], 0.365, W - 0.365, 0.365, L - 0.365, 2.61, 2.96)
-    abox(inn, M['boden'], 0.365, W - 0.365, 0.365, L - 0.365, 2.96, 2.97)
-    abox(inn, M['boden'], bx0 + 0.3, bx1 - 0.3, -bd + 0.3, 0.3, -0.03, 0.0)
-    abox(inn, M['boden'], XD0 + 0.22, XD1 - 0.22, 1.3, L - 0.22, 6.0, 6.01)
-    abox(inn, M['innen'], 3.6, 3.8, 0.365, L - 0.365, 0.0, 2.61)       # Trennwand EG (Sichtschutz)
-    abox(inn, M['innen'], 3.6, 3.8, 0.365, L - 0.365, 2.97, 5.49)      # Trennwand OG
-    abox(inn, M['innen'], 3.9, 4.05, 2.0, L - 0.22, 6.01, 8.15)         # Trennwand DG
+    # ---------- Innen: Decken mit Treppenaugen, Treppen UG-EG-OG-DG (16 Stg.), DG-Boden
+    it = O(P + '_Innen_Decken_Treppen', coll)
+    VOID = sbox(2.09, 3.68, 2.98, 7.58)
+    inn_rect = sbox(0.365, 0.365, W - 0.365, L - 0.365)
+    bay_in = sbox(bx0 + 0.3, -bd + 0.3, bx1 - 0.3, 0.4)
+    slabpoly(it, M['beton'], inn_rect.union(bay_in).difference(VOID), -0.35, -0.02)
+    slabpoly(it, M['boden'], inn_rect.union(bay_in).difference(VOID), -0.02, 0.0)
+    slabpoly(it, M['innen'], inn_rect.difference(VOID), 2.61, 2.94)
+    slabpoly(it, M['boden'], inn_rect.difference(VOID), 2.94, 2.96)
+    dgfp = sbox(XW + 0.22, 1.30, XD1 - 0.22, L - 0.22).difference(sbox(XD0 - 0.1, NY0 - 0.15, NX1 + 0.24, L))
+    dvoid = sbox(2.09, 3.68, 2.98, NY0 - 0.15)
+    for g_ in getattr(dgfp, 'geoms', [dgfp]):
+        cutpoly(cM, M['innen'], g_, 5.84, 6.02)
+    cutbox(cM, M['innen'], O0, X_, Y_, Z_, 2.09, 2.98, 3.68, NY0 - 0.15, 5.45, 6.03)
+    slabpoly(it, M['boden'], dgfp.difference(dvoid), 5.84, 5.85)
+    for (z0, r) in [(-2.88, 0.18), (0.0, 0.185), (2.96, 0.18)]:
+        flight(it, 2.10, 2.97, 7.58, -1, z0, r, 16, 0.26)
+    for (x0, x1, z0, z1) in [o[1:] for o in openings if o[0] == 'M']:
+        cutbox(cM, M['innen'], O0, X_, Y_, Z_, x0, x1, L - 0.45, L + 0.05, z0, z1)
     return [n for n in OBJS if n.startswith(P + '_')]
 
 A_objs = build_house('A', '01_Haus_A', (1.60, 6.40, 1.14, 2.25, 5.74))
-B_objs = build_house('B', '02_Haus_B', (0.75, 7.25, 2.015, 1.88, 6.13))
+B_objs = build_house('B', '02_Haus_B', (0.75, 7.25, 2.015, 1.88, 6.13),
+                     openings=[('M', 0.40, 2.98, 2.96, 5.06), ('D', 3.81, 6.46, 5.84, 7.94)])   # Durchgaenge zum Mittelbau (aus OG/DG-Plan)
 
 # ================================================================== MITTELBAU (Mansarde 70/45 Grad, First +8,88)
 cm = '03_Mittelbau'
@@ -443,8 +594,6 @@ cutprism('CUT_M', M['innen'], list(innm.exterior.coords)[:-1], fXZ, L - 0.01, YB
 gal = innm.intersection(sbox(-1, 5.53, 10, 5.71))
 prism(mi_, M['innen'], list(gal.exterior.coords)[:-1], fXZ, L, YB0)
 abox(mi_, M['boden'], 1.2, 6.8, L, YB0, 3.0, 3.01)
-abox(mi_, M['innen'], 3.95, 4.05, L, YB0, 5.71, 8.30)                 # Trennwand Galerie
-abox(mi_, M['innen'], 3.95, 4.05, L, YB0, 3.01, 5.53)                 # Trennwand OG
 
 def face(p0, p1, outward_sign):
     v = V((p1[0] - p0[0], 0, p1[1] - p0[1])); ln = v.length; v.normalize()
@@ -466,9 +615,8 @@ for F in (FW70, FE70):
 ew = [(1.83, 2.60, sz45(7.27), sz45(7.95))]
 window(mf, mg, *FE45, *ew[0], rec=-0.07, fd=0.08, cutcoll='CUT_M', cutmat=M['stehfalz'], wall_t=0.35)
 seams(md, M['stehfalz'], *FE45, 0.0, MID, 0.0, le45, holes=ew)
-# Westliche 45-Grad-Flaeche vollverglast
-window(mf, mg, *FW45, 0.06, MID - 0.06, 0.06, lw45 - 0.10, rec=-0.07, fd=0.08, cols=ndiv(0.06, MID - 0.06, 6),
-       cutcoll='CUT_M', cutmat=M['stehfalz'], wall_t=0.35)
+# Westliche 45-Grad-Flaeche: Photovoltaik (6 x 2 Module)
+pv_field(O('Mitte_PV_Module', cm), *FW45, 0.06, MID - 0.06, 0.06, lw45 - 0.10, 6, 2)
 obox(mf, M['alu'], V((4.0, L, 8.88)), Y_, X_, Z_, 0.0, MID, -0.13, 0.13, -0.03, 0.04)   # Firstabdeckung
 
 # ================================================================== CARPORTS (Sichtbeton, OK +3,00)
@@ -570,6 +718,58 @@ fluegel('Tor_West_Fluegel_rechts', -0.20, xm_w)
 fluegel('Tor_Ost_Fluegel_links', 8.20, xm_o)
 fluegel('Tor_Ost_Fluegel_rechts', 11.15, xm_o)
 
+# ================================================================== INNENAUSBAU 1:1 (aus den Vektor-Grundrissen UG/EG/OG/DG des Genehmigungsplans)
+import json
+INT = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'innenausbau.json')))
+ci = '09_Innenausbau'
+HGT = {'UG_all': (-3.18, -0.35, -2.88), 'EG_A': (0.0, 2.61, 0.0), 'EG_B': (0.0, 2.61, 0.0),
+       'OG_A': (2.96, 5.49, 2.96), 'OG_B': (2.96, 5.49, 2.96), 'OG_M': (3.0, 5.60, 3.0),
+       'DG_A': (5.84, 8.25, 5.84), 'DG_B': (5.84, 8.25, 5.84), 'DG_M': (5.71, 8.70, 5.71)}
+OBJN = {'UG_all': 'Innen_UG_Waende', 'EG_A': 'Innen_EG_Waende', 'EG_B': 'Innen_EG_Waende',
+        'OG_A': 'Innen_OG_Waende', 'OG_B': 'Innen_OG_Waende', 'OG_M': 'Innen_Mittelbau_Waende',
+        'DG_A': 'Innen_DG_Waende_A', 'DG_B': 'Innen_DG_Waende_B', 'DG_M': 'Innen_Mittelbau_Waende'}
+igl = O('Innen_UG_Fensterglas', ci)
+ndoor = 0
+for key, (zb, zt, zf) in HGT.items():
+    d = INT[key]; o = O(OBJN[key], ci)
+    for pts in d['walls']:
+        extrude(o, M['innen'], [tuple(p) for p in pts], zb, zt)
+    for pts in d['lintels']:
+        extrude(o, M['innen'], [tuple(p) for p in pts], zf + 2.10, zt)
+    for pts in d['ugwin']:
+        q = Polygon(pts)
+        extrude(o, M['innen'], [tuple(p) for p in pts], zb, -1.55)
+        extrude(o, M['innen'], [tuple(p) for p in pts], -0.80, zt)
+        gq = q.buffer(-0.11, join_style='mitre')
+        if not gq.is_empty: slabpoly(igl, M['glas'], gq, -1.55, -0.80)
+    for dr in d['doors']:
+        hx, hy = dr['h']; ex, ey = dr['open']
+        u = V((ex - hx, ey - hy, 0)); ln = u.length; u.normalize()
+        nvec = u.cross(Z_).normalized()
+        ndoor += 1; nm = 'Tuer_%s_%02d' % (key, ndoor)
+        obox(O(nm, ci), M['innentuer'], V((hx, hy, 0)), u, Z_, nvec, 0.03, ln - 0.03, zf + 0.01, zf + 2.02, -0.02, 0.02)
+        ORIGINS[nm] = (hx, hy, zf)
+# DG-/Mittelbau-Waende auf das Innenvolumen begrenzen (Dachschraegen)
+extI = Polygon([(1.0, 5.0), (1.0, 6.0), (1.0 + 2.38 / T70, 8.38), (L, 8.38), (L, 5.0)]).buffer(-0.22, join_style='mitre').intersection(sbox(0, 5.80, 20, 20))
+fYZ_ = lambda a, c, t: V((t, a, c))
+cutprism('CUT_INT_DG_A', M['innen'], list(extI.exterior.coords)[:-1], fYZ_, 1.55 + 0.22, 7.005 - 0.22)
+cutprism('CUT_INT_DG_B', M['innen'], list(extI.exterior.coords)[:-1], fYZ_, 1.55 + 0.22, 7.005 - 0.22)
+bmB = OBJS['CUT_INT_DG_B_000']['bm']; bmesh.ops.transform(bmB, matrix=ROT_B, verts=bmB.verts)
+innM = Polygon([(0.79, 2.0)] + pm + [(7.21, 2.0)]).buffer(-0.3, join_style='mitre').intersection(sbox(-1, 2.95, 10, 20))
+cutprism('CUT_INT_M', M['innen'], list(innM.exterior.coords)[:-1], fXZ, L - 0.01, YB0 + 0.01)
+BOOLS_I = [('Innen_DG_Waende_A', 'CUT_INT_DG_A'), ('Innen_DG_Waende_B', 'CUT_INT_DG_B'), ('Innen_Mittelbau_Waende', 'CUT_INT_M')]
+# UG: Bodenplatte, Decke ausserhalb der Haeuser
+ug = O('Innen_UG_Boden_Decke', ci)
+for pts in INT['ug_floor']:
+    extrude(ug, M['beton'], [tuple(p) for p in pts], -3.18, -2.90)
+    extrude(ug, M['boden'], [tuple(p) for p in pts], -2.90, -2.88)
+for pts in INT['ug_ceiling_extra']:
+    extrude(ug, M['beton'], [tuple(p) for p in pts], -0.35, -0.33)
+# Gelaende ueber den Treppenaugen UG->EG oeffnen
+for (x0, x1, y0, y1) in [(2.09, 2.98, 3.68, 7.58), (8 - 2.98, 8 - 2.09, TOT - 7.58, TOT - 3.68)]:
+    cutbox('CUT_ground', M['rasen'], O0, X_, Y_, Z_, x0, x1, y0, y1, -0.5, 0.1)
+BOOLS.append(('Gelaende_Rasen', 'CUT_ground'))
+
 # ================================================================== KONTEXT (Platzhalter aus Lageplan M 1:500, +-1 m)
 ck = '06_Kontext_Nachbarn'
 P0 = V((585, 1005)); ex = V((0.974, -0.231)); ey = V((-0.231, -0.974)); sc = 15.9
@@ -652,6 +852,20 @@ for (tgt, ccol) in BOOLS:
     bpy.data.meshes.remove(old)
     print('boolean', tname, len(newme.polygons))
 
+for (tname, ccol) in BOOLS_I:
+    ob = OBJS[tname]['obj']; col = colls.get(ccol)
+    for solver in ('EXACT', 'MANIFOLD', 'FLOAT'):
+        mod = ob.modifiers.new('int', 'BOOLEAN')
+        mod.operation = 'INTERSECT'; mod.solver = solver
+        mod.operand_type = 'OBJECT'; mod.object = list(col.objects)[0]
+        dg = bpy.context.evaluated_depsgraph_get(); dg.update()
+        newme = bpy.data.meshes.new_from_object(ob.evaluated_get(dg))
+        ob.modifiers.remove(mod)
+        print('intersect', tname, solver, len(newme.polygons))
+        if len(newme.polygons) > 0:
+            old = ob.data; ob.data = newme; newme.name = old.name; bpy.data.meshes.remove(old); break
+        bpy.data.meshes.remove(newme)
+
 for cname in list(colls):
     if cname.startswith('CUT_'):
         c = colls.pop(cname)
@@ -718,6 +932,13 @@ CAMS = [
     cam('CAM_05_Vogel_Suedost', (32.0, -24.0, 24.0), (4.0, 10.0, 3.0), 35),
     cam('CAM_06_Vogel_Nordwest', (-24.0, 40.0, 22.0), (4.0, 10.0, 3.0), 35),
     cam('CAM_07_Strasse_Einfriedung', (2.0, -15.5, 1.65), (4.0, 4.0, 3.2), 24, 0.10),
+    cam('CAM_08_Dach_Aussentreppe', (-7.0, 1.5, 13.5), (2.6, 6.2, 8.4), 28),
+    cam('CAM_09_DG_Terrasse_West_Treppe', (0.75, 2.2, 7.65), (1.9, 7.2, 7.4), 18),
+    cam('INNEN_10_EG_A_Wohnen_Essen', (6.9, 7.1, 1.55), (2.6, 1.2, 1.25), 16),
+    cam('INNEN_11_EG_A_Treppe', (1.15, 7.35, 1.6), (2.55, 5.6, 2.1), 16),
+    cam('INNEN_12_OG_B_Kind', (6.6, 18.9, 4.5), (2.0, 13.5, 4.1), 16),
+    cam('INNEN_13_DG_A_Schlafen', (6.3, 7.2, 7.4), (2.4, 2.4, 6.9), 16),
+    cam('INNEN_14_UG_A_Hobby', (6.9, 7.0, -1.3), (2.0, 1.0, -1.6), 16),
 ]
 def ocam(name, loc, tgt, scale):
     c = cam(name, loc, tgt)
@@ -729,6 +950,13 @@ CAMS += [
     ocam('ORTHO_Ansicht_Sued', (W / 2, -60.0, 5.0), (W / 2, 0.0, 5.0), 20),
     ocam('ORTHO_Ansicht_Nord', (W / 2, 80.0, 5.0), (W / 2, 0.0, 5.0), 20),
 ]
+for (lx, ly) in [(4.0, 2.2), (4.0, 6.0), (4.0, 14.0), (4.0, 17.8)]:
+    for (lz, nm_) in [(-0.7, 'UG'), (2.3, 'EG'), (5.2, 'OG'), (7.8, 'DG')]:
+        ld = bpy.data.lights.new('Innen_Licht_%s' % nm_, 'POINT'); ld.energy = 120; ld.shadow_soft_size = 0.4
+        lo = bpy.data.objects.new('Innen_Licht_%s_%.0f' % (nm_, ly), ld); ccam.objects.link(lo); lo.parent = root; lo.location = (lx, ly, lz)
+for (lz, nm_) in [(4.6, 'Mitte_OG'), (7.4, 'Mitte_DG')]:
+    ld = bpy.data.lights.new('Innen_Licht_' + nm_, 'POINT'); ld.energy = 100; ld.shadow_soft_size = 0.4
+    lo = bpy.data.objects.new('Innen_Licht_' + nm_, ld); ccam.objects.link(lo); lo.parent = root; lo.location = (4.0, 10.0, lz)
 sd = bpy.data.lights.new('SUN', 'SUN'); sd.energy = 4.0; sd.angle = math.radians(0.6)
 sun = bpy.data.objects.new('SUN', sd); ccam.objects.link(sun)
 sun.rotation_euler = (math.radians(50), 0, math.radians(35))   # Sonne aus Suedsuedwest, ca. 40 Grad hoch
@@ -795,12 +1023,13 @@ if os.environ.get('RENDER', '1') == '1':
     for c in CAMS:
         if only and not any(k in c.name for k in only.split(',')):
             continue
-        aerial = 'Vogel' in c.name
+        aerial = 'Vogel' in c.name or 'Dach' in c.name
         ortho = 'ORTHO' in c.name
         if ortho: scene.render.resolution_x, scene.render.resolution_y = (1600, 800) if ('Ost' in c.name or 'West' in c.name) else (1000, 800)
         else: scene.render.resolution_x, scene.render.resolution_y = int(os.environ.get('RESX', '1600')), int(os.environ.get('RESY', '900'))
         for o in kontext.objects:
             o.hide_render = not aerial
+        scene.view_settings.exposure = 1.3 if 'INNEN' in c.name else 0.0
         scene.camera = c
         scene.render.filepath = os.path.join(OUT, 'vorschau', c.name + '.png')
         bpy.ops.render.render(write_still=True)
