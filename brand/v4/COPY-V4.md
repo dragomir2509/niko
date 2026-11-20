@@ -52,7 +52,7 @@ Länge: 7 Bereiche, bewusst kurz.
 - Üblich am Markt → Bei RN INVEST: Wechselnde Ansprechpartner → Ich, vom ersten Anruf bis zum Notar · Gremien und Freigabeschleifen → Eine Person, eine klare Antwort · Taktische Nachverhandlung → Ein Angebot, zu dem ich stehe · Inserat, Besichtigungen, Bieterrunden → Diskret, ohne Öffentlichkeit · Maximale Fläche, Standard → Architektur, die in die Straße passt
 
 **Ankaufsprofil** (interaktive Karte + Profil A/B wie bisher, Ich-Form)
-- H2: Was ich *suche.* · Lead: Zwei klare Suchprofile. Passt Ihr Objekt, sollten wir sprechen. Passt es nicht ganz, fragen Sie trotzdem.
+- H2: Was ich *suche.* · Lead: Zwei klare Suchprofile. Passt Ihr Objekt, freue ich mich auf das Gespräch. Passt es nicht ganz, fragen Sie trotzdem.
 - Unter dem Profil: Für eine erste Einschätzung genügen Adresse oder Exposé · rn@rninvest.de
 
 **Warum Terminus** (dunkles Band)
