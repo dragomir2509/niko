@@ -1,6 +1,6 @@
 # RN INVEST · Corporate Identity & Website
 
-**Aktuell: V2 „Terminus“** (hell, Halbton, Raster, Mythos). V1 „Quiet Capital“ bleibt als Archiv erhalten.
+**Aktuell: V3 „Pop-Terminus“** (monochrom, Pop-Art-Comic, Raster, Mythos). V2 „Terminus“ und V1 „Quiet Capital“ bleiben als Archiv erhalten.
 
 RN Invest UG (haftungsbeschränkt), 82166 Gräfelfing. Ankauf von Grundstücken und Häusern in München und im Landkreis.
 
@@ -8,14 +8,17 @@ RN Invest UG (haftungsbeschränkt), 82166 Gräfelfing. Ankauf von Grundstücken 
 
 | Deliverable | Ort |
 |---|---|
-| Figma (Seiten „V2 · Terminus“ = aktuell; übrige Seiten = V1-Archiv) | https://www.figma.com/design/Sr2eA42uORF2LwXhtmes4Q |
+| Figma (Seite „V3 · Pop-Terminus (aktuell)“; V2- und V1-Seiten = Archiv) | https://www.figma.com/design/Sr2eA42uORF2LwXhtmes4Q |
 | Lovable: funktionsfähige Website (Editor) | https://lovable.dev/projects/05ffd391-8030-4b22-a006-5d99e124e550 |
 | Lovable: veröffentlichte Website (Staging) | https://rn-invest-muenchen.lovable.app |
 | QA-Screenshots (Desktop, iPhone) | [`design/qa/`](design/qa) |
-| Brand V2 „Terminus“ | [`brand/v2/BRAND-V2.md`](brand/v2/BRAND-V2.md) |
+| Brand V3 „Pop-Terminus“ | [`brand/v3/BRAND-V3.md`](brand/v3/BRAND-V3.md) |
+| Pop-Art-Illustrationen, Logo, Icons, OG V3 | [`brand/v3/`](brand/v3) |
+| QA V3 | [`design/v3/qa/`](design/v3/qa) |
+| Brand V2 „Terminus“ (Archiv) | [`brand/v2/BRAND-V2.md`](brand/v2/BRAND-V2.md) |
 | Website-Texte V2 | [`brand/v2/COPY-V2.md`](brand/v2/COPY-V2.md) |
 | Logo, Embleme, Halbton-Bilder, Karte V2 | [`brand/v2/`](brand/v2) |
-| Interaktive Münchenkarte (React) | [`design/v2/components/MunichMap.tsx`](design/v2/components/MunichMap.tsx) |
+| Interaktive Münchenkarte (React) | [`design/v3/components/MunichMap.tsx`](design/v3/components/MunichMap.tsx) |
 | Figma-Exporte & QA V2 | [`design/v2/`](design/v2) |
 | Brand Guideline V1 | [`brand/BRAND-GUIDELINE.md`](brand/BRAND-GUIDELINE.md) |
 | Finale Website-Texte | [`brand/COPY.md`](brand/COPY.md) |
