@@ -8,7 +8,7 @@ RN Invest UG (haftungsbeschränkt), Lochhamer Schlag 12, 82166 Gräfelfing · Am
 
 | Deliverable | Ort |
 |---|---|
-| Figma (Seiten V1 bis V4 = Archiv) | https://www.figma.com/design/Sr2eA42uORF2LwXhtmes4Q |
+| Figma (Seite „V5 · Identity (aktuell)“; V1 bis V4 = Archiv) | https://www.figma.com/design/Sr2eA42uORF2LwXhtmes4Q |
 | Lovable: funktionsfähige Website (Editor) | https://lovable.dev/projects/05ffd391-8030-4b22-a006-5d99e124e550 |
 | Lovable: veröffentlichte Website (zeigt V4 bis zur Freigabe von V5) | https://rn-invest-muenchen.lovable.app |
 | QA-Screenshots (Desktop, iPhone) | [`design/qa/`](design/qa) |
