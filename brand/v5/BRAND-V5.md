@@ -26,25 +26,25 @@ Eine Ligatur aus R und N mit eigener Konstruktion:
 
 Bewusst ausgeschlossen: Häuser, Dächer, Schlüssel, Wappen, Kronen, Säulen, Diagramme.
 
-## Wordmark und Logo-Varianten
+## Logo und Varianten
 
-Wordmark „RN INVEST“: Archivo Expanded Medium, Versalien, Laufweite +14 %, als Pfad gezeichnet (keine Schrift nötig).
+**Das Logo ist das Monogramm plus das Wort INVEST.** Das Monogramm *ist* das „RN“; es wird daneben nicht noch einmal als Text gesetzt. INVEST steht in Archivo Expanded Medium, Versalien, Laufweite +14 %, auf der Grundlinie des Monogramms, Versalhöhe 36 % der Monogramm-Höhe. Alles ist als Pfad gezeichnet (keine Schrift nötig).
 
 | Datei (`brand/v5/logo/`) | Verwendung |
 |---|---|
 | `logo-horizontal-carbon.svg` | Standard auf hellem Grund |
 | `logo-horizontal-porcelain.svg` | auf Carbon oder Ultramarine |
 | `logo-horizontal-ultramarine.svg` | einfarbig Ultramarine |
-| `logo-horizontal-duo.svg` | Monogramm Ultramarine, Wordmark Carbon |
-| `logo-stacked-*.svg` | kompakte Variante: Monogramm über Wordmark |
+| `logo-horizontal-duo.svg` | Monogramm Ultramarine, INVEST Carbon |
+| `logo-stacked-*.svg` | kompakte Variante: Monogramm über INVEST |
 | `monogram-{display,text,micro}-{carbon,porcelain,ultramarine}.svg` | Monogramm allein, Schwarz-Weiß und Ultramarine |
-| `wordmark-*.svg` | Wordmark allein |
+| `wordmark-*.svg` | ausgeschriebener Name „RN INVEST“, nur für Einsätze ohne Monogramm |
 
-Regeln: Wordmark-Höhe = 30 % der Monogramm-Höhe. Schutzraum = Breite eines N-Stamm-Abstands rundum. Mindesthöhe horizontal 20 px. Nicht verzerren, nicht kursiv stellen, keine Verläufe, keine Schatten.
+Regeln: Abstand zwischen Monogramm und INVEST = 28 % der Monogramm-Höhe. Schutzraum = Breite eines N-Stamm-Abstands rundum. Mindesthöhe horizontal 20 px. Nicht verzerren, nicht kursiv stellen, keine Verläufe, keine Schatten.
 
 Icons (`brand/v5/icons/`): `favicon.svg`, `favicon-32.png`, `favicon-48.png`, `apple-touch-icon.png` (180 px), `icon-192.png`, `icon-512.png`. Immer Porcelain-Monogramm auf Ultramarine.
 Open-Graph-Grafik: `brand/v5/og-image.png` (1200 × 630).
-Übersicht aller Varianten: `brand/v5/logo-overview.png`.
+Übersicht der Logo-Varianten: `brand/v5/logo-overview.png`.
 
 Die Identität ist für Briefpapier, Visitenkarte und Dokumente ausgelegt: einfarbig druckbar, ohne Rasterflächen, mit einer Stempelgröße (`micro`).
 
@@ -90,7 +90,7 @@ Satzregeln: Headlines in zwei kurzen, parallel gebauten Sätzen mit festem Umbru
 ## Seitenaufbau
 
 1. **Hero:** Leitsatz, Monogramm angeschnitten im Hintergrund, zwei zurückhaltende Aktionen.
-2. **Über RN INVEST:** kurze Vorstellung, Gesellschaftsdaten.
+2. **Über RN INVEST:** kurze Vorstellung der Gesellschaft und ein persönlicher Block zu Niko Roncevic (Rolle, ein Zitat, drei Sätze zur Arbeitsweise).
 3. **Investmentansatz** (Carbon): sechs Grundsätze als nummerierter Index.
 4. **Ankaufsprofil:** zwei Dossiers A und B nebeneinander. Im Profil B hervorgehoben: „Ankaufspreis: bis 5.000.000 €, gilt für Mehrfamilienhäuser“.
 5. **Ankaufsprozess** (Ultramarine): drei Schritte.

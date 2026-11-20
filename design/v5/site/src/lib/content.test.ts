@@ -50,6 +50,10 @@ describe("site rules", () => {
     expect(JSON.stringify(CONTENT)).not.toMatch(
       /\b(wir|uns|unser\w*|Investor\w*|Kapitalgeber)\b/i,
     ));
+  it("introduces the managing director without repeating the legal entity", () => {
+    expect(CONTENT.about.person.name).toBe("Niko Roncevic");
+    expect(JSON.stringify(CONTENT.about)).not.toContain("UG (haftungsbeschränkt)");
+  });
   it("formats the dossier date", () =>
     expect(monthLabel(new Date("2026-11-19T23:20:00Z"))).toBe("11/2026"));
 });

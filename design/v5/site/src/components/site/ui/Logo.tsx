@@ -1,4 +1,4 @@
-import { MONOGRAM, WORDMARK } from "./logo-paths";
+import { INVEST_WORD, MONOGRAM, WORDMARK } from "./logo-paths";
 
 type Size = keyof typeof MONOGRAM;
 
@@ -26,12 +26,16 @@ export function Wordmark({ className }: { className?: string }) {
   );
 }
 
-/** Horizontal lockup: monogram plus wordmark at 30 % of the monogram height. */
+/**
+ * Logo: the RN monogram followed by the word INVEST on the same baseline.
+ * The monogram is the "RN", so the letters are not repeated in the word.
+ */
 export function Logo({ className }: { className?: string }) {
   const m = MONOGRAM.text;
-  const scale = 30 / WORDMARK.cap;
-  const gap = 34;
-  const width = m.w + gap + WORDMARK.w * scale;
+  const capHeight = 36;
+  const scale = capHeight / INVEST_WORD.cap;
+  const gap = 28;
+  const width = m.w + gap + INVEST_WORD.w * scale;
   return (
     <svg
       className={className}
@@ -40,8 +44,8 @@ export function Logo({ className }: { className?: string }) {
       aria-hidden="true"
     >
       <path d={m.d} />
-      <g transform={`translate(${m.w + gap} 35) scale(${scale.toFixed(5)})`}>
-        <path d={WORDMARK.d} />
+      <g transform={`translate(${m.w + gap} ${100 - capHeight}) scale(${scale.toFixed(5)})`}>
+        <path d={INVEST_WORD.d} />
       </g>
     </svg>
   );

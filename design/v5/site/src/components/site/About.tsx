@@ -19,14 +19,19 @@ export function About() {
           <p className="lead">{c.lead}</p>
           <p className="muted">{c.text}</p>
         </div>
-        <dl className="about-facts facts">
-          {c.facts.map((f) => (
-            <div key={f.label}>
-              <dt className="micro">{f.label}</dt>
-              <dd>{f.value}</dd>
-            </div>
-          ))}
-        </dl>
+        <aside className="about-person" aria-labelledby="about-person-name">
+          <p className="micro muted">{c.person.label}</p>
+          <h3 id="about-person-name">{c.person.name}</h3>
+          <p className="about-role muted">{c.person.role}</p>
+          <blockquote>
+            <p>„{c.person.quote}“</p>
+          </blockquote>
+          <ul>
+            {c.person.points.map((point) => (
+              <li key={point}>{point}</li>
+            ))}
+          </ul>
+        </aside>
       </Reveal>
     </section>
   );

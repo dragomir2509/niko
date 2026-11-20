@@ -521,29 +521,48 @@ h3 {
   grid-column: 4 / -1;
 }
 .about-body {
-  grid-column: 4 / span 5;
+  grid-column: 4 / span 4;
   margin-top: clamp(2.5rem, 5vw, 4.5rem);
   display: grid;
+  align-content: start;
   gap: 1.25rem;
 }
-.about-facts {
-  grid-column: 10 / -1;
+.about-person {
+  grid-column: 9 / -1;
   margin-top: clamp(2.5rem, 5vw, 4.5rem);
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--carbon);
 }
-.facts > div {
-  padding: 0.85rem 0 0.95rem;
+.about-person h3 {
+  margin-top: 0.9rem;
+}
+.about-role {
+  margin-top: 0.3rem;
+  font-size: var(--fs-small);
+}
+.about-person blockquote {
+  margin: clamp(1.5rem, 2.6vw, 2.25rem) 0 0;
+  padding: 0;
+}
+.about-person blockquote p {
+  font-size: clamp(1.25rem, 1.75vw, 1.625rem);
+  font-stretch: 112%;
+  font-weight: 300;
+  letter-spacing: -0.02em;
+  line-height: 1.28;
+  text-wrap: pretty;
+}
+.about-person ul {
+  margin-top: clamp(1.5rem, 2.6vw, 2.25rem);
+}
+.about-person li {
+  padding: 0.75rem 0 0.8rem;
   border-top: 1px solid var(--line);
-}
-.facts > div:last-child {
-  border-bottom: 1px solid var(--line);
-}
-.facts dt {
-  color: var(--graphite);
-  margin-bottom: 0.3rem;
-}
-.facts dd {
   font-size: var(--fs-small);
   line-height: 1.45;
+}
+.about-person li:last-child {
+  border-bottom: 1px solid var(--line);
 }
 
 /* ---------- approach ---------- */
@@ -1282,10 +1301,10 @@ select.input {
     grid-column: 9 / -1;
   }
   .about-body {
-    grid-column: 1 / span 7;
+    grid-column: 1 / span 6;
   }
-  .about-facts {
-    grid-column: 9 / -1;
+  .about-person {
+    grid-column: 8 / -1;
   }
   .principles li::before {
     grid-column: 1 / span 1;
@@ -1337,7 +1356,7 @@ select.input {
     flex: 1 1 100%;
   }
   .about-body,
-  .about-facts,
+  .about-person,
   .profile-title,
   .profile-lead,
   .contact-aside,

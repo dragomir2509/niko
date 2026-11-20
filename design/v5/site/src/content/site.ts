@@ -35,13 +35,19 @@ export const CONTENT = {
     eyebrow: "Über RN INVEST",
     title: ["Persönlich geführt.", "Selektiv investiert."],
     lead: "RN INVEST ist die private Investmentgesellschaft von Niko Roncevic. Sie konzentriert sich auf ausgewählte Immobilien, Grundstücke und Immobilienentwicklungen sowie auf eigene Beteiligungen.",
-    text: "Der Schwerpunkt liegt in München und im Münchner Umland. Jede Entscheidung wird persönlich getroffen und persönlich verantwortet. Ausgewählte Investitionen werden gemeinsam mit langjährigen Partnern realisiert.",
-    facts: [
-      { label: "Gesellschaft", value: SITE.legalName },
-      { label: "Geschäftsführung", value: SITE.managingDirector },
-      { label: "Sitz", value: "Gräfelfing bei München" },
-      { label: "Register", value: `${SITE.registerCourt}, ${SITE.registerNumber}` },
-    ],
+    text: "Der Schwerpunkt liegt in München und im Münchner Umland. Ausgewählte Investitionen werden gemeinsam mit langjährigen Partnern realisiert.",
+    person: {
+      label: "Geschäftsführung",
+      name: SITE.managingDirector,
+      role: "Gründer und Geschäftsführer",
+      quote:
+        "Ich investiere nur in das, was ich selbst geprüft habe und persönlich verantworten kann.",
+      points: [
+        "Prüft jedes Objekt selbst.",
+        "Trifft jede Entscheidung selbst.",
+        "Steht persönlich für jede Zusage ein.",
+      ],
+    },
   },
   approach: {
     eyebrow: "Investmentansatz",
