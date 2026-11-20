@@ -120,7 +120,7 @@ export const CONTENT = {
         "Haidhausen",
         "Obergiesing",
       ],
-      area: { value: "ab ca. 350\u00a0m²", note: "Bruttogrundfläche" },
+      area: { value: "ab ca. 350\u00a0m²", note: "Bruttogeschossfläche" },
       price: {
         label: "Ankaufspreis",
         value: `bis ${new Intl.NumberFormat("de-DE").format(MFH_MAX_PURCHASE_PRICE)}\u00a0€`,

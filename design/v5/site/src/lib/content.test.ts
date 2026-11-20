@@ -36,6 +36,10 @@ describe("acquisition profile", () => {
     expect(CONTENT.profile.b.price.note).toBe("gilt für Mehrfamilienhäuser");
     expect(JSON.stringify(CONTENT.profile.a)).not.toContain("5.000.000");
   });
+  it("states the minimum size of profile B as Bruttogeschossfläche", () => {
+    expect(CONTENT.profile.b.area.value).toBe("ab ca. 350\u00a0m²");
+    expect(CONTENT.profile.b.area.note).toBe("Bruttogeschossfläche");
+  });
 });
 
 describe("site rules", () => {
