@@ -1,19 +1,24 @@
 # RN INVEST · Corporate Identity & Website
 
-**Aktuell: V4 „Quiet Luxury × Pop“** (Kaschmir und Espresso, Newsreader-Serife, ein Pop-Art-Zitat, Ich-Form als Niko Roncevic). V3 „Pop-Terminus“, V2 „Terminus“ und V1 „Quiet Capital“ bleiben als Archiv erhalten.
+**Aktuell: V5 „Quiet by default. Radical by intention.“** (Porcelain, Carbon, Signature Ultramarine; eigenes RN-Monogramm; Archivo in drei Breiten; keine Bilder). V4 bis V1 bleiben als Archiv erhalten. Die V5 liegt unveröffentlicht im Lovable-Editor; live ist bis zur Freigabe V4.
 
-RN INVEST UG (haftungsbeschränkt), Lochhamer Schlag 12, 82166 Gräfelfing · rn@rninvest.de. Ankauf von Grundstücken und Häusern in München und im Landkreis.
+RN Invest UG (haftungsbeschränkt), Lochhamer Schlag 12, 82166 Gräfelfing · Amtsgericht München, HRB 305629 · rn@rninvest.de. Ankauf von Grundstücken und Häusern in München und im Landkreis.
 
 ## Ergebnisse
 
 | Deliverable | Ort |
 |---|---|
-| Figma (Seite „V4 · Quiet Luxury × Pop (aktuell)“; V3-, V2- und V1-Seiten = Archiv) | https://www.figma.com/design/Sr2eA42uORF2LwXhtmes4Q |
+| Figma (Seiten V1 bis V4 = Archiv) | https://www.figma.com/design/Sr2eA42uORF2LwXhtmes4Q |
 | Lovable: funktionsfähige Website (Editor) | https://lovable.dev/projects/05ffd391-8030-4b22-a006-5d99e124e550 |
-| Lovable: veröffentlichte Website (Staging) | https://rn-invest-muenchen.lovable.app |
+| Lovable: veröffentlichte Website (zeigt V4 bis zur Freigabe von V5) | https://rn-invest-muenchen.lovable.app |
 | QA-Screenshots (Desktop, iPhone) | [`design/qa/`](design/qa) |
-| **Brand V4 „Quiet Luxury × Pop“** | [`brand/v4/BRAND-V4.md`](brand/v4/BRAND-V4.md) |
-| **Texte V4 + psychologische Hooks** | [`brand/v4/COPY-V4.md`](brand/v4/COPY-V4.md) |
+| **Brand V5** (Monogramm, Farben, Typografie, Regeln) | [`brand/v5/BRAND-V5.md`](brand/v5/BRAND-V5.md) |
+| Logo-Varianten, Icons, OG-Grafik, Tokens V5 | [`brand/v5/`](brand/v5) |
+| **Audit, Prüfergebnisse, offene Punkte V5** | [`design/v5/AUDIT-V5.md`](design/v5/AUDIT-V5.md) |
+| Quellcode der V5-Seite (identisch mit Lovable) | [`design/v5/site/`](design/v5/site) |
+| Prüf-Screenshots V5 | [`design/v5/qa/`](design/v5/qa) |
+| Brand V4 „Quiet Luxury × Pop“ (Archiv) | [`brand/v4/BRAND-V4.md`](brand/v4/BRAND-V4.md) |
+| Texte V4 (Archiv) | [`brand/v4/COPY-V4.md`](brand/v4/COPY-V4.md) |
 | Logo, Icons, Illustrationen, OG V4 | [`brand/v4/`](brand/v4) |
 | Prototyp V4 (HTML + Ansicht), QA V4 | [`design/v4/`](design/v4) |
 | Brand V3 „Pop-Terminus“ (Archiv) | [`brand/v3/BRAND-V3.md`](brand/v3/BRAND-V3.md) |
@@ -36,11 +41,12 @@ RN INVEST UG (haftungsbeschränkt), Lochhamer Schlag 12, 82166 Gräfelfing · rn
 
 ## Schriften
 
-- **Newsreader** (Production Type) · Google Fonts · SIL Open Font License
-- **Hanken Grotesk** (Hanken Design Co.) · Google Fonts · SIL Open Font License
+- **Archivo** (Omnibus-Type) · variable Breite und Stärke · SIL Open Font License 1.1
+- **IBM Plex Mono** (IBM) · SIL Open Font License 1.1
+- Archiv V1 bis V4: Newsreader, Hanken Grotesk (beide OFL)
 
-Die Wortmarke ist als Vektorpfad gezeichnet und benötigt keine installierte Schrift.
+Wordmark und Monogramm sind als Vektorpfade gezeichnet und benötigen keine installierte Schrift.
 
-## Vor Veröffentlichung zu ergänzen
+## Vor Veröffentlichung zu erledigen
 
-Siehe Abschnitt „Offene Punkte“ in [`brand/BRAND-GUIDELINE.md`](brand/BRAND-GUIDELINE.md#13-offene-punkte-vor-veröffentlichung).
+Siehe Abschnitt 5 in [`design/v5/AUDIT-V5.md`](design/v5/AUDIT-V5.md).
