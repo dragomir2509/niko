@@ -1,0 +1,149 @@
+<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<style>
+@font-face{font-family:NR;src:url(FONTS/newsreader-display-light.ttf);font-weight:300}
+@font-face{font-family:NR;src:url(FONTS/nr-400.ttf);font-weight:400}
+@font-face{font-family:NRI;src:url(FONTS/newsreader-display-italic.ttf);font-weight:300}
+@font-face{font-family:HG;src:url(FONTS/hanken-reg.ttf);font-weight:400}
+@font-face{font-family:HG;src:url(FONTS/hanken-med.ttf);font-weight:500}
+@font-face{font-family:HG;src:url(FONTS/Hanken-Grotesk-wght-700.ttf);font-weight:700}
+@font-face{font-family:PM;src:url(FONTS/IBM-Plex-Mono-wght-400.ttf);font-weight:400}
+@font-face{font-family:PM;src:url(FONTS/IBM-Plex-Mono-wght-500.ttf);font-weight:500}
+:root{--cash:#F3EEE6;--sand:#E8E0D3;--esp:#2B2420;--ink:#1E1A17;--mute:#6A6158;--soft:#B8AC9C;--line:rgba(43,36,32,.14);--lineS:rgba(43,36,32,.34);--lineD:rgba(243,238,230,.16)}
+*{box-sizing:border-box}html,body{margin:0;overflow-x:clip}body{background:var(--cash);color:var(--ink);font-family:HG;font-size:17px;line-height:1.65;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1200px;margin:0 auto;padding:0 56px}
+.mono{font-family:PM;font-weight:500;font-size:11.5px;letter-spacing:.12em;text-transform:uppercase}
+.meta{font-family:PM;font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--mute)}
+h1,h2{font-family:NR;font-weight:300;letter-spacing:-.022em;margin:0;color:var(--esp)}
+h1{font-size:clamp(42px,5.4vw,78px);line-height:1.02}
+h2{font-size:clamp(34px,4.2vw,60px);line-height:1.06}
+em{font-family:NRI;font-style:normal;font-weight:300}
+.dotline{background-image:radial-gradient(circle,var(--esp) 1.1px,transparent 1.3px);background-size:7px 7px;background-position:0 100%;background-repeat:repeat-x;padding-bottom:.12em}
+.lead{font-size:20px;line-height:1.6;color:var(--mute)}
+.btn{display:inline-flex;align-items:center;gap:16px;padding:16px 22px;font-family:PM;font-weight:500;font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;border:1px solid var(--esp);text-decoration:none;color:var(--esp)}
+.btn.s{background:var(--esp);color:var(--cash)}
+nav{border-bottom:1px solid var(--line)}nav .wrap{display:flex;justify-content:space-between;align-items:center;height:76px}
+nav .links{display:flex;gap:32px;align-items:center}
+.hero{display:grid;grid-template-columns:1.7fr 1fr;gap:64px;align-items:center;padding:96px 0 88px}
+.panel{position:relative;border:1.5px solid var(--esp);background:var(--cash) radial-gradient(circle,rgba(43,36,32,.13) 1.3px,transparent 1.5px) 0 0/9px 9px;box-shadow:7px 7px 0 var(--esp);aspect-ratio:4/5}
+.panel img{position:absolute;left:8%;bottom:0;width:84%;height:90%;object-fit:contain;object-position:bottom}
+.cap{position:absolute;left:-1.5px;top:-1.5px;background:var(--esp);color:var(--cash);padding:7px 11px;font-family:PM;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase}
+.bub{position:absolute;right:-22px;top:14%;background:#FFFDF9;border:1.5px solid var(--esp);border-radius:50%;padding:20px 24px;font-family:HG;font-weight:700;font-size:19px;line-height:1.05;text-transform:uppercase;letter-spacing:.01em;color:var(--esp);transform:rotate(-4deg);box-shadow:4px 4px 0 var(--esp)}
+.bub:after{content:"";position:absolute;left:20px;bottom:-15px;width:20px;height:20px;background:#FFFDF9;border-left:1.5px solid var(--esp);border-bottom:1.5px solid var(--esp);transform:skewY(32deg) rotate(-12deg)}
+.strip{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.strip div{padding:26px 28px 28px;border-left:1px solid var(--line)}.strip div:first-child{border-left:0;padding-left:0}
+.strip p{margin:8px 0 0;font-family:NR;font-weight:400;font-size:22px;line-height:1.3;color:var(--esp)}
+section{padding:128px 0}
+.letter{display:grid;grid-template-columns:1fr 1.25fr;gap:96px;align-items:start}
+.letter p{margin:0 0 20px;color:var(--mute)}
+.sig{margin-top:36px;padding-top:24px;border-top:1px solid var(--line)}
+.sig .n{font-family:NRI;font-weight:300;font-size:44px;color:var(--esp);line-height:1}
+.cmp{margin-top:56px;border-top:1px solid var(--lineS)}
+.cmp .r{display:grid;grid-template-columns:200px 1fr 1fr;gap:32px;padding:22px 0;border-bottom:1px solid var(--line);align-items:baseline}
+.cmp .h{font-family:PM;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--mute)}
+.cmp .o{color:var(--mute);text-decoration:line-through;text-decoration-color:rgba(43,36,32,.35)}
+.cmp .y{font-family:NR;font-size:22px;color:var(--esp);line-height:1.3}
+.sand{background:var(--sand)}
+.prof{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--lineS);margin-top:48px;background:var(--cash)}
+.prof .c{padding:36px}.prof .c+.c{border-left:1px solid var(--lineS)}
+.prof img{height:120px;display:block;margin-bottom:20px}
+.row{display:grid;grid-template-columns:130px 1fr;gap:16px;padding:12px 0;border-top:1px solid var(--line);font-size:15px}
+.row span:first-child{font-family:PM;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--mute);padding-top:3px}
+.figs{display:flex;gap:28px;margin-top:22px}.figs b{display:block;font-family:NR;font-weight:300;font-size:34px;color:var(--esp);line-height:1}.figs small{font-family:PM;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--mute)}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:48px;margin-top:56px}
+.steps .n{font-family:NRI;font-size:54px;color:var(--esp);line-height:1}
+.steps h3{font-family:NR;font-weight:400;font-size:24px;color:var(--esp);margin:18px 0 8px}
+.steps p{margin:0;color:var(--mute);font-size:16px}
+.dark{background:var(--esp);color:var(--cash)}
+.dark h2{color:var(--cash)}
+.myth{display:grid;grid-template-columns:380px 1fr;gap:80px;align-items:center}
+.cp{border:1.5px solid var(--cash);background:var(--cash);position:relative}
+.cp img{display:block;width:100%}
+.cp .t{font-family:PM;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--esp);padding:10px 12px;border-bottom:1.5px solid var(--esp)}
+.cp .bub{right:10px;top:34%;font-size:13px;padding:12px 14px}
+.form{display:grid;grid-template-columns:1.3fr 1fr;gap:72px;margin-top:56px}
+.f{display:grid;grid-template-columns:1fr 1fr;gap:26px 24px}
+.fld label{display:block;font-family:PM;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--mute)}
+.fld div{border-bottom:1px solid var(--lineS);padding:10px 0;color:var(--soft)}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}.chips span{border:1px solid var(--lineS);padding:7px 12px;font-family:PM;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase}.chips .on{background:var(--esp);color:var(--cash);border-color:var(--esp)}
+.side{border-top:1px solid var(--lineS);padding-top:24px}
+.side .mail{font-family:NR;font-size:34px;color:var(--esp);line-height:1.1;margin:10px 0 18px}
+footer{border-top:1px solid var(--line);padding:48px 0 36px;font-size:13px;color:var(--mute)}
+</style></head><body>
+<nav><div class="wrap"><img src="LOGO" style="height:17px"><div class="links"><span class="mono">Über mich</span><span class="mono">Ankaufsprofil</span><span class="mono">So kaufe ich</span><a class="btn s">Objekt anbieten&nbsp;&nbsp;→</a></div></div></nav>
+<div class="wrap">
+<div class="hero"><div>
+<div class="meta">RN INVEST · Privater Immobilienankauf · Gräfelfing · 48.1167° N</div>
+<h1 style="margin-top:28px">Ich kaufe Grundstücke und Häuser in München.<br><em>Persönlich und verbindlich.</em></h1>
+<p class="lead" style="margin-top:32px;max-width:540px">Mein Name ist Niko Roncevic. Mit RN INVEST kaufe ich ausgewählte Grundstücke, Häuser und kleine Mehrfamilienhäuser in München und im Landkreis. Sie sprechen dabei mit genau einem Menschen: mit mir.</p>
+<div style="display:flex;gap:14px;margin-top:40px"><a class="btn s">Objekt anbieten&nbsp;&nbsp;→</a><a class="btn">Mein Ankaufsprofil</a></div>
+</div>
+<div class="panel"><img src="IMG/hero-terminus.png"><div class="cap">Terminus · Gott der Grenzsteine</div><div class="bub">Das<br>steht.</div></div>
+</div>
+<div class="strip"><div><span class="meta">Für den Anfang</span><p>Eine Adresse genügt.</p></div><div><span class="meta">Diskretion</span><p>Kein Inserat, kein Bieterverfahren.</p></div><div><span class="meta">Entscheidung</span><p>Bei mir, nicht im Gremium.</p></div></div>
+</div>
+<section><div class="wrap letter">
+<div><div class="meta">Persönlich</div><h2 style="margin-top:20px">Viele verkaufen nur <em class="dotline">einmal</em> im Leben.</h2></div>
+<div style="padding-top:44px">
+<p style="font-size:20px;color:var(--esp)">Ein Haus zu verkaufen ist selten nur eine Transaktion. Oft hängen Jahrzehnte daran: Familie, Erinnerungen, ein Garten, den jemand angelegt hat. Ich nehme mir deshalb Zeit für das Gespräch, bevor ich rechne.</p>
+<p>Ich komme aus der Projektentwicklung und schaue mir jedes Grundstück an wie ein Bauherr: Was ist hier möglich, was passt in diese Straße, und was soll am Ende entstehen? Weil ich selbst entscheide, bekommen Sie von mir eine klare Antwort. Kein Gremium, kein Weiterreichen, kein Hinhalten.</p>
+<p>Und wenn ich Ihnen eine Zusage gebe, gilt sie. Bis zum Notartermin.</p>
+<div class="sig"><div class="n">Niko Roncevic</div><div class="meta" style="margin-top:10px">Gründer · RN INVEST · Gräfelfing</div></div>
+</div></div></section>
+<section class="sand"><div class="wrap">
+<div class="meta">Der Unterschied</div>
+<h2 style="margin-top:20px;max-width:900px">Bauträger rechnen in Quadratmetern. Ich denke in <em class="dotline">Häusern.</em></h2>
+<div class="cmp">
+<div class="r"><span class="h"></span><span class="h">Üblich am Markt</span><span class="h">Bei RN INVEST</span></div>
+<div class="r"><span class="h">Ihr Gegenüber</span><span class="o">Wechselnde Ansprechpartner</span><span class="y">Ich, vom ersten Anruf bis zum Notar</span></div>
+<div class="r"><span class="h">Entscheidung</span><span class="o">Gremien und Freigabeschleifen</span><span class="y">Eine Person, eine klare Antwort</span></div>
+<div class="r"><span class="h">Angebot</span><span class="o">Taktische Nachverhandlung</span><span class="y">Ein Angebot, zu dem ich stehe</span></div>
+<div class="r"><span class="h">Verkauf</span><span class="o">Inserat, Besichtigungen, Bieterrunden</span><span class="y">Diskret, ohne Öffentlichkeit</span></div>
+<div class="r"><span class="h">Was entsteht</span><span class="o">Maximale Fläche, Standard</span><span class="y">Architektur, die in die Straße passt</span></div>
+</div></div></section>
+<section><div class="wrap">
+<div class="meta">Ankaufsprofil · Stand Nov 2026</div>
+<h2 style="margin-top:20px">Was ich <em class="dotline">suche.</em></h2>
+<p class="lead" style="max-width:620px;margin-top:20px">Zwei klare Suchprofile. Passt Ihr Objekt, sollten wir sprechen. Passt es nicht ganz, fragen Sie trotzdem.</p>
+<div class="prof">
+<div class="c"><img src="IMG/haus.png"><div class="meta">Profil A</div><div style="font-family:NR;font-size:28px;color:var(--esp);margin:6px 0 16px">Grundstücke und Häuser</div>
+<div class="row"><span>Objekte</span><span>Baugrundstücke (bevorzugt), stark renovierungsbedürftige Ein- und Zweifamilienhäuser, Doppelhaushälften, Reihenhäuser, kleine Gewerbehäuser</span></div>
+<div class="row"><span>München</span><span>Obermenzing · Pasing · Solln · Obersendling · Harlaching · Berg am Laim · Moosach · Milbertshofen · Bogenhausen</span></div>
+<div class="row"><span>Landkreis</span><span>Gräfelfing · Pullach · Grünwald</span></div>
+<div class="figs"><div><b>≤ 1.000 m²</b><small>Grundstück Stadt</small></div><div><b>≤ 1.500 m²</b><small>Landkreis</small></div></div></div>
+<div class="c"><img src="IMG/altbau.png"><div class="meta">Profil B</div><div style="font-family:NR;font-size:28px;color:var(--esp);margin:6px 0 16px">Mehrfamilienhäuser und Hotels</div>
+<div class="row"><span>Objekte</span><span>Kleine Mehrfamilienhäuser, kleine Hotels, mit Entwicklungspotenzial, ohne Denkmalschutz</span></div>
+<div class="row"><span>Lagen</span><span>Maxvorstadt · Lehel · Schwabing · Milbertshofen · Au · Haidhausen · Obergiesing</span></div>
+<div class="figs"><div><b>≥ 350 m²</b><small>Bruttogrundfläche</small></div><div><b>7</b><small>Lagen</small></div></div></div>
+</div>
+<p class="meta" style="margin-top:20px">Für eine erste Einschätzung genügen Adresse oder Exposé · rn@rninvest.de</p>
+</div></section>
+<section class="dark"><div class="wrap myth">
+<div class="cp"><div class="t">Nur einer nicht: Terminus, der Gott der Grenzsteine.</div><img src="IMG/panel-3.png"><div class="bub">Keinen<br>Zentimeter!</div></div>
+<div><div class="meta" style="color:var(--soft)">Warum Terminus</div><h2 style="margin-top:20px">Was richtig gesetzt ist, <em>bleibt.</em></h2>
+<p style="color:var(--soft);margin-top:28px;font-size:18px;max-width:560px">Terminus war der römische Gott der Grenzsteine. Als auf dem Kapitol der Tempel des Jupiter gebaut wurde, wichen alle Götter. Nur er nicht. Sein Stein wurde in den Tempel hineingebaut. Ich halte es mit ihm: Was ich zusage, bleibt stehen.</p>
+<p class="meta" style="color:var(--soft);margin-top:28px">„Termine, sive lapis sive es defossus in agro stipes …“ · Ovid, Fasti II</p></div>
+</div></section>
+<section><div class="wrap">
+<div class="meta">So kaufe ich</div><h2 style="margin-top:20px">Drei Schritte, <em class="dotline">ein</em> Ansprechpartner.</h2>
+<div class="steps">
+<div><div class="n">1</div><h3>Sie schicken mir die Adresse</h3><p>Oder ein Exposé. Mehr braucht es für den Anfang nicht.</p></div>
+<div><div class="n">2</div><h3>Ich melde mich persönlich</h3><p>Mit einer ehrlichen Einschätzung, ob und wie Ihr Objekt passt.</p></div>
+<div><div class="n">3</div><h3>Angebot und Notar</h3><p>Passt es, erhalten Sie ein verbindliches Angebot und einen zügigen Notartermin.</p></div>
+</div>
+<p class="meta" style="margin-top:40px">Vertraulichkeit selbstverständlich · auf Wunsch mit Vertraulichkeitsvereinbarung vorab</p>
+</div></section>
+<section class="sand" id="kontakt"><div class="wrap">
+<div class="meta">Objekt anbieten</div><h2 style="margin-top:20px">Erzählen Sie mir von Ihrem <em class="dotline">Objekt.</em></h2>
+<div class="form"><div>
+<div class="fld"><label>Sie sind</label><div class="chips"><span class="on">Eigentümer</span><span>Erbengemeinschaft</span><span>Makler</span><span>Tippgeber</span><span>Berater</span></div></div>
+<div class="f" style="margin-top:28px"><div class="fld"><label>Adresse oder Lage *</label><div>z. B. Pasing, Lochhamer Straße</div></div><div class="fld"><label>Objektart</label><div>Grundstück ▾</div></div>
+<div class="fld"><label>Exposé-Link (optional)</label><div>https://</div></div><div class="fld"><label>Telefon</label><div>&nbsp;</div></div>
+<div class="fld"><label>Name *</label><div>&nbsp;</div></div><div class="fld"><label>E-Mail *</label><div>&nbsp;</div></div>
+<div class="fld" style="grid-column:1/3"><label>Nachricht</label><div style="height:70px">&nbsp;</div></div></div>
+<a class="btn s" style="margin-top:32px">Vertraulich senden&nbsp;&nbsp;→</a></div>
+<div class="side"><div class="meta">Direkt an mich</div><div class="mail">rn@rninvest.de</div>
+<p style="color:var(--mute);font-size:15px">Exposés, Fotos und Unterlagen gern direkt per E-Mail. Ich antworte persönlich.</p>
+<p style="color:var(--mute);font-size:14px;margin-top:28px">RN INVEST UG (haftungsbeschränkt)<br>Lochhamer Schlag 12<br>82166 Gräfelfing</p></div></div>
+</div></section>
+<footer><div class="wrap" style="display:flex;justify-content:space-between;align-items:center"><img src="LOGO" style="height:15px"><span>© 2026 RN INVEST UG (haftungsbeschränkt) · Lochhamer Schlag 12 · 82166 Gräfelfing</span><span class="mono">Impressum · Datenschutz</span></div></footer>
+</body></html>

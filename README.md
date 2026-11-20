@@ -1,18 +1,22 @@
 # RN INVEST · Corporate Identity & Website
 
-**Aktuell: V3 „Pop-Terminus“** (monochrom, Pop-Art-Comic, Raster, Mythos). V2 „Terminus“ und V1 „Quiet Capital“ bleiben als Archiv erhalten.
+**Aktuell: V4 „Quiet Luxury × Pop“** (Kaschmir und Espresso, Newsreader-Serife, ein Pop-Art-Zitat, Ich-Form als Niko Roncevic). V3 „Pop-Terminus“, V2 „Terminus“ und V1 „Quiet Capital“ bleiben als Archiv erhalten.
 
-RN Invest UG (haftungsbeschränkt), 82166 Gräfelfing. Ankauf von Grundstücken und Häusern in München und im Landkreis.
+RN INVEST UG (haftungsbeschränkt), Lochhamer Schlag 12, 82166 Gräfelfing · rn@rninvest.de. Ankauf von Grundstücken und Häusern in München und im Landkreis.
 
 ## Ergebnisse
 
 | Deliverable | Ort |
 |---|---|
-| Figma (Seite „V3 · Pop-Terminus (aktuell)“; V2- und V1-Seiten = Archiv) | https://www.figma.com/design/Sr2eA42uORF2LwXhtmes4Q |
+| Figma (Seite „V4 · Quiet Luxury × Pop (aktuell)“; V3-, V2- und V1-Seiten = Archiv) | https://www.figma.com/design/Sr2eA42uORF2LwXhtmes4Q |
 | Lovable: funktionsfähige Website (Editor) | https://lovable.dev/projects/05ffd391-8030-4b22-a006-5d99e124e550 |
 | Lovable: veröffentlichte Website (Staging) | https://rn-invest-muenchen.lovable.app |
 | QA-Screenshots (Desktop, iPhone) | [`design/qa/`](design/qa) |
-| Brand V3 „Pop-Terminus“ | [`brand/v3/BRAND-V3.md`](brand/v3/BRAND-V3.md) |
+| **Brand V4 „Quiet Luxury × Pop“** | [`brand/v4/BRAND-V4.md`](brand/v4/BRAND-V4.md) |
+| **Texte V4 + psychologische Hooks** | [`brand/v4/COPY-V4.md`](brand/v4/COPY-V4.md) |
+| Logo, Icons, Illustrationen, OG V4 | [`brand/v4/`](brand/v4) |
+| Prototyp V4 (HTML + Ansicht), QA V4 | [`design/v4/`](design/v4) |
+| Brand V3 „Pop-Terminus“ (Archiv) | [`brand/v3/BRAND-V3.md`](brand/v3/BRAND-V3.md) |
 | Pop-Art-Illustrationen, Logo, Icons, OG V3 | [`brand/v3/`](brand/v3) |
 | QA V3 | [`design/v3/qa/`](design/v3/qa) |
 | Brand V2 „Terminus“ (Archiv) | [`brand/v2/BRAND-V2.md`](brand/v2/BRAND-V2.md) |
